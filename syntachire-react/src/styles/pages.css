@@ -1,0 +1,341 @@
+/* Resume Page */
+.resume-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--blue-50);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.dropzone:hover {
+  border-color: var(--blue-500);
+  background: #f0f4fe;
+}
+
+.dropzone.drag {
+  border-color: var(--blue-600);
+  background: #e7ecfd;
+}
+
+.dz-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: var(--radius-md);
+  color: var(--blue-600);
+  margin-bottom: 16px;
+}
+
+.dropzone h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 8px;
+}
+
+.dropzone p {
+  font-size: 14px;
+  color: var(--ink-700);
+  margin-bottom: 20px;
+  max-width: 320px;
+}
+
+.dz-max {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 20px;
+}
+
+.file-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+.fp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fp-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-bg);
+  border-radius: var(--radius-sm);
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.fp-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.fp-size {
+  font-size: 12px;
+  color: var(--ink-500);
+  margin-top: 2px;
+}
+
+.tip-card,
+.pathing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tip-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+.tip-card p {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.6;
+}
+
+.tip-card em {
+  color: var(--blue-600);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.tip-card a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--blue-600);
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.pathing-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.pathing-card p {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.6;
+}
+
+/* Interview Page */
+.interview-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.video-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rec-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.reddot {
+  width: 6px;
+  height: 6px;
+  background: #d64545;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.prompt-box {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.prompt-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--blue-600);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
+
+.prompt-box .q {
+  font-size: 14px;
+  color: var(--ink-900);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.notes-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notes-text p {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.6;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+
+.session-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Coding Page */
+.coding-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.problem-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.problem-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.difficulty {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.difficulty.easy {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.difficulty.medium {
+  background: var(--amber-bg);
+  color: var(--amber);
+}
+
+.difficulty.hard {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.coding-grid .card p {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@media (max-width: 1024px) {
+  .resume-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .interview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .coding-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .coding-grid {
+    grid-template-columns: 1fr;
+  }
+}

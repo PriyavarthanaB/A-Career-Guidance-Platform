@@ -44,9 +44,10 @@ const ic = {
   chevL: svg('<polyline points="15 18 9 12 15 6"/>', 14),
   chevR: svg('<polyline points="9 18 15 12 9 6"/>', 14),
   bolt: svg('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>', 15),
+  mail: svg('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 4-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 4"/>', 18),
+  lock: svg('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>', 18),
+  user: svg('<circle cx="12" cy="8" r="4"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/>', 18),
 };
-
-/* icon used inside sidebar nav items (fixed 18px stroke-2) */
 const navIcon = {
   dashboard: ic.grid, resume: ic.file, interview: ic.mic2, coding: ic.codeBrack, settings: ic.gear
 };
@@ -101,7 +102,7 @@ function sidebar(active){
     </div>
     <div class="sidebar-foot">
       <a href="#" class="nav-item">${ic.help}<span>Help Center</span></a>
-      <a href="#" class="nav-item">${ic.logout}<span>Logout</span></a>
+      <a href="#" class="nav-item" onclick="logout();return false;">${ic.logout}<span>Logout</span></a>
     </div>
   </aside>`;
 }
@@ -118,6 +119,7 @@ function appFooter(){
 }
 
 function topbar(title, sub, opts={}){
+  const userInitial = currentUser ? currentUser.name.charAt(0).toUpperCase() : 'A';
   return `
   <header class="topbar">
     <div>
@@ -127,13 +129,125 @@ function topbar(title, sub, opts={}){
     <div class="topbar-right">
       ${opts.extra || ''}
       <button class="icon-btn">${ic.bell}</button>
-      <div class="avatar">A</div>
+      <div class="avatar" title="${currentUser ? currentUser.name : 'User'}">${userInitial}</div>
     </div>
   </header>`;
 }
 
 /* ============ TEMPLATES ============ */
 const TEMPLATES = {};
+
+TEMPLATES.login = () => `
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">${ic.qr}SyntacHire AI</div>
+      <h1>Welcome Back</h1>
+      <p>Sign in to access your career calibration dashboard</p>
+    </div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="you@example.com" required>
+        <div class="form-error" id="email-error"></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" required>
+        <div class="form-error" id="password-error"></div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="remember-me">
+        <label for="remember-me">Remember me</label>
+        <a href="#" onclick="goTo('forgot');return false;">Forgot password?</a>
+      </div>
+      <button type="submit" class="auth-submit">Sign In</button>
+    </form>
+    <div class="auth-divider">or continue with</div>
+    <div class="auth-socials">
+      <button type="button" class="social-btn" onclick="handleSocialLogin('google')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button type="button" class="social-btn" onclick="handleSocialLogin('github')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </button>
+    </div>
+    <div class="auth-footer">
+      Don't have an account? <a href="#" onclick="goTo('signup');return false;">Sign up</a>
+    </div>
+  </div>
+</div>
+`;
+
+TEMPLATES.signup = () => `
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">${ic.qr}SyntacHire AI</div>
+      <h1>Join SyntacHire</h1>
+      <p>Start your journey to landing your dream tech job</p>
+    </div>
+    <form onsubmit="handleSignup(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signup-name" placeholder="Alex Johnson" required>
+        <div class="form-error" id="name-error"></div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signup-email" placeholder="you@example.com" required>
+        <div class="form-error" id="signup-email-error"></div>
+      </div>
+      <div class="form-group two-col">
+        <div>
+          <label>Experience Level</label>
+          <select id="experience" required>
+            <option value="">Select level</option>
+            <option value="junior">Junior (0-2 years)</option>
+            <option value="mid">Mid-level (2-5 years)</option>
+            <option value="senior">Senior (5+ years)</option>
+          </select>
+        </div>
+        <div>
+          <label>Target Role</label>
+          <input type="text" id="target-role" placeholder="e.g. Backend Engineer" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signup-password" placeholder="••••••••" required>
+        <div class="form-error" id="signup-password-error"></div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="signup-confirm" placeholder="••••••••" required>
+        <div class="form-error" id="confirm-error"></div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+      <button type="submit" class="auth-submit">Create Account</button>
+    </form>
+    <div class="auth-divider">or sign up with</div>
+    <div class="auth-socials">
+      <button type="button" class="social-btn" onclick="handleSocialLogin('google')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button type="button" class="social-btn" onclick="handleSocialLogin('github')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </button>
+    </div>
+    <div class="auth-footer">
+      Already have an account? <a href="#" onclick="goTo('login');return false;">Sign in</a>
+    </div>
+  </div>
+</div>
+`;
 
 TEMPLATES.landing = () => `
 <nav class="lp-nav">
@@ -275,7 +389,7 @@ TEMPLATES.dashboard = () => `
 <div class="app-shell">
   ${sidebar('dashboard')}
   <main class="main">
-    ${topbar('Welcome back, Alex', 'Thursday, July 16, 2026')}
+    ${topbar(`Welcome back, ${currentUser ? currentUser.name.split(' ')[0] : 'Alex'}`, new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }))}
     <div class="content">
 
       <div class="dash-grid">
@@ -719,5 +833,119 @@ function afterRender(page){
   if(page==='coding') initCodingPage();
 }
 
+/* ============ Authentication Logic ============ */
+let currentUser = null;
+
+// Simple in-memory storage (replace with real backend)
+const users = {
+  'alex@example.com': { password: 'demo123', name: 'Alex Johnson', experience: 'mid', role: 'Full Stack Engineer' },
+  'demo@demo.com': { password: 'demo123', name: 'Demo User', experience: 'senior', role: 'Backend Engineer' }
+};
+
+function handleLogin(e){
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  
+  clearErrors();
+  
+  if(!email || !password){
+    showError('email-error', 'Please enter your email and password');
+    return;
+  }
+  
+  if(email in users && users[email].password === password){
+    currentUser = { email, ...users[email] };
+    localStorage.setItem('user', JSON.stringify(currentUser));
+    goTo('dashboard');
+  } else {
+    showError('email-error', 'Invalid email or password');
+  }
+}
+
+function handleSignup(e){
+  e.preventDefault();
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const confirm = document.getElementById('signup-confirm').value;
+  const experience = document.getElementById('experience').value;
+  const targetRole = document.getElementById('target-role').value;
+  
+  clearErrors();
+  
+  if(!name || !email || !password || !confirm || !experience || !targetRole){
+    showError('name-error', 'Please fill in all fields');
+    return;
+  }
+  
+  if(password !== confirm){
+    showError('confirm-error', 'Passwords do not match');
+    return;
+  }
+  
+  if(password.length < 6){
+    showError('signup-password-error', 'Password must be at least 6 characters');
+    return;
+  }
+  
+  if(email in users){
+    showError('signup-email-error', 'Email already registered');
+    return;
+  }
+  
+  // Register user
+  users[email] = { password, name, experience, role: targetRole };
+  currentUser = { email, ...users[email] };
+  localStorage.setItem('user', JSON.stringify(currentUser));
+  goTo('dashboard');
+}
+
+function handleSocialLogin(provider){
+  // Mock social login
+  const mockEmail = provider === 'google' ? 'user@gmail.com' : 'user@github.com';
+  currentUser = {
+    email: mockEmail,
+    name: 'Social User',
+    experience: 'mid',
+    role: 'Software Engineer',
+    provider: provider
+  };
+  localStorage.setItem('user', JSON.stringify(currentUser));
+  goTo('dashboard');
+}
+
+function showError(elementId, message){
+  const el = document.getElementById(elementId);
+  if(el){
+    el.textContent = message;
+    el.classList.add('show');
+  }
+}
+
+function clearErrors(){
+  document.querySelectorAll('.form-error').forEach(e => {
+    e.classList.remove('show');
+    e.textContent = '';
+  });
+}
+
+function logout(){
+  currentUser = null;
+  localStorage.removeItem('user');
+  goTo('login');
+}
+
+// Check if user is logged in on page load
+function checkAuth(){
+  const stored = localStorage.getItem('user');
+  if(stored){
+    currentUser = JSON.parse(stored);
+    goTo('dashboard');
+  } else {
+    goTo('login');
+  }
+}
+
 /* initial paint */
-renderPage('landing');
+checkAuth();

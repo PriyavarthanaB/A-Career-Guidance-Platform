@@ -1,0 +1,177 @@
+:root {
+  --blue-900: #0f1b3d;
+  --blue-800: #14204a;
+  --blue-700: #1d3a8f;
+  --blue-600: #2648d6;
+  --blue-500: #2f5be0;
+  --blue-400: #5b7cf0;
+  --blue-100: #e7ecfd;
+  --blue-50: #f1f4fe;
+  --ink-900: #0e1220;
+  --ink-700: #3a3f52;
+  --ink-500: #6b7086;
+  --ink-300: #9aa0b4;
+  --line: #e4e7f2;
+  --bg: #f4f6fc;
+  --card: #ffffff;
+  --green: #1a9c62;
+  --green-bg: #e5f7ee;
+  --amber: #c98a1a;
+  --amber-bg: #fdf3e2;
+  --red: #d64545;
+  --red-bg: #fdeaea;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(15, 27, 61, 0.06);
+  --shadow-md: 0 8px 24px rgba(15, 27, 61, 0.08);
+  --shadow-lg: 0 20px 48px rgba(15, 27, 61, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink-900);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Utilities */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--blue-600);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(38, 72, 214, 0.28);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--blue-500);
+  box-shadow: 0 8px 22px rgba(38, 72, 214, 0.36);
+}
+
+.btn-secondary {
+  background: #fff;
+  color: var(--ink-900);
+  border: 1px solid var(--line);
+}
+
+.btn-secondary:hover {
+  border-color: var(--blue-400);
+  color: var(--blue-600);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--blue-600);
+  font-weight: 600;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfd6ea;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Focus visibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+#root {
+  height: 100%;
+}
