@@ -5,6 +5,8 @@ require('dotenv').config();
 
 const resumeRoutes = require('./routes/resume');
 const authRoutes = require('./routes/auth');
+const problemRoutes = require("./routes/problem"); 
+const moduleRoutes = require("./routes/module"); 
 
 const app = express();
 
@@ -23,6 +25,9 @@ app.get('/', (req, res) => {
  app.use('/api/resume', resumeRoutes);
 
 app.use('/api/auth', authRoutes);
+
+app.use("/api/problems", problemRoutes);
+app.use("/api/modules", moduleRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/syntac_admin')

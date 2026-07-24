@@ -42,7 +42,7 @@ export default function Landing() {
         // 2. Redirect to Dashboard after 1 second
         setTimeout(() => {
           setIsModalOpen(false);
-          navigate('/dashboard');
+          navigate('/analyzer');
         }, 1000);
 
       } else {
