@@ -1,14 +1,19 @@
+// models/Resume.js
 const mongoose = require('mongoose');
 
 const resumeSchema = new mongoose.Schema({
-  userId: { type: String, default: 'demo_user' }, // Dynamic with auth later
-  fileName: String,
-  rawText: String,
-  atsScore: Number,
-  extractedSkills: [String],
-  missingSkills: [String],
-  suggestions: [String],
-  summary: String,
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User',
+    required: true 
+  },
+  fileName: { type: String, required: true },
+  rawText: { type: String },
+  atsScore: { type: Number, default: 0 },
+  extractedSkills: [{ type: String }],
+  missingSkills: [{ type: String }],
+  suggestions: [{ type: String }],
+  summary: { type: String },
   analyzedAt: { type: Date, default: Date.now }
 });
 

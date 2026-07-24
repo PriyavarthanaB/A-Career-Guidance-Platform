@@ -1,393 +1,363 @@
-import { Link } from 'react-router-dom';
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BarChart3,
-  Bell,
-  Brain,
-  CheckCircle2,
-  Code2,
-  FileText,
-  Globe,
-  Mic,
-  Search,
-  Settings,
-  Share2,
-  Trophy,
-  Upload,
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const navLinks = [
-  { label: 'Dashboard', href: '/', active: true },
-  { label: 'Resume', href: '/analyzer' },
-  { label: 'Interview', href: '/login' },
-  { label: 'Coding', href: '/login' },
-];
+export default function Landing() {
+  const navigate = useNavigate();
 
-const stats = [
-  { value: '94%', label: 'ATS Success Rate' },
-  { value: '12M+', label: 'Resumes Scanned' },
-  { value: '45k', label: 'Job Offers Secured' },
-  { value: '3.5x', label: 'Average Salary Increase' },
-];
+  // --- BACKEND CONNECTION STATE ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [responseMsg, setResponseMsg] = useState(null);
 
-const pathSteps = [
-  { icon: Upload, label: 'Upload', desc: 'Drop your resume' },
-  { icon: Search, label: 'Analyze', desc: 'AI scans & scores' },
-  { icon: Brain, label: 'Practice', desc: 'Mock interviews' },
-  { icon: Trophy, label: 'Get Hired', desc: 'Land your offer' },
-];
+  // --- API CALL TO EXPRESS BACKEND ---
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setResponseMsg(null);
 
-const Logo = ({ className = '' }) => (
-  <span className={`font-bold text-xl tracking-tight ${className}`}>
-    SyntacHire <span className="text-brand-600">AI</span>
-  </span>
-);
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-const Landing = () => {
+      const data = await res.json();
+
+      if (res.ok) {
+        setResponseMsg({ type: 'success', text: data.message || 'Registration successful! Redirecting...' });
+        
+        // 1. Save JWT token to local storage
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+
+        setEmail('');
+        setPassword('');
+
+        // 2. Redirect to Dashboard after 1 second
+        setTimeout(() => {
+          setIsModalOpen(false);
+          navigate('/dashboard');
+        }, 1000);
+
+      } else {
+        setResponseMsg({ type: 'error', text: data.message || 'Something went wrong.' });
+      }
+    } catch (error) {
+      setResponseMsg({ type: 'error', text: 'Unable to connect to express server.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white text-slate-800 font-sans">
-      {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
-        <nav className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16">
-          <Link to="/" className="shrink-0">
-            <Logo />
-          </Link>
-
-          <ul className="hidden lg:flex items-center gap-8">
-            {navLinks.map(({ label, href, active }) => (
-              <li key={label}>
-                <Link
-                  to={href}
-                  className={`text-sm font-medium transition-colors ${
-                    active
-                      ? 'text-brand-600 border-b-2 border-brand-600 pb-0.5'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden md:flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 min-w-[180px] lg:min-w-[220px]">
-              <Search size={16} className="text-slate-400 shrink-0" />
-              <input
-                type="search"
-                placeholder="Search..."
-                className="bg-transparent text-sm text-slate-600 placeholder:text-slate-400 outline-none w-full"
-              />
-            </div>
-            <button type="button" className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full transition" aria-label="Notifications">
-              <Bell size={20} />
-            </button>
-            <button type="button" className="hidden sm:block p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full transition" aria-label="Settings">
-              <Settings size={20} />
-            </button>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 ring-2 ring-white shadow-sm overflow-hidden shrink-0">
-              <img
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=SyntacHire"
-                alt="User avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
+    <div className="bg-[var(--color-surface)] text-[var(--color-on-surface)] min-h-screen overflow-x-hidden font-sans relative">
+      {/* Top Navbar */}
+      <nav className="fixed top-0 w-full z-40 flex justify-between items-center px-8 md:px-14 h-20 bg-[var(--color-surface)]/80 backdrop-blur-xl border-b border-[var(--color-outline-variant)]/30 shadow-sm">
+        <div className="flex items-center gap-10">
+          <span className="text-2xl font-extrabold text-[var(--color-primary)] tracking-tight cursor-pointer" onClick={() => navigate('/')}>
+            SyntacHire AI
+          </span>
+          <div className="hidden md:flex items-center gap-8 text-base font-medium">
+            <a className="text-[var(--color-primary)] font-bold border-b-2 border-[var(--color-primary)] pb-1" href="#dashboard">
+              Dashboard
+            </a>
+            <a className="text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors" href="#resume">
+              Resume
+            </a>
+            <a className="text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors" href="#interview">
+              Interview
+            </a>
+            <a className="text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors" href="#coding">
+              Coding
+            </a>
           </div>
-        </nav>
-      </header>
+        </div>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-50/80 via-white to-white pointer-events-none" />
-        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-brand-100/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => navigate('/login')}
+            className="px-5 py-2.5 font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary-container)]/10 rounded-xl transition-all cursor-pointer"
+          >
+            Log In
+          </button>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-[var(--color-primary)] text-white px-5 py-2.5 font-semibold rounded-xl shadow-md hover:opacity-95 transition-all cursor-pointer"
+          >
+            Sign Up
+          </button>
+        </div>
+      </nav>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-20 lg:pb-24">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left column */}
-            <div className="text-left">
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-brand-700 bg-brand-100 rounded-full mb-6">
-                ✨ AI-Powered Career Intelligence
-              </span>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-                Calibrate Your Career with{' '}
-                <span className="text-brand-600">AI Precision</span>
+      <main className="mt-20">
+        {/* Hero Section */}
+        <section className="relative min-h-[88vh] flex items-center overflow-hidden bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-container-low)] py-16">
+          <div className="max-w-7xl mx-auto px-8 md:px-12 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[var(--color-primary-container)]/10 border border-[var(--color-primary-container)]/20 rounded-full text-[var(--color-primary)] text-sm font-semibold">
+                <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+                AI-Powered Career Intelligence
+              </div>
+              <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.15] text-[var(--color-on-surface)]">
+                Calibrate Your Career with <span className="text-gradient">AI Precision</span>
               </h1>
-
-              <p className="mt-5 text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl">
-                SyntacHire AI transforms your job search into a data-driven journey. Optimize your resume for ATS, simulate high-stakes interviews, and bridge skill gaps with precision.
+              <p className="text-xl leading-relaxed text-[var(--color-on-surface-variant)] max-w-2xl font-normal">
+                SyntacHire AI transforms your job search into a data-driven journey. Optimize your resume for ATS, simulate high-stakes interviews, and bridge your skill gaps with intelligent precision.
               </p>
-
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/signup"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition shadow-lg shadow-brand-500/25"
+              
+              {/* Scaled Buttons */}
+              <div className="flex flex-wrap gap-5 pt-4">
+                <button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-[var(--color-primary)] text-white px-9 py-4.5 rounded-2xl font-semibold text-lg shadow-xl shadow-[var(--color-primary)]/25 hover:scale-[1.02] transition-transform flex items-center gap-3 cursor-pointer"
                 >
                   Get Started for Free
-                  <ArrowRight size={18} />
-                </Link>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center px-6 py-3.5 bg-brand-50 text-brand-700 font-semibold rounded-xl hover:bg-brand-100 transition border border-brand-100"
+                  <span className="material-symbols-outlined text-[24px]">arrow_forward</span>
+                </button>
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="bg-[var(--color-surface-container-highest)]/50 backdrop-blur-md border border-[var(--color-outline-variant)]/30 px-9 py-4.5 rounded-2xl font-semibold text-lg text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)] transition-all cursor-pointer"
                 >
-                  View Demo
-                </Link>
+                  Sign In
+                </button>
               </div>
 
-              <div className="mt-10 flex items-center gap-3">
-                <div className="flex -space-x-3">
-                  {['#6366f1', '#8b5cf6', '#ec4899'].map((color, i) => (
-                    <div
-                      key={color}
-                      className="w-10 h-10 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-white text-xs font-bold"
-                      style={{ backgroundColor: color, zIndex: 3 - i }}
-                    >
-                      {['JD', 'SK', 'MR'][i]}
-                    </div>
-                  ))}
+              <div className="flex items-center gap-4 pt-6 text-[var(--color-on-surface-variant)] text-sm font-semibold">
+                <div className="flex -space-x-2">
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-200"></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-300"></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-400"></div>
                 </div>
-                <p className="text-sm text-slate-500">
-                  Joined by <span className="font-semibold text-slate-700">10k+ professionals</span> this month
-                </p>
+                <span>Joined by 10k+ professionals this month</span>
               </div>
             </div>
 
-            {/* Right column — laptop mockup */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-lg">
-                {/* Laptop */}
-                <div className="relative bg-slate-800 rounded-t-2xl p-3 pt-3 pb-0 shadow-2xl">
-                  <div className="bg-slate-900 rounded-t-lg overflow-hidden aspect-[16/10]">
-                    {/* Dashboard mockup */}
-                    <div className="h-full bg-slate-50 p-4 flex flex-col gap-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-400" />
-                        <div className="w-2 h-2 rounded-full bg-yellow-400" />
-                        <div className="w-2 h-2 rounded-full bg-green-400" />
-                      </div>
-                      <div className="flex-1 grid grid-cols-3 gap-2">
-                        <div className="col-span-2 bg-white rounded-lg p-3 shadow-sm border border-slate-100">
-                          <div className="h-2 w-16 bg-slate-200 rounded mb-3" />
-                          <div className="space-y-2">
-                            {[85, 72, 94, 68].map((w) => (
-                              <div key={w} className="flex items-center gap-2">
-                                <div className="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                                  <div className="h-full bg-brand-500 rounded-full" style={{ width: `${w}%` }} />
-                                </div>
-                                <span className="text-[10px] text-slate-400 w-6">{w}%</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="bg-brand-600 rounded-lg p-2 h-16 flex flex-col justify-end">
-                            <span className="text-[10px] text-white/80">Score</span>
-                            <span className="text-lg font-bold text-white">94</span>
-                          </div>
-                          <div className="bg-white rounded-lg p-2 h-16 border border-slate-100">
-                            <div className="h-1.5 w-full bg-slate-100 rounded-full mt-auto">
-                              <div className="h-full w-3/4 bg-green-500 rounded-full" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {[1, 2, 3, 4].map((n) => (
-                          <div key={n} className="h-8 bg-white rounded border border-slate-100" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="h-3 bg-slate-700 rounded-b-sm mx-auto w-[110%] -ml-[5%]" />
-                  <div className="h-1.5 bg-slate-600 rounded-b-xl mx-auto w-[120%] -ml-[10%]" />
-                </div>
-
-                {/* Floating ATS card */}
-                <div className="absolute -left-4 sm:left-0 bottom-8 sm:bottom-12 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 max-w-[240px] animate-float">
-                  <div className="flex items-start gap-3">
-                    <div className="shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle2 size={22} className="text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900 text-sm">ATS Score: 94%</p>
-                      <p className="text-xs text-slate-500 mt-1 leading-snug">
-                        Highly optimized for Senior Engineer roles at Tier 1 firms.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Master Every Stage */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Master Every Stage of the Process
-          </h2>
-          <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-base sm:text-lg">
-            From resume optimization to offer negotiation — every tool you need, powered by AI.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
-          {/* AI Resume Scoring */}
-          <div className="relative bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm overflow-hidden min-h-[280px] flex flex-col">
-            <div className="absolute right-4 bottom-4 opacity-[0.06] pointer-events-none">
-              <FileText size={160} className="text-brand-600" />
-            </div>
-            <FileText className="text-brand-600 mb-4" size={32} />
-            <h3 className="font-bold text-xl text-slate-900 mb-2">AI Resume Scoring</h3>
-            <p className="text-sm text-slate-500 leading-relaxed max-w-sm flex-1">
-              Real-time ATS optimization that analyzes keyword density, format compliance, and role-specific alignment.
-            </p>
-            <div className="flex flex-wrap gap-2 mt-6">
-              <span className="px-3 py-1 text-xs font-medium text-slate-600 bg-slate-100 rounded-full">Keyword Density</span>
-              <span className="px-3 py-1 text-xs font-medium text-slate-600 bg-slate-100 rounded-full">Format Check</span>
-            </div>
-          </div>
-
-          {/* Skill Gap Analysis */}
-          <div className="bg-brand-600 p-6 sm:p-8 rounded-2xl shadow-lg shadow-brand-600/20 min-h-[280px] flex flex-col text-white">
-            <BarChart3 className="mb-4 text-white/90" size={32} />
-            <h3 className="font-bold text-xl mb-2">Skill Gap Analysis</h3>
-            <p className="text-sm text-brand-100 leading-relaxed flex-1">
-              We map your skills against target job descriptions to identify missing competencies and recommend learning paths.
-            </p>
-            <div className="mt-6 flex items-end gap-2 h-16">
-              {[40, 65, 45, 80, 55].map((h, i) => (
-                <div
-                  key={i}
-                  className="flex-1 bg-white/20 rounded-t-md"
-                  style={{ height: `${h}%` }}
+            {/* Hero Image / Card */}
+            <div className="relative hidden md:block">
+              <div className="relative z-10 glass-card p-7 rounded-[36px] ai-glow animate-float">
+                <img 
+                  className="rounded-2xl border border-[var(--color-outline-variant)]/20 shadow-2xl w-full" 
+                  alt="Dashboard Preview" 
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3MTjOzZ1G3c1KJ920erTDKTCidOckxOhgtLJ96IhSKHTaVQobzC11c5hSuzfewwMmRijp_E3WnRqu-d4UadOauqIafXrkVI7Hfz8auJpCuXHw-9McwBSWPi9iH1eozO24V6iiM2TQgAlxCDAR__TV-qN-DLySmRQMPuF6w4atdyAvifIM073r_-OhSa1Lh3JfRaHSZ1oOByMggKC3SLK5o3Dc_pXA_CvsBGgYs4VyAh92XTbDoWh4" 
                 />
-              ))}
-            </div>
-          </div>
-
-          {/* Mock Interviews */}
-          <div className="bg-brand-100 p-6 sm:p-8 rounded-2xl min-h-[240px] flex flex-col">
-            <Mic className="text-brand-600 mb-4" size={32} />
-            <h3 className="font-bold text-xl text-slate-900 mb-2">Mock Interviews</h3>
-            <p className="text-sm text-slate-600 leading-relaxed flex-1">
-              Practice HR and Technical rounds with AI avatars. Get live feedback on tone, clarity, and technical depth.
-            </p>
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-1 mt-6 text-sm font-semibold text-brand-600 hover:text-brand-700 transition"
-            >
-              Launch Room
-              <ArrowUpRight size={16} />
-            </Link>
-          </div>
-
-          {/* Coding Practice */}
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm min-h-[240px] flex flex-col">
-            <Code2 className="text-brand-600 mb-4" size={32} />
-            <h3 className="font-bold text-xl text-slate-900 mb-2">Coding Practice</h3>
-            <p className="text-sm text-slate-500 leading-relaxed mb-4">
-              Tackle algorithmic challenges in an integrated AI-powered IDE with real-time suggestions.
-            </p>
-            <div className="bg-slate-900 rounded-xl p-4 font-mono text-xs leading-relaxed overflow-x-auto">
-              <p className="text-slate-400">
-                <span className="text-purple-400">function</span>{' '}
-                <span className="text-blue-400">twoSum</span>
-                <span className="text-slate-300">(nums, target) {'{'}</span>
-              </p>
-              <p className="text-green-400 pl-4 mt-1">
-                {'// AI Suggestion: Use Map for O(1) lookups'}
-              </p>
-              <p className="text-slate-300 pl-4 mt-1">
-                <span className="text-purple-400">const</span> map = <span className="text-purple-400">new</span> Map();
-              </p>
-              <p className="text-slate-500 pl-4">...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Your Path to the Offer */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Your Path to the Offer
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
-          {pathSteps.map(({ icon: Icon, label, desc }, index) => (
-            <div key={label} className="relative flex flex-col items-center text-center">
-              {index < pathSteps.length - 1 && (
-                <div className="hidden lg:block absolute top-8 left-[calc(50%+2.5rem)] w-[calc(100%-5rem)] h-px bg-slate-200" />
-              )}
-              <div className="w-16 h-16 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center mb-4 relative z-10">
-                <Icon size={28} className="text-brand-600" />
+                {/* Floating Badge */}
+                <div className="absolute -right-4 -bottom-4 glass-card p-5 rounded-2xl shadow-2xl border border-[var(--color-primary)]/20 max-w-[220px]">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-[var(--color-tertiary-container)] flex items-center justify-center text-white">
+                      <span className="material-symbols-outlined text-[18px]">verified</span>
+                    </div>
+                    <span className="font-bold text-base text-[var(--color-on-surface)]">ATS Score: 94%</span>
+                  </div>
+                  <p className="text-xs leading-snug text-[var(--color-on-surface-variant)] font-medium">"Highly optimized for Senior Engineer roles at Tier 1 firms."</p>
+                </div>
               </div>
-              <h3 className="font-bold text-slate-900">{label}</h3>
-              <p className="text-xs text-slate-500 mt-1">{desc}</p>
             </div>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Link
-            to="/signup"
-            className="inline-flex items-center justify-center px-10 py-4 bg-brand-600 text-white font-semibold text-lg rounded-xl hover:bg-brand-700 transition shadow-lg shadow-brand-500/25"
-          >
-            Start Your Calibration Now
-          </Link>
-        </div>
-      </section>
-
-      {/* Statistics Bar */}
-      <section className="bg-navy py-12 lg:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4 text-center">
-            {stats.map(({ value, label }) => (
-              <div key={label}>
-                <p className="text-3xl sm:text-4xl font-extrabold text-white">{value}</p>
-                <p className="mt-2 text-sm text-slate-400">{label}</p>
-              </div>
-            ))}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Features Grid */}
+        <section className="py-24 bg-[var(--color-surface)] relative">
+          <div className="max-w-7xl mx-auto px-8 md:px-12">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <h2 className="text-4xl md:text-5xl font-extrabold mb-5">Master Every Stage of the Process</h2>
+              <p className="text-lg text-[var(--color-on-surface-variant)] leading-relaxed">
+                Our intelligent engine analyzes every data point to give you the competitive edge in today's job market.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+              {/* Feature 1 */}
+              <div className="md:col-span-8 bg-white border border-[var(--color-outline-variant)]/30 rounded-[28px] p-10 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
+                <div className="flex flex-col h-full justify-between relative z-10 min-h-[220px]">
+                  <div>
+                    <div className="w-14 h-14 bg-[var(--color-primary-container)]/10 text-[var(--color-primary)] rounded-2xl flex items-center justify-center mb-6">
+                      <span className="material-symbols-outlined text-[32px]">description</span>
+                    </div>
+                    <h3 className="text-2xl font-bold mb-3">AI Resume Scoring</h3>
+                    <p className="text-[var(--color-on-surface-variant)] max-w-lg text-base leading-relaxed">
+                      Real-time ATS optimization that analyzes your content against industry-specific keywords and semantic relevance.
+                    </p>
+                  </div>
+                  <div className="flex gap-4 mt-8">
+                    <span className="px-4 py-1.5 bg-[var(--color-surface-container)] rounded-full text-xs font-semibold">Keyword Density</span>
+                    <span className="px-4 py-1.5 bg-[var(--color-surface-container)] rounded-full text-xs font-semibold">Format Check</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="md:col-span-4 bg-[var(--color-primary)] text-white rounded-[28px] p-10 relative overflow-hidden flex flex-col justify-between">
+                <div>
+                  <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+                    <span className="material-symbols-outlined text-[32px]">analytics</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Skill Gap Analysis</h3>
+                  <p className="text-white/90 text-base leading-relaxed">We map your skills against millions of job descriptions to find what you're missing.</p>
+                </div>
+                <div className="mt-8 flex justify-end">
+                  <div className="w-24 h-24 rounded-full border-4 border-white/20 flex items-center justify-center">
+                    <span className="font-extrabold text-2xl">82%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="md:col-span-4 bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]/30 rounded-[28px] p-10 flex flex-col justify-between">
+                <div>
+                  <div className="w-14 h-14 bg-[var(--color-tertiary-container)]/10 text-[var(--color-tertiary)] rounded-2xl flex items-center justify-center mb-6">
+                    <span className="material-symbols-outlined text-[32px]">mic</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Mock Interviews</h3>
+                  <p className="text-[var(--color-on-surface-variant)] text-base leading-relaxed">Practice HR and Technical rounds with AI avatars that provide instant behavioral feedback.</p>
+                </div>
+                <div className="flex items-center gap-2 text-[var(--color-primary)] font-bold text-base mt-8 cursor-pointer">
+                  <span>Launch Room</span>
+                  <span className="material-symbols-outlined text-[20px]">arrow_outward</span>
+                </div>
+              </div>
+
+              {/* Feature 4 */}
+              <div className="md:col-span-8 glass-card border border-[var(--color-primary)]/10 rounded-[28px] p-10 flex flex-col md:flex-row gap-8 items-center overflow-hidden">
+                <div className="flex-1">
+                  <div className="w-14 h-14 bg-black/5 rounded-2xl flex items-center justify-center mb-6">
+                    <span className="material-symbols-outlined text-[32px]">code</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Coding Practice</h3>
+                  <p className="text-[var(--color-on-surface-variant)] text-base leading-relaxed">Tackle algorithmic challenges in an integrated AI-powered IDE with real-time code optimization hints.</p>
+                </div>
+                <div className="flex-1 w-full bg-[#1e293b] rounded-2xl p-5 font-mono text-sm text-blue-300 shadow-2xl">
+                  <div className="flex gap-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+                  </div>
+                  <div className="space-y-1.5 leading-relaxed">
+                    <p><span className="text-purple-400">function</span> <span className="text-yellow-400">optimizeCareer</span>() &#123;</p>
+                    <p className="pl-4"><span className="text-purple-400">const</span> skills = <span className="text-orange-400">AI.analyze</span>(resume);</p>
+                    <p className="pl-4"><span className="text-purple-400">return</span> skills.<span className="text-orange-400">prepare</span>();</p>
+                    <p>&#125;</p>
+                    <p className="text-emerald-400 pt-2">// AI Suggestion: Use Map for O(1) lookups</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="py-20 bg-[var(--color-on-surface)] text-white text-center">
+          <div className="max-w-7xl mx-auto px-8 md:px-12 grid grid-cols-2 md:grid-cols-4 gap-10">
+            <div>
+              <div className="text-4xl md:text-6xl font-black mb-2 text-white">94%</div>
+              <div className="text-gray-400 text-sm md:text-base font-medium">ATS Success Rate</div>
+            </div>
+            <div>
+              <div className="text-4xl md:text-6xl font-black mb-2 text-white">12M+</div>
+              <div className="text-gray-400 text-sm md:text-base font-medium">Resumes Scanned</div>
+            </div>
+            <div>
+              <div className="text-4xl md:text-6xl font-black mb-2 text-white">45k</div>
+              <div className="text-gray-400 text-sm md:text-base font-medium">Job Offers Secured</div>
+            </div>
+            <div>
+              <div className="text-4xl md:text-6xl font-black mb-2 text-white">3.5x</div>
+              <div className="text-gray-400 text-sm md:text-base font-medium">Average Salary Increase</div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="bg-slate-50 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="text-center sm:text-left">
-            <Logo />
-            <p className="mt-2 text-sm text-slate-500">
-              © 2024 SyntacHire AI. Calibrating careers with precision.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-600">
-              {['Terms', 'Privacy', 'Careers', 'Support'].map((link) => (
-                <a key={link} href="#" className="hover:text-brand-600 transition">
-                  {link}
-                </a>
-              ))}
-            </div>
-            <div className="flex items-center gap-3">
-              <button type="button" className="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Language">
-                <Globe size={18} />
-              </button>
-              <button type="button" className="p-2 text-slate-400 hover:text-slate-600 transition" aria-label="Share">
-                <Share2 size={18} />
-              </button>
-            </div>
-          </div>
+      <footer className="w-full py-12 px-8 md:px-14 flex flex-col md:flex-row justify-between items-center gap-8 bg-[var(--color-surface-container-highest)] border-t border-[var(--color-outline-variant)]/30 text-sm">
+        <div className="flex flex-col gap-1 text-center md:text-left">
+          <span className="text-2xl font-extrabold text-[var(--color-primary)]">SyntacHire AI</span>
+          <p className="text-[var(--color-on-surface-variant)] text-xs mt-1">© 2026 SyntacHire AI. Calibrating careers with precision.</p>
+        </div>
+        <div className="flex gap-8 text-sm font-medium text-[var(--color-on-surface-variant)]">
+          <a className="hover:text-[var(--color-primary)] transition-colors" href="#terms">Terms</a>
+          <a className="hover:text-[var(--color-primary)] transition-colors" href="#privacy">Privacy</a>
+          <a className="hover:text-[var(--color-primary)] transition-colors" href="#careers">Careers</a>
+          <a className="hover:text-[var(--color-primary)] transition-colors" href="#support">Support</a>
         </div>
       </footer>
+
+      {/* SIGNUP MODAL OVERLAY */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 relative border border-[var(--color-outline-variant)] text-slate-800">
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[28px]">close</span>
+            </button>
+
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-extrabold text-[var(--color-on-surface)]">Get Started Free</h3>
+              <p className="text-base text-gray-500 mt-2">Create your SyntacHire AI account.</p>
+            </div>
+
+            <form onSubmit={handleSignupSubmit} className="space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Email</label>
+                <input 
+                  type="email" 
+                  required
+                  placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-5 py-3.5 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none text-base"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Password</label>
+                <input 
+                  type="password" 
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-5 py-3.5 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none text-base"
+                />
+              </div>
+
+              {responseMsg && (
+                <div className={`p-4 rounded-2xl text-sm font-medium ${responseMsg.type === 'success' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
+                  {responseMsg.text}
+                </div>
+              )}
+
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full bg-[var(--color-primary)] text-white py-4 rounded-2xl font-bold text-base shadow-lg hover:opacity-95 transition-opacity disabled:opacity-50 cursor-pointer mt-3"
+              >
+                {loading ? 'Creating Account...' : 'Sign Up'}
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-gray-500 mt-6">
+              Already have an account?{' '}
+              <span 
+                onClick={() => {
+                  setIsModalOpen(false);
+                  navigate('/login');
+                }} 
+                className="text-[var(--color-primary)] font-bold cursor-pointer hover:underline"
+              >
+                Log In
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Landing;
+}

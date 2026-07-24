@@ -2,35 +2,37 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
-import ResumeAnalyzer from './pages/ResumeAnalyzer';
 import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import ResumeAnalyzer from './pages/ResumeAnalyzer';
+import CodingPractice from './pages/CodingPractice';
 
-// Simple Protected Route check
+  
+// Protected Route Guard
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/login" replace />;
-
 };
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/analyzer" element={<ResumeAnalyzer />} />
+        <Route path="/practice" element={<CodingPractice />} />
         <Route 
-          path="/analyzer" 
+          path="/dashboard" 
           element={
             <ProtectedRoute>
-              <ResumeAnalyzer />
+              <Dashboard />
             </ProtectedRoute>
           } 
         />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
 }
-
-export default App;
-
