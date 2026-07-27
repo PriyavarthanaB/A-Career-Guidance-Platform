@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import API from "../api/axios";
+import Sidebar from '../components/Sidebar';
 import {
   UploadCloud,
   FileText,
@@ -126,9 +127,11 @@ export default function ResumeAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/80 px-4 py-12 sm:px-6 lg:px-8 text-slate-800 antialiased">
-      <div className="mx-auto max-w-6xl">
-        
+    <div className="min-h-screen bg-slate-50/80 text-slate-800 antialiased flex">
+      <Sidebar />
+      <div className="lg:ml-[280px] flex-1 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          
         {/* Header Section */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/70 px-4 py-1.5 text-xs font-bold text-blue-800 ring-1 ring-inset ring-blue-700/10 mb-4 shadow-xs">
@@ -378,11 +381,11 @@ export default function ResumeAnalyzer() {
                 </div>
               )}
 
-            </div>
-          </div>
-
-        </div>
-      </div>
+            </div>{/* end results panel */}
+          </div>{/* end col-span-7 */}
+        </div>{/* end grid */}
+        </div>{/* end max-w-6xl */}
+      </div>{/* end lg:ml-[280px] */}
     </div>
   );
 }

@@ -42,6 +42,17 @@ const commonMistakeSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// NEW: one multiple-choice quiz question
+const quizQuestionSchema = new mongoose.Schema(
+  {
+    question: { type: String, required: true },
+    options: [{ type: String, required: true }],
+    correctAnswer: { type: String, required: true },
+    explanation: { type: String },
+  },
+  { _id: false }
+);
+
 const theorySchema = new mongoose.Schema(
   {
     overview: { type: String, required: true },
@@ -56,6 +67,11 @@ const theorySchema = new mongoose.Schema(
     summary: { type: String, required: true },
     codeLanguage: { type: String, default: "javascript" },
     code: { type: String }, // For backwards compatibility
+
+    // NEW fields for richer / interactive learning content
+    realWorldApplications: [{ type: String }],
+    keyTakeaways: [{ type: String }],
+    quiz: [quizQuestionSchema],
   },
   { _id: false }
 );

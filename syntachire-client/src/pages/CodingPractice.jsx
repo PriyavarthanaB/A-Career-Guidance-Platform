@@ -14,8 +14,38 @@ import {
   Sparkles,
   Loader2,
   AlertTriangle,
-  RefreshCw
+  RefreshCw,
+  Zap,
+  ChevronRight,
+  Brain,
+  ArrowRight,
+  BookMarked,
+  Code2
 } from "lucide-react";
+
+/* ─── Role → Priority Topic Map ───────────────────────────────────────────── */
+const ROLE_MODULE_MAP = {
+  "Full Stack Developer":  ["Arrays", "Strings", "Hashing", "Trees & BST", "Dynamic Programming", "Graphs"],
+  "Frontend Developer":    ["Arrays", "Strings", "Dynamic Programming", "Programming Basics & Complexity"],
+  "Backend Developer":     ["Hashing", "Trees & BST", "Graphs", "Dynamic Programming", "Linked Lists"],
+  "Data Analyst":          ["Programming Basics & Complexity", "Arrays", "Hashing", "Dynamic Programming"],
+  "Data Scientist":        ["Dynamic Programming", "Graphs", "Trees & BST", "Arrays", "Programming Basics & Complexity"],
+  "Product Manager":       ["Programming Basics & Complexity", "Arrays", "Strings"],
+  "UI/UX Designer":        ["Programming Basics & Complexity", "Arrays", "Strings"],
+  "DevOps Engineer":       ["Graphs", "Trees & BST", "Hashing", "Dynamic Programming", "Arrays"],
+};
+
+const ROLE_COLORS = {
+  "Full Stack Developer":  { from: "from-violet-600", to: "to-indigo-600", badge: "bg-violet-100 text-violet-700 border-violet-200" },
+  "Frontend Developer":    { from: "from-pink-500",   to: "to-rose-500",   badge: "bg-pink-100 text-pink-700 border-pink-200" },
+  "Backend Developer":     { from: "from-blue-600",   to: "to-cyan-600",   badge: "bg-blue-100 text-blue-700 border-blue-200" },
+  "Data Analyst":          { from: "from-amber-500",  to: "to-orange-500", badge: "bg-amber-100 text-amber-700 border-amber-200" },
+  "Data Scientist":        { from: "from-emerald-600",to: "to-teal-600",   badge: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  "Product Manager":       { from: "from-slate-600",  to: "to-gray-700",   badge: "bg-slate-100 text-slate-700 border-slate-200" },
+  "UI/UX Designer":        { from: "from-fuchsia-600",to: "to-purple-600", badge: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200" },
+  "DevOps Engineer":       { from: "from-orange-600", to: "to-red-600",    badge: "bg-orange-100 text-orange-700 border-orange-200" },
+};
+
 
 export default function CodingPractice() {
   const navigate = useNavigate();
@@ -25,11 +55,25 @@ export default function CodingPractice() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Role from localStorage (set during signup)
+  const [userRole, setUserRole] = useState("Full Stack Developer");
+
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
   const [selectedTopic, setSelectedTopic] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
+
+  // Load role from local storage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed?.targetRole) setUserRole(parsed.targetRole);
+      }
+    } catch (_) {}
+  }, []);
   
 
 
@@ -51,6 +95,22 @@ export default function CodingPractice() {
   useEffect(() => {
     loadModules();
   }, []);
+
+  /* ── Compute recommended modules for this role ── */
+  const recommendedModules = useMemo(() => {
+    const priorityTopics = ROLE_MODULE_MAP[userRole] || [];
+    if (!priorityTopics.length || !modules.length) return [];
+    // Sort by priority index in role map
+    const sorted = [...modules].sort((a, b) => {
+      const ai = priorityTopics.indexOf(a.topic);
+      const bi = priorityTopics.indexOf(b.topic);
+      const aRank = ai === -1 ? 999 : ai;
+      const bRank = bi === -1 ? 999 : bi;
+      return aRank - bRank;
+    });
+    // Return top 4 from priority topics
+    return sorted.filter((m) => priorityTopics.includes(m.topic)).slice(0, 4);
+  }, [modules, userRole]);
 
   // Statistics Data (Calculated dynamically from loaded modules)
   const stats = useMemo(() => {
@@ -168,6 +228,7 @@ export default function CodingPractice() {
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+
                   {stat.title}
                 </span>
                 {stat.icon}
@@ -179,6 +240,117 @@ export default function CodingPractice() {
             </div>
           ))}
         </section>
+
+        {/* ── Recommended for You ── */}
+        {!loading && !error && recommendedModules.length > 0 && (() => {
+          const roleColor = ROLE_COLORS[userRole] || ROLE_COLORS["Full Stack Developer"];
+          return (
+            <section className="space-y-4">
+              {/* Banner Header */}
+              <div className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${roleColor.from} ${roleColor.to} p-6 md:p-8 shadow-xl`}>
+                {/* Decorative background circles */}
+                <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-8 -left-6 w-36 h-36 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+                <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full border border-white/20">
+                      <Zap className="h-3.5 w-3.5 text-white" />
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">Recommended for You</span>
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-extrabold text-white leading-snug">
+                      Your personalised learning path
+                    </h3>
+                    <p className="text-sm text-white/80 font-normal max-w-md">
+                      Based on your target role as a{" "}
+                      <span className="font-black text-white">{userRole}</span>, we've curated the most critical modules for you to master first.
+                    </p>
+                  </div>
+                  <span className={`shrink-0 self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 bg-white/20 border border-white/30 backdrop-blur-sm rounded-full text-sm font-bold text-white`}>
+                    <Brain className="h-4 w-4" />
+                    {userRole}
+                  </span>
+                </div>
+              </div>
+
+              {/* Recommended Module Cards — horizontal grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                {recommendedModules.map((mod, idx) => {
+                  const diffColors = {
+                    Easy:   "bg-emerald-50 text-emerald-700 border-emerald-200",
+                    Medium: "bg-amber-50 text-amber-700 border-amber-200",
+                    Hard:   "bg-rose-50 text-rose-700 border-rose-200",
+                  };
+                  const progressColor = mod.progress === 100
+                    ? "bg-emerald-500"
+                    : mod.progress > 0
+                    ? "bg-blue-500"
+                    : "bg-slate-200";
+
+                  return (
+                    <div
+                      key={mod._id}
+                      className="group relative bg-white border border-slate-100 rounded-3xl p-5 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 overflow-hidden"
+                    >
+                      {/* Priority badge */}
+                      <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center shadow-md">
+                        <span className="text-[9px] font-black text-white">#{idx + 1}</span>
+                      </div>
+
+                      {/* Topic + difficulty row */}
+                      <div className="flex items-center gap-2 flex-wrap pr-8">
+                        <span className={`px-2.5 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-wider border ${diffColors[mod.difficulty] || diffColors.Medium}`}>
+                          {mod.difficulty}
+                        </span>
+                        <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                          {mod.topic}
+                        </span>
+                      </div>
+
+                      {/* Module name + desc */}
+                      <div className="space-y-1.5 flex-1">
+                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{mod.number}</p>
+                        <h4 className="font-extrabold text-[#0b1c30] text-sm leading-snug line-clamp-2">{mod.name}</h4>
+                        <p className="text-xs text-slate-500 font-normal leading-relaxed line-clamp-2">{mod.description}</p>
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[10px] font-bold text-slate-400">
+                          <span>Progress</span>
+                          <span>{mod.progress || 0}%</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-700 ${progressColor}`}
+                            style={{ width: `${mod.progress || 0}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-1 border-t border-slate-50">
+                        <button
+                          onClick={() => navigate(`/module/${mod._id}/theory`)}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#eff4ff] hover:bg-[#004ac6] text-[#004ac6] hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer group/btn"
+                        >
+                          <BookMarked className="h-3.5 w-3.5" />
+                          Theory
+                        </button>
+                        <button
+                          onClick={() => navigate(`/module/${mod._id}/practice`)}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#004ac6] hover:bg-[#2563eb] text-white text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer"
+                        >
+                          <Code2 className="h-3.5 w-3.5" />
+                          Practice
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })()}
 
         {/* Search Bar & Filters Section */}
         <section className="bg-white p-6 rounded-3xl border border-[#c3c6d7]/30 shadow-xs space-y-4">

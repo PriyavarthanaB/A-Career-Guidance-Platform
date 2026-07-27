@@ -94,7 +94,7 @@ const Signup = () => {
       if (token) localStorage.setItem("token", token);
       if (user) localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/analyzer");
+      navigate("/dashboard");
     } catch (err) {
       setError(
         err.response?.data?.message || 
