@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import useUserStats from '../hooks/useUserStats';
 import {
   FileText,
   Code2,
   Mic,
-  BookOpen,
   ArrowRight,
   Sparkles,
-  Trophy,
   Target,
   Flame,
   TrendingUp,
   Zap,
   Star,
   ChevronRight,
-  Brain
+  Brain,
+  Loader2,
 } from 'lucide-react';
 
 const QUICK_ACTIONS = [
@@ -52,7 +52,7 @@ const QUICK_ACTIONS = [
     icon: Mic,
     route: '/mock-interview',
     gradient: 'from-amber-500 to-orange-500',
-    badge: 'Coming Soon',
+    badge: 'Live AI',
     badgeColor: 'bg-amber-100 text-amber-700',
   },
 ];
@@ -60,6 +60,7 @@ const QUICK_ACTIONS = [
 export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState({ name: 'User', targetRole: 'Full Stack Developer' });
+  const { stats, loading: statsLoading } = useUserStats();
 
   useEffect(() => {
     try {
@@ -74,6 +75,16 @@ export default function Dashboard() {
     } catch (_) {}
   }, []);
 
+  // Use live API stats or sensible zero defaults while loading
+  const streakDays         = stats?.streakDays         ?? 0;
+  const longestStreak      = stats?.longestStreak       ?? 0;
+  const xp                 = stats?.xp                 ?? 0;
+  const todayXp            = stats?.todayXp             ?? 0;
+  const solvedProblems     = stats?.solvedProblems      ?? 0;
+  const totalProblems      = stats?.totalProblems       ?? 120;
+  const completionPct      = stats?.completionPercentage ?? 0;
+  const xpLevel            = totalProblems > 0 ? Math.min(100, Math.round((xp / (totalProblems * 50 + 10 * 100)) * 100)) : 0;
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -81,6 +92,9 @@ export default function Dashboard() {
   };
 
   const firstName = user.name.split(' ')[0];
+
+  // Streak bar: show up to 14 days, filled = streakDays
+  const streakBarTotal = Math.max(14, longestStreak);
 
   return (
     <div className="bg-[#f8f9ff] text-[#0b1c30] min-h-screen font-sans flex">
@@ -127,7 +141,9 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center gap-2 bg-white/10 border border-white/15 px-4 py-2 rounded-xl">
                 <Flame className="h-4 w-4 text-orange-300" />
-                <span className="text-xs font-semibold text-white/80">7-day streak active</span>
+                <span className="text-xs font-semibold text-white/80">
+                  {statsLoading ? '...' : `${streakDays}-day streak active`}
+                </span>
               </div>
             </div>
           </div>
@@ -149,29 +165,20 @@ export default function Dashboard() {
                   onClick={() => navigate(action.route)}
                   className="group relative bg-white border border-slate-100 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col gap-5"
                 >
-                  {/* Icon */}
-                  <div className={`w-13 h-13 rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center shadow-lg`}>
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center shadow-lg`}>
                     <Icon className="h-6 w-6 text-white" />
                   </div>
-
-                  {/* Badge */}
                   <span className={`absolute top-5 right-5 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${action.badgeColor}`}>
                     {action.badge}
                   </span>
-
-                  {/* Content */}
                   <div className="flex-1 space-y-2">
                     <h3 className="font-extrabold text-[#0b1c30] text-base leading-snug">{action.title}</h3>
                     <p className="text-xs text-slate-500 font-normal leading-relaxed">{action.desc}</p>
                   </div>
-
-                  {/* Footer CTA */}
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#004ac6] group-hover:gap-2.5 transition-all">
                     <span>Open</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
-
-                  {/* Hover gradient overlay */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${action.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300 pointer-events-none rounded-3xl`} />
                 </div>
               );
@@ -179,24 +186,36 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Progress & Stats */}
+        {/* Progress & Stats — live from /api/user/stats */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
           {/* Streak Card */}
           <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">Current Streak</h3>
               <Flame className="h-5 w-5 text-amber-500 fill-current animate-pulse" />
             </div>
-            <p className="text-4xl font-black text-amber-500">7 <span className="text-sm font-bold text-slate-400">days</span></p>
-            <p className="text-xs text-slate-400 font-medium">Personal Best: 14 days 🏆</p>
-            <div className="flex gap-1">
-              {[1,2,3,4,5,6,7].map((d) => (
-                <div key={d} className="flex-1 h-1.5 bg-amber-400 rounded-full" />
-              ))}
-              {[8,9,10,11,12,13,14].map((d) => (
-                <div key={d} className="flex-1 h-1.5 bg-slate-100 rounded-full" />
-              ))}
-            </div>
+            {statsLoading ? (
+              <div className="flex items-center gap-2 text-slate-400">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm font-semibold">Loading…</span>
+              </div>
+            ) : (
+              <>
+                <p className="text-4xl font-black text-amber-500">
+                  {streakDays} <span className="text-sm font-bold text-slate-400">days</span>
+                </p>
+                <p className="text-xs text-slate-400 font-medium">Personal Best: {longestStreak} days 🏆</p>
+                <div className="flex gap-1">
+                  {Array.from({ length: streakBarTotal }, (_, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 h-1.5 rounded-full ${i < streakDays ? 'bg-amber-400' : 'bg-slate-100'}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* XP Card */}
@@ -205,11 +224,25 @@ export default function Dashboard() {
               <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">XP Earned</h3>
               <Star className="h-5 w-5 text-yellow-500 fill-current" />
             </div>
-            <p className="text-4xl font-black text-yellow-500">1,450 <span className="text-sm font-bold text-slate-400">XP</span></p>
-            <p className="text-xs text-slate-400 font-medium">+150 XP earned today</p>
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full" style={{width: '65%'}} />
-            </div>
+            {statsLoading ? (
+              <div className="flex items-center gap-2 text-slate-400">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm font-semibold">Loading…</span>
+              </div>
+            ) : (
+              <>
+                <p className="text-4xl font-black text-yellow-500">
+                  {xp.toLocaleString()} <span className="text-sm font-bold text-slate-400">XP</span>
+                </p>
+                <p className="text-xs text-slate-400 font-medium">+{todayXp} XP earned today</p>
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full transition-all duration-700"
+                    style={{ width: `${xpLevel}%` }}
+                  />
+                </div>
+              </>
+            )}
           </div>
 
           {/* Problems Solved */}
@@ -218,11 +251,25 @@ export default function Dashboard() {
               <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">Problems Solved</h3>
               <TrendingUp className="h-5 w-5 text-emerald-500" />
             </div>
-            <p className="text-4xl font-black text-emerald-500">42 <span className="text-sm font-bold text-slate-400">/ 120</span></p>
-            <p className="text-xs text-slate-400 font-medium">35% overall completion</p>
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" style={{width: '35%'}} />
-            </div>
+            {statsLoading ? (
+              <div className="flex items-center gap-2 text-slate-400">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm font-semibold">Loading…</span>
+              </div>
+            ) : (
+              <>
+                <p className="text-4xl font-black text-emerald-500">
+                  {solvedProblems} <span className="text-sm font-bold text-slate-400">/ {totalProblems}</span>
+                </p>
+                <p className="text-xs text-slate-400 font-medium">{completionPct}% overall completion</p>
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-700"
+                    style={{ width: `${completionPct}%` }}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </section>
 

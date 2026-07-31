@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import ModuleCard from "../components/ModuleCard";
 import { getModules } from "../api/modules";
+import useUserStats from "../hooks/useUserStats";
 import { 
   Flame, 
   Star, 
@@ -58,6 +59,9 @@ export default function CodingPractice() {
   // Role from localStorage (set during signup)
   const [userRole, setUserRole] = useState("Full Stack Developer");
 
+  // Live user stats from API
+  const { stats: userStats, loading: statsLoading } = useUserStats();
+
   // State for search and filters
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
@@ -112,33 +116,66 @@ export default function CodingPractice() {
     return sorted.filter((m) => priorityTopics.includes(m.topic)).slice(0, 4);
   }, [modules, userRole]);
 
-  // Statistics Data (Calculated dynamically from loaded modules)
+  // Statistics Data (live from API where available, module-computed otherwise)
   const stats = useMemo(() => {
     const totalCount = modules.length || 11;
     const solvedCount = modules.filter(m => m.progress === 100).length;
     const completionPercentage = Math.round((solvedCount / totalCount) * 100);
 
+    // Use API stats for streak, XP, and global solved; fall back to module-computed values
+    const streakDisplay = statsLoading
+      ? '…'
+      : userStats?.streakDays != null
+      ? `${userStats.streakDays} Days`
+      : '0 Days';
+
+    const streakSub = statsLoading
+      ? 'Calculating…'
+      : userStats?.longestStreak != null
+      ? `Personal Best: ${userStats.longestStreak}d`
+      : 'Keep going!';
+
+    const xpDisplay = statsLoading
+      ? '…'
+      : userStats?.xp != null
+      ? `${userStats.xp.toLocaleString()} XP`
+      : '0 XP';
+
+    const xpSub = statsLoading
+      ? 'Calculating…'
+      : userStats?.todayXp != null
+      ? `+${userStats.todayXp} XP today`
+      : '+0 XP today';
+
+    // Use API solved count if present, else fall back to module-computed
+    const apiSolved = userStats?.solvedProblems ?? solvedCount;
+    const apiTotal  = userStats?.totalProblems  ?? totalCount;
+    const apiPct    = userStats?.completionPercentage ?? completionPercentage;
+
+    const solvedDisplay = statsLoading ? '…' : `${apiSolved} / ${apiTotal}`;
+    const solvedSub     = statsLoading ? 'Calculating…' : `${apiPct}% Complete`;
+
     return [
       {
         title: "Current Streak",
-        value: "7 Days",
+        value: streakDisplay,
         icon: <Flame className="h-6 w-6 text-amber-500 fill-current animate-pulse" />,
         bg: "bg-amber-50 border-amber-200 text-amber-900",
-        sub: "Personal Best: 14d"
+        sub: streakSub
       },
       {
         title: "XP Earned",
-        value: "1,450 XP",
+        value: xpDisplay,
         icon: <Star className="h-6 w-6 text-yellow-500 fill-current" />,
         bg: "bg-yellow-50 border-yellow-200 text-yellow-900",
-        sub: "+150 XP today"
+        sub: xpSub
       },
       {
         title: "Problems Solved",
-        value: "42 / 120",
+        value: solvedDisplay,
         icon: <CheckCircle2 className="h-6 w-6 text-emerald-500" />,
         bg: "bg-emerald-50 border-emerald-200 text-emerald-900",
-        sub: "35% Complete"
+        sub: solvedSub
       },
       {
         title: "Modules Completed",
@@ -149,13 +186,13 @@ export default function CodingPractice() {
       },
       {
         title: "Daily Goal",
-        value: "2 / 3 Solved",
+        value: statsLoading ? '…' : `${Math.min(apiSolved % 3, 3)} / 3 Solved`,
         icon: <Target className="h-6 w-6 text-rose-500" />,
         bg: "bg-rose-50 border-rose-200 text-rose-900",
-        sub: "1 problem left!"
+        sub: statsLoading ? 'Calculating…' : (apiSolved % 3 === 0 ? 'Goal reached! 🎉' : `${3 - (apiSolved % 3)} problem${3 - (apiSolved % 3) !== 1 ? 's' : ''} left!`)
       }
     ];
-  }, [modules]);
+  }, [modules, userStats, statsLoading]);
 
   // Filtering Logic
   const filteredModules = useMemo(() => {

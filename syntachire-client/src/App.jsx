@@ -11,8 +11,9 @@ import CodingHub from './pages/CodingHub';
 import TheoryPage from './pages/TheoryPage';
 import PracticePage from './pages/PracticePage';
 import CodingWorkspace from './pages/CodingWorkspace';
+import MockInterview from './pages/MockInterview';
+import InterviewSession from './pages/InterviewSession';
 
-  
 // Protected Route Guard
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -33,6 +34,8 @@ export default function App() {
         <Route path="/module/:id/practice" element={<PracticePage />} />
         <Route path="/problem/:id" element={<CodingWorkspace />} />
         <Route path="/coding-hub" element={<CodingHub />} />
+        <Route path="/mock-interview" element={<MockInterview />} />
+        <Route path="/mock-interview/session" element={<InterviewSession />} />
         <Route 
           path="/dashboard" 
           element={

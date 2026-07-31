@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
+
+  const closeDrawer = () => setDrawerOpen(false);
 
   const menuItems = [
     {
@@ -43,11 +47,12 @@ export default function Sidebar() {
     },
   ];
 
-  return (
-    <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-screen p-4 z-40 bg-[#eff4ff] w-[280px] border-r border-[#c3c6d7]/50">
+  /* ─── Reusable sidebar content ─────────────────────────────── */
+  const SidebarContent = ({ onNavClick }) => (
+    <>
       {/* Logo Section */}
       <div className="flex items-center gap-3 px-4 py-6">
-        <div className="w-10 h-10 bg-[#004ac6] rounded-xl flex items-center justify-center shadow-md">
+        <div className="w-10 h-10 bg-[#004ac6] rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
           <span
             className="material-symbols-outlined text-white"
             style={{ fontVariationSettings: "'FILL' 1" }}
@@ -69,6 +74,7 @@ export default function Sidebar() {
             <Link
               key={item.path}
               to={item.path}
+              onClick={onNavClick}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm ${
                 isActive
                   ? "bg-[#2563eb] text-[#eeefff] shadow-md translate-x-1"
@@ -91,7 +97,7 @@ export default function Sidebar() {
       <div className="p-4 bg-[#004ac6]/5 rounded-2xl mb-6">
         <p className="text-sm text-[#004ac6] font-bold mb-2">Upgrade to Pro</p>
         <p className="text-[#434655] text-[12px] mb-3">
-          Unlock System Design mocks & real-time debug AI.
+          Unlock System Design mocks &amp; real-time debug AI.
         </p>
         <button className="w-full py-2 bg-[#004ac6] text-white rounded-lg text-sm font-medium shadow-lg shadow-[#004ac6]/20 hover:scale-[1.02] transition-transform cursor-pointer">
           Go Premium
@@ -102,6 +108,7 @@ export default function Sidebar() {
       <div className="pt-4 border-t border-[#c3c6d7]/30 space-y-1">
         <Link
           to="/help"
+          onClick={onNavClick}
           className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all text-xs font-medium ${
             location.pathname === "/help"
               ? "bg-[#d3e4fe] text-[#0b1c30]"
@@ -113,13 +120,61 @@ export default function Sidebar() {
         </Link>
 
         <button
-          onClick={handleLogout}
+          onClick={() => {
+            if (onNavClick) onNavClick();
+            handleLogout();
+          }}
           className="w-full flex items-center gap-3 text-[#434655] px-4 py-2 hover:bg-[#d3e4fe]/50 rounded-xl transition-all text-xs font-medium text-left cursor-pointer"
         >
           <span className="material-symbols-outlined text-[18px]">logout</span>
           Logout
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* ── DESKTOP sidebar (lg+): always visible, fixed left ── */}
+      <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-screen p-4 z-40 bg-[#eff4ff] w-[280px] border-r border-[#c3c6d7]/50">
+        <SidebarContent onNavClick={null} />
+      </aside>
+
+      {/* ── MOBILE / TABLET: hamburger button ── */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open navigation menu"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/90 backdrop-blur rounded-xl shadow-md flex items-center justify-center"
+      >
+        <Menu size={22} className="text-[#004ac6]" />
+      </button>
+
+      {/* ── MOBILE / TABLET: overlay ── */}
+      {drawerOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+          onClick={closeDrawer}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ── MOBILE / TABLET: slide-in drawer panel ── */}
+      <div
+        className={`lg:hidden fixed left-0 top-0 h-screen w-[280px] bg-[#eff4ff] z-50 flex flex-col p-4 border-r border-[#c3c6d7]/50 transition-transform duration-300 ease-in-out ${
+          drawerOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Close button inside the drawer */}
+        <button
+          onClick={closeDrawer}
+          aria-label="Close navigation menu"
+          className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-[#d3e4fe]/60 transition-colors"
+        >
+          <X size={20} className="text-[#434655]" />
+        </button>
+
+        <SidebarContent onNavClick={closeDrawer} />
+      </div>
+    </>
   );
 }

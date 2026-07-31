@@ -20,7 +20,8 @@ import {
   AlertTriangle,
   FileCode,
   Activity,
-  Code
+  Code,
+  RotateCcw
 } from "lucide-react";
 // Judge0 Language IDs
 const LANGUAGE_MAPPING = {
