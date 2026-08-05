@@ -224,9 +224,9 @@ export default function CodingPractice() {
     });
   }, [modules, searchQuery, selectedDifficulty, selectedTopic, selectedStatus]);
 
-  // Navigate to coding practice list page
+  // Navigate to Coding Hub problem list for this module
   const navigateToPractice = (module) => {
-    navigate(`/module/${module._id}/practice`);
+    navigate(`/coding-hub?module=${module._id}`);
   };
 
   // Open theory page
@@ -374,7 +374,7 @@ export default function CodingPractice() {
                           Theory
                         </button>
                         <button
-                          onClick={() => navigate(`/module/${mod._id}/practice`)}
+                          onClick={() => navigate(`/coding-hub?module=${mod._id}`)}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#004ac6] hover:bg-[#2563eb] text-white text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer"
                         >
                           <Code2 className="h-3.5 w-3.5" />
