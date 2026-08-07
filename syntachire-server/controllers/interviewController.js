@@ -4,99 +4,158 @@ const { evaluateAnswerWithGemini } = require('../services/geminiService');
 // Seed Question Generator tailored by type & role
 const generateQuestionsForRole = (type, difficulty, targetRole, count = 5) => {
   const roleStr = targetRole || 'Software Engineer';
+  const normalizedRole = (roleStr || '').toLowerCase();
+
+  const getRoleContext = () => {
+    if (normalizedRole.includes('frontend') || normalizedRole.includes('react') || normalizedRole.includes('ui')) {
+      return {
+        label: 'Frontend',
+        example: 'frontend web application',
+        focus: 'component architecture, user experience, performance, and browser APIs',
+      };
+    }
+
+    if (normalizedRole.includes('backend') || normalizedRole.includes('full stack') || normalizedRole.includes('software engineer')) {
+      return {
+        label: 'Backend',
+        example: 'scalable backend service',
+        focus: 'API design, databases, reliability, and distributed systems',
+      };
+    }
+
+    if (normalizedRole.includes('data scientist') || normalizedRole.includes('machine learning') || normalizedRole.includes('ai')) {
+      return {
+        label: 'Data/AI',
+        example: 'machine learning pipeline',
+        focus: 'data pipelines, experimentation, model evaluation, and deployment',
+      };
+    }
+
+    if (normalizedRole.includes('devops') || normalizedRole.includes('cloud') || normalizedRole.includes('sre')) {
+      return {
+        label: 'DevOps',
+        example: 'cloud-native platform',
+        focus: 'CI/CD, monitoring, incident response, and infrastructure automation',
+      };
+    }
+
+    if (normalizedRole.includes('product') || normalizedRole.includes('manager')) {
+      return {
+        label: 'Product',
+        example: 'product delivery system',
+        focus: 'prioritization, stakeholder management, and product strategy',
+      };
+    }
+
+    return {
+      label: 'General Engineering',
+      example: 'modern software product',
+      focus: 'trade-offs, collaboration, and pragmatic delivery',
+    };
+  };
+
+  const roleContext = getRoleContext();
+  const difficultyLabel = (difficulty || 'Medium').toLowerCase();
 
   const QUESTION_BANK = {
     hr: [
       {
-        question: `Tell me about a time you faced a major technical disagreement with a team member while working on ${roleStr} projects and how you resolved it.`,
+        question: `Tell me about a time you faced a significant disagreement with a teammate while working on a ${roleStr} project and how you resolved it.`,
         category: 'Conflict Resolution & Teamwork',
-        hint: 'Use the STAR method: Situation, Task, Action, Result. Focus on empathy and objective resolution.',
+        hint: 'Use the STAR method and focus on empathy, ownership, and a constructive outcome.',
       },
       {
-        question: `Why do you want to work as a ${roleStr}, and what drives your professional growth?`,
+        question: `Why do you want to work as a ${roleStr}, and how does this role align with your long-term career growth?`,
         category: 'Motivation & Career Goals',
-        hint: 'Highlight your alignment with scalable product building and continuous technical learning.',
+        hint: 'Connect your growth story to product impact, learning, and the role’s responsibilities.',
       },
       {
-        question: `Describe a scenario where project requirements changed unexpectedly near deadline. How did you adapt?`,
-        category: 'Adaptability & Pressure Management',
-        hint: 'Focus on prioritization, stakeholder communication, and maintaining code standards.',
+        question: `Describe a situation where priorities changed suddenly near a deadline. How did you adapt while keeping quality high?`,
+        category: 'Adaptability & Delivery',
+        hint: 'Show communication, prioritization, and calm decision-making under pressure.',
       },
       {
-        question: `How do you handle constructive feedback on your code reviews or architecture proposals?`,
-        category: 'Feedback & Growth Mindset',
-        hint: 'Emphasize openness to learning, collaborative design, and code quality improvement.',
+        question: `How do you receive feedback on your work when it challenges your approach to a ${roleStr} problem?`,
+        category: 'Feedback & Growth',
+        hint: 'Mention humility, curiosity, and how you improve after feedback.',
       },
       {
-        question: `Give an example of a project where you took leadership initiative without explicit authority.`,
+        question: `Give an example of when you took initiative without formal authority to improve a delivery or experience.`,
         category: 'Ownership & Initiative',
-        hint: 'Discuss problem identification, driving consensus, and delivering measurable impact.',
+        hint: 'Describe the problem, the action you took, and the measurable result.',
       },
     ],
     technical: [
       {
-        question: `How would you design a scalable architecture for a ${roleStr} application serving 100,000 requests per minute?`,
+        question: `How would you design a scalable ${roleContext.example} that handles high traffic and needs strong reliability for a ${roleStr} role?`,
         category: 'System Design & Scalability',
-        hint: 'Discuss load balancing, caching layers (Redis), database sharding, and stateless server clusters.',
+        hint: "Discuss architecture decisions, trade-offs, and how you'd scale under load.",
       },
       {
-        question: `Explain how state management and asynchronous data fetching are optimized in a production ${roleStr} setup.`,
-        category: 'Frontend & API Integration',
-        hint: 'Mention optimistic updates, query caching, debouncing, and memory leak prevention.',
+        question: `Explain how you would optimize ${roleContext.focus} in a production ${roleStr} setup.`,
+        category: 'Practical Engineering',
+        hint: 'Include performance, debugging, testing, and maintainability considerations.',
       },
       {
-        question: `Compare SQL vs NoSQL database models for a ${roleStr} backend. When would you choose PostgreSQL vs MongoDB?`,
-        category: 'Database Architecture',
-        hint: 'Analyze ACID guarantees, schema flexibility, horizontal scaling, and index optimization.',
+        question: `Compare the trade-offs you would consider when choosing between different storage, API, or deployment patterns for a ${roleStr} system.`,
+        category: 'Architecture Trade-offs',
+        hint: 'Mention latency, consistency, cost, complexity, and operational concerns.',
       },
       {
-        question: `Walk me through how you optimize web application performance when initial bundle size and page render latency are high.`,
-        category: 'Performance Engineering',
-        hint: 'Touch on code splitting, tree shaking, lazy loading, CDN distribution, and asset compression.',
+        question: `How would you approach debugging a production issue in a ${roleStr} system when the symptoms are unclear?`,
+        category: 'Debugging & Resilience',
+        hint: 'Mention observability, logs, metrics, and rollback or mitigation strategies.',
       },
       {
-        question: `Explain how microservice communication or event-driven architecture handles failure recovery and message delivery guarantees.`,
-        category: 'Backend & Resilience',
-        hint: 'Discuss message queues (RabbitMQ/Kafka), idempotent retries, dead letter queues, and circuit breakers.',
+        question: `What would you improve first in a legacy ${roleStr} codebase that is slowing down delivery?`,
+        category: 'Refactoring & Maintainability',
+        hint: 'Discuss prioritization, risk reduction, and iterative improvements.',
       },
     ],
     mixed: [
       {
-        question: `Walk me through an end-to-end ${roleStr} system you designed or built. What were the toughest trade-offs?`,
-        category: 'System Architecture & Trade-offs',
-        hint: 'Outline data flow, component decoupling, security controls, and trade-off rationales.',
+        question: `Walk me through an end-to-end ${roleContext.example} you would build for a ${roleStr} role and explain your key trade-offs.`,
+        category: 'Architecture & Trade-offs',
+        hint: 'Cover requirements, data flow, technical choices, and delivery concerns.',
       },
       {
-        question: `Describe how you balance writing clean, tested code with delivering features under aggressive business deadlines.`,
+        question: `How do you balance writing clean, tested code with meeting aggressive deadlines in a ${roleStr} environment?`,
         category: 'Engineering Pragmatism',
-        hint: 'Discuss test-driven approaches, modular refactoring, and managing technical debt.',
+        hint: 'Show how you balance quality, speed, and business priorities.',
       },
       {
-        question: `Explain how you debug complex asynchronous edge cases or memory leaks in a high-traffic ${roleStr} environment.`,
-        category: 'Debugging & Profiling',
-        hint: 'Detail browser DevTools, APM tools, log aggregation (ELK), and heap snapshot profiling.',
+        question: `How would you ensure the solution is reliable, secure, and maintainable for a ${roleStr} role?`,
+        category: 'Reliability & Security',
+        hint: 'Mention testing, monitoring, authentication, permissions, and fallback strategies.',
       },
       {
-        question: `How do you ensure security best practices (JWT auth, CORS, input sanitization, rate limiting) in a ${roleStr} API?`,
-        category: 'Application Security',
-        hint: 'Cover OWASP Top 10 mitigation, token expiration, HTTPS headers, and SQL/NoSQL injection prevention.',
+        question: `Tell me about a technical challenge you solved and how you measured whether the solution actually worked.`,
+        category: 'Outcome & Measurement',
+        hint: 'Reference metrics, feedback loops, or user impact where possible.',
       },
       {
-        question: `Tell me about a technical failure or outage you experienced. How did you troubleshoot, post-mortem, and prevent recurrence?`,
-        category: 'Incident Response & Ownership',
-        hint: 'Focus on root-cause analysis, blameless post-mortems, and automated regression tests.',
+        question: `If you were joining a new team in a ${roleStr} role tomorrow, how would you ramp up quickly and add value?`,
+        category: 'Onboarding & Ownership',
+        hint: 'Discuss learning, communication, context gathering, and early wins.',
       },
     ],
   };
 
   const pool = QUESTION_BANK[type] || QUESTION_BANK.mixed;
   const result = [];
-  for (let i = 0; i < count; i++) {
+  const safeCount = Math.max(1, Number(count) || 5);
+  const difficultyHint = difficultyLabel === 'hard'
+    ? 'Focus on depth, trade-offs, and edge cases.'
+    : difficultyLabel === 'easy'
+      ? 'Keep your answer clear and practical.'
+      : 'Provide a balanced explanation with concrete examples.';
+
+  for (let i = 0; i < safeCount; i++) {
     const qObj = pool[i % pool.length];
     result.push({
       question: qObj.question,
       category: qObj.category,
-      hint: qObj.hint,
+      hint: `${qObj.hint} ${difficultyHint}`,
       userAnswer: '',
       score: 0,
       strengths: '',

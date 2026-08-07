@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import API from "../api/axios";
 import Sidebar from "../components/Sidebar";
 import VoiceRecorder from "../components/VoiceRecorder";
+import Orb from "../components/Orb";
 import {
   ArrowLeft,
   Sparkles,
@@ -21,61 +22,69 @@ import {
   MessageSquare,
   ThumbsUp,
   Target,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
-// Mock question bank generated per role and category
-const MOCK_QUESTIONS = {
-  hr: [
-    {
-      q: "Tell me about a time you faced a major technical disagreement with a team member and how you resolved it.",
-      hint: "Use the STAR method: Situation, Task, Action, Result. Focus on empathy and objective resolution.",
-      category: "Conflict Resolution & Communication",
-    },
-    {
-      q: "Why do you want to join our engineering team, and what drives your professional growth?",
-      hint: "Highlight your alignment with scalable product building and continuous technical learning.",
-      category: "Motivation & Culture Fit",
-    },
-    {
-      q: "Describe a project where requirements changed unexpectedly near deadline. How did you adapt?",
-      hint: "Focus on prioritization, stakeholder communication, and keeping code quality intact under pressure.",
-      category: "Adaptability & Resilience",
-    },
-  ],
-  technical: [
-    {
-      q: "Explain how you would design a rate limiter for an API service handling 100,000 requests per minute.",
-      hint: "Discuss algorithms like Token Bucket, Leaky Bucket, or Fixed/Sliding Window Counter using Redis.",
-      category: "System Design & Scalability",
-    },
-    {
-      q: "What is the difference between SQL and NoSQL databases, and when would you choose Mongo vs PostgreSQL?",
-      hint: "Compare ACID compliance, schema flexibility, vertical vs horizontal scaling, and join capabilities.",
-      category: "Database Architecture",
-    },
-    {
-      q: "How does JavaScript Event Loop work under the hood? Contrast Microtasks and Macrotasks.",
-      hint: "Mention Call Stack, Web APIs, Task Queue, Microtask Queue (Promises), and event loop execution cycles.",
-      category: "Core CS & Language Mechanics",
-    },
-  ],
-  mixed: [
-    {
-      q: "Describe your architecture approach for a full-stack real-time chat application, including state management and WebSockets.",
-      hint: "Outline frontend state, backend Socket.io/WebSocket connections, message persistence, and delivery ACKs.",
-      category: "Full Stack System Design",
-    },
-    {
-      q: "Walk me through how you optimize web application performance when initial page load time is high.",
-      hint: "Touch on code splitting, lazy loading, image optimization, browser caching, and bundle analysis.",
-      category: "Performance Engineering",
-    },
-    {
-      q: "How do you handle technical debt while meeting tight product release timelines?",
-      hint: "Discuss refactoring schedules, automated testing coverage, and engineering-product communication.",
-      category: "Engineering Management & Trade-offs",
-    },
-  ],
+// Fallback questions if the backend does not return a session payload.
+const getFallbackQuestions = (type, targetRole, count = 3) => {
+  const roleStr = targetRole || 'Software Engineer';
+  const baseQuestions = {
+    hr: [
+      {
+        q: `Tell me about a time you faced a disagreement with a teammate while working on a ${roleStr} project and how you resolved it.`,
+        hint: 'Use the STAR method and focus on empathy, ownership, and a constructive outcome.',
+        category: 'Conflict Resolution & Communication',
+      },
+      {
+        q: `Why do you want to work as a ${roleStr}, and what drives your professional growth?`,
+        hint: 'Connect your growth story to product impact, learning, and the role’s responsibilities.',
+        category: 'Motivation & Culture Fit',
+      },
+      {
+        q: 'Describe a situation where priorities changed suddenly near a deadline. How did you adapt while keeping quality high?',
+        hint: 'Show communication, prioritization, and calm decision-making under pressure.',
+        category: 'Adaptability & Delivery',
+      },
+    ],
+    technical: [
+      {
+        q: `How would you design a scalable system for a ${roleStr} role that needs strong reliability under high traffic?`,
+        hint: 'Discuss architecture decisions, trade-offs, and how you would scale under load.',
+        category: 'System Design & Scalability',
+      },
+      {
+        q: `Explain how you would optimize performance or reliability in a production ${roleStr} setup.`,
+        hint: 'Include testing, metrics, debugging, and maintainability considerations.',
+        category: 'Practical Engineering',
+      },
+      {
+        q: `How would you approach debugging a production issue in a ${roleStr} system when the symptoms are unclear?`,
+        hint: 'Mention observability, logs, metrics, and mitigation strategies.',
+        category: 'Debugging & Resilience',
+      },
+    ],
+    mixed: [
+      {
+        q: `Walk me through an end-to-end solution you would build for a ${roleStr} role and explain your key trade-offs.`,
+        hint: 'Cover requirements, data flow, technical choices, and delivery concerns.',
+        category: 'Architecture & Trade-offs',
+      },
+      {
+        q: `How do you balance writing clean, tested code with meeting aggressive deadlines in a ${roleStr} environment?`,
+        hint: 'Show how you balance quality, speed, and business priorities.',
+        category: 'Engineering Pragmatism',
+      },
+      {
+        q: `How would you ensure the solution is reliable, secure, and maintainable for a ${roleStr} role?`,
+        hint: 'Mention testing, monitoring, authentication, permissions, and fallback strategies.',
+        category: 'Reliability & Security',
+      },
+    ],
+  };
+
+  const pool = baseQuestions[type] || baseQuestions.mixed;
+  return pool.slice(0, Math.max(1, Number(count) || 3)).map((item) => ({ ...item }));
 };
 
 export default function InterviewSession() {
@@ -91,7 +100,19 @@ export default function InterviewSession() {
     questionCount: 3,
   };
 
-  const questions = MOCK_QUESTIONS[config.type] || MOCK_QUESTIONS.mixed;
+  const sessionQuestions = Array.isArray(location.state?.questions) ? location.state.questions : [];
+  const questions = sessionQuestions.length
+    ? sessionQuestions.slice(0, Number(config.questionCount) || 5).map((q) => {
+        if (typeof q === 'string') {
+          return { q, hint: 'Answer with practical examples and trade-offs.', category: 'Interview Question' };
+        }
+        return {
+          q: q.question || q.q || '',
+          hint: q.hint || 'Answer with practical examples and trade-offs.',
+          category: q.category || 'Interview Question',
+        };
+      })
+    : getFallbackQuestions(config.type, config.targetRole, config.questionCount || 3);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -100,8 +121,40 @@ export default function InterviewSession() {
   const [currentFeedback, setCurrentFeedback] = useState(null);
   const [answersList, setAnswersList] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
 
   const currentQ = questions[currentIndex] || questions[0];
+
+  const speakCurrentQuestion = useCallback(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window) || !voiceEnabled || currentFeedback) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const message = `Question ${currentIndex + 1}. ${currentQ.q}. ${currentQ.hint || ""}`;
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = "en-US";
+    utterance.rate = 1.02;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.speak(utterance);
+  }, [currentFeedback, currentIndex, currentQ?.q, currentQ?.hint, voiceEnabled]);
+
+  useEffect(() => {
+    speakCurrentQuestion();
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [speakCurrentQuestion]);
 
   // Submit single answer for AI evaluation via Gemini API
   const handleSubmitAnswer = async () => {
@@ -218,6 +271,46 @@ export default function InterviewSession() {
                 </div>
 
                 <div className="space-y-3">
+                  <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-br from-[#f7faff] via-[#eef5ff] to-[#f8fbff] p-4 shadow-xs">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${isSpeaking ? "bg-rose-100 text-rose-600" : "bg-blue-50 text-[#004ac6]"}`}>
+                          {isSpeaking ? <Volume2 className="h-5 w-5 animate-pulse" /> : <Volume2 className="h-5 w-5" />}
+                        </div>
+                        <div>
+                          <p className="text-xs font-extrabold uppercase tracking-wider text-slate-500">AI Interviewer</p>
+                          <p className="text-sm font-semibold text-[#0b1c30]">{isSpeaking ? "Speaking the next prompt..." : "Voice guidance is ready"}</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setVoiceEnabled((prev) => !prev)}
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold border transition-all duration-200 ${voiceEnabled ? "bg-[#004ac6] text-white border-[#004ac6]" : "bg-white text-slate-600 border-slate-200"}`}
+                      >
+                        {voiceEnabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+                        {voiceEnabled ? "Voice On" : "Voice Off"}
+                      </button>
+                    </div>
+
+                    <div className="mt-4 flex flex-col sm:flex-row items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/70 p-4">
+                      <div className={`relative h-24 w-24 shrink-0 rounded-full border border-slate-200 bg-gradient-to-br from-[#0f172a] to-[#1d4ed8] p-2 shadow-inner transition-transform duration-300 ${isSpeaking ? "scale-105" : "scale-100"}`}>
+                        <Orb
+                          hue={isSpeaking ? 205 : 260}
+                          hoverIntensity={isSpeaking ? 0.35 : 0.22}
+                          rotateOnHover={false}
+                          backgroundColor={isSpeaking ? "#0f172a" : "#111827"}
+                        />
+                        <div className={`absolute bottom-3 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-white/90 shadow-lg ${isSpeaking ? "animate-ping" : ""}`} />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm font-extrabold text-[#0b1c30]">Live interviewer avatar</p>
+                        <p className="text-sm text-[#434655]">
+                          The assistant reads each question aloud and animates the avatar while speaking, making the practice feel more natural.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   <h2 className="text-xl md:text-2xl font-extrabold text-[#0b1c30] leading-snug">
                     "{currentQ.q}"
                   </h2>
@@ -423,7 +516,7 @@ export default function InterviewSession() {
           </div>
         ) : (
           /* Finished Interview Summary Scorecard */
-          <div className="bg-white/90 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-8 max-w-2xl mx-auto text-center space-y-6 shadow-xl hover:shadow-2xl transition-all duration-300 animate-in fade-in duration-300">
+          <div className="bg-white/90 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-8 max-w-2xl mx-auto text-center space-y-6 shadow-xl hover:shadow-2xl transition-all duration-300 animate-in fade-in">
             <div className="w-16 h-16 bg-blue-50 text-[#004ac6] rounded-3xl mx-auto flex items-center justify-center shadow-md">
               <Award className="h-8 w-8" />
             </div>
