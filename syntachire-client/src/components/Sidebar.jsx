@@ -52,14 +52,11 @@ export default function Sidebar() {
     <>
       {/* Logo Section */}
       <div className="flex items-center gap-3 px-4 py-6">
-        <div className="w-10 h-10 bg-[#004ac6] rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-          <span
-            className="material-symbols-outlined text-white"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            qr_code_2
-          </span>
-        </div>
+        <img
+          src="/assets/app_logo.png"
+          alt="SyntacHire AI logo"
+          className="w-10 h-10 rounded-xl object-cover border border-[#c3c6d7]/40 shadow-sm flex-shrink-0"
+        />
         <div>
           <h1 className="font-bold text-[#004ac6] text-xl">SyntacHire AI</h1>
           <p className="text-xs text-[#434655]">Intelligent Calibration</p>

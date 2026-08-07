@@ -235,16 +235,21 @@ export default function CodingPractice() {
   };
 
   return (
-    <div className="bg-[#f8f9ff] text-[#0b1c30] min-h-screen font-sans flex flex-col">
+    <div className="bg-[#f8f9ff] text-[#0b1c30] min-h-screen font-sans flex flex-col relative overflow-hidden">
+      {/* Decorative background ambient blobs */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-10 w-[450px] h-[450px] bg-violet-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+
       {/* Sidebar navigation */}
       <Sidebar />
 
       {/* Main Content Dashboard */}
-      <main className="lg:ml-[280px] min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-8">
+      <main className="lg:ml-[280px] min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-8 relative z-10">
         
         {/* Page Title Header */}
-        <header className="flex flex-col gap-2 border-b border-[#c3c6d7]/30 pb-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/70 px-4 py-1.5 text-xs font-bold text-blue-800 ring-1 ring-inset ring-blue-700/10 w-fit shadow-xs">
+        <header className="flex flex-col gap-2.5 border-b border-slate-200/60 pb-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-blue-700 ring-1 ring-blue-500/20 w-fit shadow-2xs">
             <Sparkles className="h-4 w-4 text-blue-600 animate-pulse" />
             Interview Preparation Track
           </div>
@@ -261,17 +266,16 @@ export default function CodingPractice() {
           {stats.map((stat, i) => (
             <div 
               key={i} 
-              className={`p-5 rounded-2xl border bg-white flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-300 ${stat.bg}`}
+              className={`p-5 rounded-3xl border bg-white/85 backdrop-blur-xl ring-1 ring-slate-900/5 flex flex-col justify-between shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ${stat.bg}`}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-
+                <span className="text-xs font-black text-slate-500 uppercase tracking-wider">
                   {stat.title}
                 </span>
                 {stat.icon}
               </div>
               <div>
-                <p className="text-2xl font-black tracking-tight">{stat.value}</p>
+                <p className="text-2xl font-black tracking-tight text-[#0b1c30]">{stat.value}</p>
                 <p className="text-[10px] opacity-80 font-bold mt-1">{stat.sub}</p>
               </div>
             </div>
@@ -284,25 +288,25 @@ export default function CodingPractice() {
           return (
             <section className="space-y-4">
               {/* Banner Header */}
-              <div className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${roleColor.from} ${roleColor.to} p-6 md:p-8 shadow-xl`}>
+              <div className={`relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br ${roleColor.from} ${roleColor.to} p-6 md:p-8 shadow-2xl border border-white/20`}>
                 {/* Decorative background circles */}
-                <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-8 -left-6 w-36 h-36 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-8 -left-6 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-2">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full border border-white/20">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-full border border-white/25 shadow-inner">
                       <Zap className="h-3.5 w-3.5 text-white" />
                       <span className="text-[10px] font-black text-white uppercase tracking-widest">Recommended for You</span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-extrabold text-white leading-snug">
+                    <h3 className="text-xl md:text-2xl font-extrabold text-white leading-snug tracking-tight">
                       Your personalised learning path
                     </h3>
-                    <p className="text-sm text-white/80 font-normal max-w-md">
+                    <p className="text-sm text-white/85 font-normal max-w-md leading-relaxed">
                       Based on your target role as a{" "}
-                      <span className="font-black text-white">{userRole}</span>, we've curated the most critical modules for you to master first.
+                      <span className="font-black text-white underline decoration-white/40 decoration-2 underline-offset-4">{userRole}</span>, we've curated the most critical modules for you to master first.
                     </p>
                   </div>
-                  <span className={`shrink-0 self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 bg-white/20 border border-white/30 backdrop-blur-sm rounded-full text-sm font-bold text-white`}>
+                  <span className={`shrink-0 self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 bg-white/20 border border-white/30 backdrop-blur-md rounded-full text-sm font-extrabold text-white shadow-lg`}>
                     <Brain className="h-4 w-4" />
                     {userRole}
                   </span>
@@ -326,7 +330,7 @@ export default function CodingPractice() {
                   return (
                     <div
                       key={mod._id}
-                      className="group relative bg-white border border-slate-100 rounded-3xl p-5 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 overflow-hidden"
+                      className="group relative bg-white/85 backdrop-blur-xl border border-white/80 ring-1 ring-slate-900/5 rounded-3xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 overflow-hidden"
                     >
                       {/* Priority badge */}
                       <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center shadow-md">
@@ -335,10 +339,10 @@ export default function CodingPractice() {
 
                       {/* Topic + difficulty row */}
                       <div className="flex items-center gap-2 flex-wrap pr-8">
-                        <span className={`px-2.5 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-wider border ${diffColors[mod.difficulty] || diffColors.Medium}`}>
+                        <span className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider border shadow-2xs ${diffColors[mod.difficulty] || diffColors.Medium}`}>
                           {mod.difficulty}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                        <span className="text-[10px] font-extrabold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200/60">
                           {mod.topic}
                         </span>
                       </div>
@@ -346,36 +350,36 @@ export default function CodingPractice() {
                       {/* Module name + desc */}
                       <div className="space-y-1.5 flex-1">
                         <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{mod.number}</p>
-                        <h4 className="font-extrabold text-[#0b1c30] text-sm leading-snug line-clamp-2">{mod.name}</h4>
+                        <h4 className="font-extrabold text-[#0b1c30] text-sm leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">{mod.name}</h4>
                         <p className="text-xs text-slate-500 font-normal leading-relaxed line-clamp-2">{mod.description}</p>
                       </div>
 
                       {/* Progress bar */}
                       <div className="space-y-1">
-                        <div className="flex justify-between text-[10px] font-bold text-slate-400">
+                        <div className="flex justify-between text-[10px] font-extrabold text-slate-400">
                           <span>Progress</span>
                           <span>{mod.progress || 0}%</span>
                         </div>
-                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
                           <div
-                            className={`h-full rounded-full transition-all duration-700 ${progressColor}`}
+                            className={`h-full rounded-full transition-all duration-700 shadow-xs ${progressColor}`}
                             style={{ width: `${mod.progress || 0}%` }}
                           />
                         </div>
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex gap-2 pt-1 border-t border-slate-50">
+                      <div className="flex gap-2 pt-2 border-t border-slate-100/80">
                         <button
                           onClick={() => navigate(`/module/${mod._id}/theory`)}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#eff4ff] hover:bg-[#004ac6] text-[#004ac6] hover:text-white text-xs font-bold transition-all duration-200 cursor-pointer group/btn"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#eff4ff] hover:bg-[#004ac6] text-[#004ac6] hover:text-white text-xs font-extrabold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer group/btn shadow-2xs"
                         >
                           <BookMarked className="h-3.5 w-3.5" />
                           Theory
                         </button>
                         <button
                           onClick={() => navigate(`/coding-hub?module=${mod._id}`)}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#004ac6] hover:bg-[#2563eb] text-white text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#004ac6] hover:bg-[#2563eb] text-white text-xs font-extrabold transition-all duration-200 shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                         >
                           <Code2 className="h-3.5 w-3.5" />
                           Practice
@@ -390,7 +394,7 @@ export default function CodingPractice() {
         })()}
 
         {/* Search Bar & Filters Section */}
-        <section className="bg-white p-6 rounded-3xl border border-[#c3c6d7]/30 shadow-xs space-y-4">
+        <section className="bg-white/85 backdrop-blur-xl p-6 rounded-3xl border border-white/80 ring-1 ring-slate-900/5 shadow-2xs space-y-4">
           <div className="flex flex-col md:flex-row items-center gap-4">
             
             {/* Search Input */}
@@ -401,7 +405,7 @@ export default function CodingPractice() {
                 placeholder="Search modules, concepts, or topics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-medium text-[#0b1c30] focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/70 text-sm font-medium text-[#0b1c30] focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition-all"
               />
             </div>
 
@@ -421,7 +425,7 @@ export default function CodingPractice() {
               <select
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full bg-slate-50/70 text-xs font-bold text-[#434655] border border-slate-200 rounded-xl px-3 py-2.5 outline-hidden focus:border-blue-500 cursor-pointer"
+                className="w-full bg-slate-50/70 text-xs font-bold text-[#434655] border border-slate-200 rounded-xl px-3 py-2.5 outline-hidden focus:border-blue-500 hover:bg-slate-100/80 transition-colors cursor-pointer"
               >
                 <option value="All">All Difficulties</option>
                 <option value="Easy">Easy</option>
@@ -436,7 +440,7 @@ export default function CodingPractice() {
               <select
                 value={selectedTopic}
                 onChange={(e) => setSelectedTopic(e.target.value)}
-                className="w-full bg-slate-50/70 text-xs font-bold text-[#434655] border border-slate-200 rounded-xl px-3 py-2.5 outline-hidden focus:border-blue-500 cursor-pointer"
+                className="w-full bg-slate-50/70 text-xs font-bold text-[#434655] border border-slate-200 rounded-xl px-3 py-2.5 outline-hidden focus:border-blue-500 hover:bg-slate-100/80 transition-colors cursor-pointer"
               >
                 <option value="All">All Topics</option>
                 <option value="Programming Basics & Complexity">Programming Basics & Complexity</option>
@@ -459,7 +463,7 @@ export default function CodingPractice() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full bg-slate-50/70 text-xs font-bold text-[#434655] border border-slate-200 rounded-xl px-3 py-2.5 outline-hidden focus:border-blue-500 cursor-pointer"
+                className="w-full bg-slate-50/70 text-xs font-bold text-[#434655] border border-slate-200 rounded-xl px-3 py-2.5 outline-hidden focus:border-blue-500 hover:bg-slate-100/80 transition-colors cursor-pointer"
               >
                 <option value="All">All Statuses</option>
                 <option value="Not Started">Not Started (0%)</option>
@@ -474,7 +478,7 @@ export default function CodingPractice() {
         {/* Responsive Modules Grid with Loading & Error States */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-[#0b1c30]">
+            <h3 className="text-base font-extrabold text-[#0b1c30]">
               Study Plan Modules ({filteredModules.length})
             </h3>
             {(searchQuery || selectedDifficulty !== "All" || selectedTopic !== "All" || selectedStatus !== "All") && !loading && !error ? (
@@ -485,7 +489,7 @@ export default function CodingPractice() {
                   setSelectedTopic("All");
                   setSelectedStatus("All");
                 }}
-                className="text-xs text-blue-600 hover:text-blue-800 font-bold transition-all cursor-pointer"
+                className="text-xs text-blue-600 hover:text-blue-800 font-extrabold transition-all cursor-pointer hover:underline"
               >
                 Clear All Filters
               </button>
@@ -496,7 +500,7 @@ export default function CodingPractice() {
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white border border-slate-100 rounded-3xl p-6 shadow-xs animate-pulse space-y-4">
+                <div key={i} className="bg-white/85 backdrop-blur-xl border border-white/80 ring-1 ring-slate-900/5 rounded-3xl p-6 shadow-2xs animate-pulse space-y-4">
                   <div className="flex justify-between items-center">
                     <div className="h-6 w-16 bg-slate-100 rounded-md"></div>
                     <div className="h-6 w-12 bg-slate-100 rounded-md"></div>
@@ -524,17 +528,17 @@ export default function CodingPractice() {
 
           {/* Error State */}
           {error && !loading && (
-            <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-4 max-w-lg mx-auto">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600">
+            <div className="bg-rose-50/90 backdrop-blur-md border border-rose-200/80 rounded-3xl p-8 text-center space-y-4 max-w-lg mx-auto shadow-sm">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600 shadow-xs">
                 <AlertTriangle className="h-6 w-6" />
               </div>
-              <h4 className="font-extrabold text-red-950">Connection Error</h4>
-              <p className="text-xs text-red-800 leading-relaxed">
+              <h4 className="font-extrabold text-rose-950">Connection Error</h4>
+              <p className="text-xs text-rose-800 leading-relaxed">
                 {error}
               </p>
               <button 
                 onClick={loadModules}
-                className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md transition cursor-pointer"
+                className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow-md hover:scale-105 active:scale-95 transition cursor-pointer"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Retry Connection
@@ -557,8 +561,8 @@ export default function CodingPractice() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white p-12 rounded-3xl border border-[#c3c6d7]/30 text-center space-y-3">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-slate-400">
+              <div className="bg-white/85 backdrop-blur-xl p-12 rounded-3xl border border-white/80 ring-1 ring-slate-900/5 text-center space-y-3 shadow-2xs">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 border border-slate-200/60">
                   <Search className="h-6 w-6" />
                 </div>
                 <h4 className="font-extrabold text-[#0b1c30]">No Modules Found</h4>
