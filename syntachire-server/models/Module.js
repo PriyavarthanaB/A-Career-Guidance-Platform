@@ -42,13 +42,23 @@ const commonMistakeSchema = new mongoose.Schema(
   { _id: false }
 );
 
-// NEW: one multiple-choice quiz question
 const quizQuestionSchema = new mongoose.Schema(
   {
     question: { type: String, required: true },
     options: [{ type: String, required: true }],
     correctAnswer: { type: String, required: true },
     explanation: { type: String },
+  },
+  { _id: false }
+);
+
+// Rich section for deep-dive explanations
+const sectionSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    codeSnippet: { type: String },
+    language: { type: String, default: "javascript" },
   },
   { _id: false }
 );
@@ -66,11 +76,12 @@ const theorySchema = new mongoose.Schema(
     commonMistakes: [commonMistakeSchema],
     summary: { type: String, required: true },
     codeLanguage: { type: String, default: "javascript" },
-    code: { type: String }, // For backwards compatibility
+    code: { type: String },
 
-    // NEW fields for richer / interactive learning content
+    // Rich interactive learning content
     realWorldApplications: [{ type: String }],
     keyTakeaways: [{ type: String }],
+    sections: [sectionSchema],
     quiz: [quizQuestionSchema],
   },
   { _id: false }

@@ -5,7 +5,7 @@ const pdfParseModule = require('pdf-parse');
 const pdfParse = typeof pdfParseModule === 'function' ? pdfParseModule : pdfParseModule.default;
 const { GoogleGenAI } = require('@google/genai');
 const Resume = require('../models/Resume');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 // 1. Setup Multer with file filter for PDFs (max 10MB)
 const upload = multer({

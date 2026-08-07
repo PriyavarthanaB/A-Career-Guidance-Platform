@@ -1,5 +1,5 @@
 import React from "react";
-import { Clock, BookOpen, Code, ArrowRight } from "lucide-react";
+import { BookOpen, Code, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function ModuleCard({ module, onTheory, onPractice, onContinue }) {
   const isCompleted = module.progress === 100;
@@ -12,17 +12,25 @@ export default function ModuleCard({ module, onTheory, onPractice, onContinue })
         <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-lg">
           {module.number}
         </span>
-        <span
-          className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider ${
-            module.difficulty === "Easy"
-              ? "bg-emerald-50 text-emerald-750 border border-emerald-100"
-              : module.difficulty === "Medium"
-              ? "bg-amber-50 text-amber-750 border border-amber-100"
-              : "bg-rose-50 text-rose-750 border border-rose-100"
-          }`}
-        >
-          {module.difficulty}
-        </span>
+        <div className="flex items-center gap-2">
+          {module.isReadingCompleted && (
+            <span className="bg-emerald-50 text-emerald-700 text-[9px] font-extrabold px-2 py-0.5 rounded-lg border border-emerald-200 flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+              Theory Read
+            </span>
+          )}
+          <span
+            className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider ${
+              module.difficulty === "Easy"
+                ? "bg-emerald-50 text-emerald-750 border border-emerald-100"
+                : module.difficulty === "Medium"
+                ? "bg-amber-50 text-amber-750 border border-amber-100"
+                : "bg-rose-50 text-rose-750 border border-rose-100"
+            }`}
+          >
+            {module.difficulty}
+          </span>
+        </div>
       </div>
 
       {/* Title & Short Description */}
@@ -35,17 +43,11 @@ export default function ModuleCard({ module, onTheory, onPractice, onContinue })
         </p>
       </div>
 
-      {/* Estimated Duration Row */}
-      <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-bold mb-4">
-        <Clock className="h-3.5 w-3.5 text-slate-400" />
-        <span>Estimated Duration: {module.estimatedTime}</span>
-      </div>
-
       {/* Progress Bar Row */}
       <div className="space-y-1.5 mb-5">
         <div className="flex justify-between items-center text-[10px] font-bold text-[#434655]">
-          <span>Progress</span>
-          <span className="text-[#0b1c30]">{module.progress}%</span>
+          <span>Module Progress</span>
+          <span className="text-[#0b1c30] font-extrabold">{module.progress}%</span>
         </div>
         <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
           <div 
@@ -89,7 +91,7 @@ export default function ModuleCard({ module, onTheory, onPractice, onContinue })
           }`}
         >
           <span>
-            {isCompleted ? "Review Practice" : isNotStarted ? "Start Module" : "Continue Learning"}
+            {isCompleted ? "Review Module" : isNotStarted ? "Start Module" : "Continue Learning"}
           </span>
           <ArrowRight className="h-3.5 w-3.5" />
         </button>

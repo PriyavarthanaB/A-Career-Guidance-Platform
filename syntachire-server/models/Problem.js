@@ -4,6 +4,20 @@ const exampleSchema = new mongoose.Schema(
   {
     input: { type: String, required: true },
     output: { type: String, required: true },
+    explanation: { type: String, default: "" },
+  },
+  { _id: false }
+);
+
+const solutionSchema = new mongoose.Schema(
+  {
+    overview: { type: String, default: "" },
+    timeComplexity: { type: String, default: "O(N)" },
+    spaceComplexity: { type: String, default: "O(1)" },
+    pythonCode: { type: String, default: "" },
+    jsCode: { type: String, default: "" },
+    javaCode: { type: String, default: "" },
+    cppCode: { type: String, default: "" },
   },
   { _id: false }
 );
@@ -19,6 +33,7 @@ const ProblemSchema = new mongoose.Schema(
     description: { type: String, required: true },
     examples: [exampleSchema],
     hints: [{ type: String }],
+    solution: solutionSchema,
     tags: [{ type: String }],
     companies: [{ type: String }],
     estimatedTime: { type: String, default: "25 mins" },

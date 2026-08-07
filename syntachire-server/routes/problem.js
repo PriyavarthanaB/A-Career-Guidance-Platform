@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { optionalAuth } = require("../middleware/auth");
 const {
   getAllProblems,
   getProblemById,
@@ -8,9 +9,10 @@ const {
   toggleBookmark,
 } = require("../controllers/problemController");
 
-// ─── IMPORTANT: Specific routes MUST come before parameterised /:id routes ───
+// Apply optionalAuth to all problem routes so req.user is set whenever a token is present
+router.use(optionalAuth);
 
-// Module-specific problems route  →  GET /api/problems/module/:id
+// Module-specific problems route → GET /api/problems/module/:id
 router.route("/module/:id").get(getProblemsByModule);
 
 // General problem routes
