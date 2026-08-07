@@ -32,7 +32,7 @@ app.use('/api/interview', interviewRoutes);
 app.use('/api/user', userRoutes);
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/syntac_admin')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/syntac_admin')
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
