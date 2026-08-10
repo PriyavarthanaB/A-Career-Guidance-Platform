@@ -16,9 +16,22 @@ import InterviewSession from './pages/InterviewSession';
 import Settings from './pages/Settings';
 
 // Protected Route Guard
+const isValidToken = (token) => {
+  return (
+    typeof token === 'string' &&
+    token.trim().length > 0 &&
+    token !== 'undefined' &&
+    token !== 'null'
+  );
+};
+
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" replace />;
+  if (!isValidToken(token)) {
+    localStorage.removeItem('token');
+    return <Navigate to="/login" replace />;
+  }
+  return children;
 };
 
 export default function App() {
@@ -30,17 +43,87 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {/* App routes (no auth guard for easier dev flow) */}
-        <Route path="/analyzer" element={<ResumeAnalyzer />} />
-        <Route path="/practice" element={<CodingEditor />} />
-        <Route path="/coding-practice" element={<CodingPractice />} />
-        <Route path="/module/:id/theory" element={<TheoryPage />} />
-        <Route path="/module/:id/practice" element={<PracticePage />} />
-        <Route path="/problem/:id" element={<CodingWorkspace />} />
-        <Route path="/coding-hub" element={<CodingHub />} />
-        <Route path="/mock-interview" element={<MockInterview />} />
-        <Route path="/mock-interview/session" element={<InterviewSession />} />
-        <Route path="/settings" element={<Settings />} />
+        {/* App routes protected by auth */}
+        <Route
+          path="/analyzer"
+          element={
+            <ProtectedRoute>
+              <ResumeAnalyzer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/practice"
+          element={
+            <ProtectedRoute>
+              <CodingEditor />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/coding-practice"
+          element={
+            <ProtectedRoute>
+              <CodingPractice />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/module/:id/theory"
+          element={
+            <ProtectedRoute>
+              <TheoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/module/:id/practice"
+          element={
+            <ProtectedRoute>
+              <PracticePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/problem/:id"
+          element={
+            <ProtectedRoute>
+              <CodingWorkspace />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/coding-hub"
+          element={
+            <ProtectedRoute>
+              <CodingHub />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mock-interview"
+          element={
+            <ProtectedRoute>
+              <MockInterview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mock-interview/session"
+          element={
+            <ProtectedRoute>
+              <InterviewSession />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Protected dashboard */}
         <Route

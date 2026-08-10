@@ -7,13 +7,21 @@ import { Home, FileText, Code2, Brain, Mic, Settings } from 'lucide-react';
 export default function Landing() {
   const navigate = useNavigate();
 
+  const redirectTo = (path, requiresAuth = false) => {
+    if (requiresAuth && !localStorage.getItem('token')) {
+      navigate('/login');
+      return;
+    }
+    navigate(path);
+  };
+
   const dockItems = [
     { icon: <Home size={20} />, label: 'Home', onClick: () => navigate('/') },
-    { icon: <FileText size={20} />, label: 'Resume Analyzer', onClick: () => navigate('/analyzer') },
-    { icon: <Code2 size={20} />, label: 'Coding Practice', onClick: () => navigate('/coding-practice') },
-    { icon: <Brain size={20} />, label: 'Coding Hub', onClick: () => navigate('/coding-hub') },
-    { icon: <Mic size={20} />, label: 'Mock Interview', onClick: () => navigate('/mock-interview') },
-    { icon: <Settings size={20} />, label: 'Settings', onClick: () => navigate('/settings') },
+    { icon: <FileText size={20} />, label: 'Resume Analyzer', onClick: () => redirectTo('/analyzer', true) },
+    { icon: <Code2 size={20} />, label: 'Coding Practice', onClick: () => redirectTo('/coding-practice', true) },
+    { icon: <Brain size={20} />, label: 'Coding Hub', onClick: () => redirectTo('/coding-hub', true) },
+    { icon: <Mic size={20} />, label: 'Mock Interview', onClick: () => redirectTo('/mock-interview', true) },
+    { icon: <Settings size={20} />, label: 'Settings', onClick: () => redirectTo('/settings', true) },
   ];
 
   return (

@@ -31,8 +31,8 @@ function DockItem({ children, className = '', onClick, mouseX, spring, distance,
         width: size,
         height: size
       }}
-      onHoverStart={() => isHovered.set(1)}
-      onHoverEnd={() => isHovered.set(0)}
+      onPointerEnter={() => isHovered.set(1)}
+      onPointerLeave={() => isHovered.set(0)}
       onFocus={() => isHovered.set(1)}
       onBlur={() => isHovered.set(0)}
       onClick={onClick}
@@ -102,26 +102,19 @@ export default function Dock({
   dockHeight = 256,
   baseItemSize = 50
 }) {
-  const mouseX = useMotionValue(Infinity);
+  const mouseX = useMotionValue(0);
   const isHovered = useMotionValue(0);
 
-  const maxHeight = useMemo(
-    () => Math.max(dockHeight, magnification + magnification / 2 + 4),
-    [magnification, dockHeight]
-  );
-  const heightRow = useTransform(isHovered, [0, 1], [panelHeight, maxHeight]);
-  const height = useSpring(heightRow, spring);
+  const height = panelHeight;
 
   return (
     <motion.div style={{ height, scrollbarWidth: 'none' }} className="dock-outer">
       <motion.div
-        onMouseMove={({ pageX }) => {
-          isHovered.set(1);
-          mouseX.set(pageX);
+        onPointerMove={({ clientX }) => {
+          mouseX.set(clientX);
         }}
-        onMouseLeave={() => {
-          isHovered.set(0);
-          mouseX.set(Infinity);
+        onPointerLeave={() => {
+          mouseX.set(0);
         }}
         className={`dock-panel ${className}`}
         style={{ height: panelHeight }}
