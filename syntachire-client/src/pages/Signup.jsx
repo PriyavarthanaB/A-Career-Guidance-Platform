@@ -107,14 +107,14 @@ const Signup = () => {
   };
 
   return (
-    <div className="grid min-h-screen bg-[#070f1e] font-sans md:grid-cols-12 selection:bg-[#004ac6] selection:text-white">
+    <div className="grid min-h-screen font-sans md:grid-cols-12 selection:bg-blue-500 selection:text-white" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
       
       {/* BRAND & VISUAL PANEL (7 Cols) */}
       <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-slate-950 via-[#070f1e] to-indigo-955 p-12 text-white md:col-span-7 md:flex lg:p-16">
         
         {/* Background Mesh Overlay & Ambient Glows */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
-        <div className="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-[#004ac6]/25 blur-[130px]" />
+        <div className="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-blue-600/25 blur-[130px]" />
         <div className="pointer-events-none absolute bottom-10 right-10 h-80 w-80 rounded-full bg-indigo-600/20 blur-[110px]" />
 
         {/* Header */}
@@ -129,7 +129,7 @@ const Signup = () => {
               SyntacHire <span className="text-blue-400 font-extrabold">AI</span>
             </span>
           </Link>
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-4 py-1.5 text-sm font-semibold text-blue-300 backdrop-blur-xl shadow-inner shadow-blue-500/20">
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/100/10 px-4 py-1.5 text-sm font-semibold text-blue-300 backdrop-blur-xl shadow-inner shadow-blue-500/20">
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
             Join 10k+ Engineers
           </span>
@@ -150,9 +150,9 @@ const Signup = () => {
               {HIGHLIGHTS.map(({ icon: Icon, title, text }) => (
                 <div 
                   key={title} 
-                  className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/40 hover:bg-white/[0.08] hover:-translate-y-0.5 shadow-lg shadow-black/20"
+                  className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-900/60/[0.04] p-4 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/40 hover:bg-slate-900/60/[0.08] hover:-translate-y-0.5 shadow-lg shadow-black/20"
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 group-hover:bg-[#004ac6] group-hover:text-white transition-all duration-300 shadow-sm">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/100/10 text-blue-400 border border-blue-500/20 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm">
                     <Icon className="h-6 w-6" />
                   </div>
                   <div>
@@ -168,7 +168,7 @@ const Signup = () => {
         {/* Bottom Floating Card */}
         <div className="relative z-10 flex items-center justify-between rounded-2xl border border-white/15 bg-slate-900/80 p-4 backdrop-blur-2xl shadow-2xl">
           <div className="flex items-center gap-4">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/100/20 text-emerald-400 border border-emerald-500/30 shadow-sm">
               <CheckCircle2 className="h-6 w-6" />
             </div>
             <div>
@@ -181,9 +181,9 @@ const Signup = () => {
       </div>
 
       {/* FORM PANEL (5 Cols) */}
-      <div className="flex items-center justify-center bg-slate-950/70 p-6 md:col-span-5 md:bg-[#070f1e] lg:p-12 relative overflow-hidden">
+      <div className="flex items-center justify-center bg-slate-950/70 p-6 md:col-span-5 md:bg-transparent lg:p-12 relative overflow-hidden">
         {/* Ambient background glow */}
-        <div className="pointer-events-none absolute -right-20 top-1/3 h-80 w-80 rounded-full bg-[#004ac6]/15 blur-[120px]" />
+        <div className="pointer-events-none absolute -right-20 top-1/3 h-80 w-80 rounded-full bg-blue-600/15 blur-[120px]" />
 
         <div className="w-full max-w-md space-y-6 rounded-3xl border border-slate-800/80 bg-slate-900/90 p-8 shadow-2xl shadow-black/50 backdrop-blur-2xl md:border md:border-slate-800/80 md:bg-slate-900/70 md:p-10 relative z-10">
           

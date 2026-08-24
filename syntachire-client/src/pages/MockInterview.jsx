@@ -21,6 +21,9 @@ import {
   HelpCircle,
   BarChart2,
   CheckCircle2,
+  Zap,
+  Target,
+  Sliders,
 } from "lucide-react";
 
 // Available Interview Types
@@ -32,7 +35,7 @@ const INTERVIEW_TYPES = [
     description: "Evaluates your soft skills, leadership qualities, conflict resolution, and alignment with company values.",
     icon: UserCheck,
     badge: "Behavioral",
-    badgeColor: "bg-blue-100 text-blue-700 border-blue-200",
+    badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/30",
     gradient: "from-blue-600 to-cyan-600",
     features: [
       "STAR method answer evaluation",
@@ -48,7 +51,7 @@ const INTERVIEW_TYPES = [
     description: "Deep technical evaluation covering Data Structures, Problem Solving, Code Optimization, and Architecture.",
     icon: Code2,
     badge: "Hands-On",
-    badgeColor: "bg-violet-100 text-violet-700 border-violet-200",
+    badgeColor: "bg-violet-500/10 text-violet-400 border-violet-500/30",
     gradient: "from-violet-600 to-purple-600",
     features: [
       "Live algorithmic & data structure problems",
@@ -64,7 +67,7 @@ const INTERVIEW_TYPES = [
     description: "Full end-to-end simulation combining behavioral HR questions with technical problem solving.",
     icon: Layers,
     badge: "Recommended",
-    badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
     gradient: "from-emerald-600 to-teal-600",
     features: [
       "15 min HR + 30 min Technical coding",
@@ -149,52 +152,57 @@ export default function MockInterview() {
   const selectedCardInfo = INTERVIEW_TYPES.find((t) => t.id === selectedType);
 
   return (
-    <div className="relative overflow-hidden bg-[#f8f9ff] text-[#0b1c30] min-h-screen font-sans flex">
+    <div className="relative overflow-hidden text-white min-h-screen font-sans flex antialiased" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
       {/* Decorative Background Gradient Blobs */}
-      <div className="absolute top-0 right-1/3 w-[600px] h-[600px] bg-gradient-to-br from-blue-400/15 via-indigo-400/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-400/10 to-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-20 right-1/3 w-[650px] h-[650px] bg-gradient-to-br from-blue-500/15 via-indigo-400/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-[550px] h-[550px] bg-gradient-to-tr from-cyan-400/15 via-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-gradient-to-tl from-violet-500/10 to-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Ambient Background Glows */}
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+        <div className="w-[800px] h-[800px] bg-blue-600/8 rounded-full blur-[120px]" />
+      </div>
 
       {/* Sidebar for uniform post-login navigation */}
       <Sidebar />
 
       {/* Main Content Area offset by Sidebar width */}
-      <main className="relative z-10 lg:ml-[280px] flex-1 min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-10">
+      <main className="relative z-10 lg:ml-[260px] flex-1 min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-10">
         
         {/* Top Header & Tagline */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-100/80 backdrop-blur-md text-xs font-extrabold text-[#004ac6] ring-1 ring-inset ring-[#004ac6]/20 mb-3 shadow-xs">
-              <Sparkles className="h-4 w-4 text-[#004ac6] animate-pulse" />
-              SyntacHire AI Mock Interviewer
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/60 backdrop-blur-md text-xs font-black text-blue-400 border border-white/[0.06] mb-3">
+              <Sparkles className="h-4 w-4 text-blue-400 animate-pulse" />
+              SyntacHire AI Career Simulator
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
-              Interview Simulator
+            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
+              AI Mock Interview Simulator
             </h1>
-            <p className="text-sm md:text-base text-[#434655] font-normal mt-1 max-w-xl">
+            <p className="text-sm md:text-base text-slate-300 font-normal mt-1 max-w-xl">
               Configure your interview environment, select interview type & difficulty, and practice with real-time AI evaluation.
             </p>
           </div>
 
           {/* Quick Stats Pill — live per-user data */}
-          <div className="flex items-center gap-4 bg-white/85 backdrop-blur-xl border border-slate-200/80 p-3.5 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 shrink-0">
-            <div className="flex items-center gap-3 border-r border-slate-100/80 pr-4">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold shadow-xs">
+          <div className="flex items-center gap-4 bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] p-4 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 shrink-0 ring-1 ring-white/[0.06]">
+            <div className="flex items-center gap-3.5 border-r border-white/[0.06] pr-4">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center font-bold shadow-md shadow-amber-500/20">
                 <Flame className="h-5 w-5 fill-current" />
               </div>
               <div>
-                <p className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400">Mock Sessions</p>
-                <p className="text-base font-black text-[#0b1c30]">
+                <p className="text-[10px] uppercase font-black tracking-wider text-slate-400">Mock Sessions</p>
+                <p className="text-base font-black text-white">
                   {statsLoading ? '…' : `${mockSessions} Session${mockSessions !== 1 ? 's' : ''}`}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#004ac6] flex items-center justify-center font-bold shadow-xs">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-md shadow-blue-500/20">
                 <Award className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-[10px] uppercase font-extrabold tracking-wider text-slate-400">Avg Performance</p>
-                <p className="text-base font-black text-[#004ac6]">
+                <p className="text-[10px] uppercase font-black tracking-wider text-slate-400">Avg Performance</p>
+                <p className="text-base font-black text-blue-400">
                   {statsLoading ? '…' : mockSessions > 0 ? `${avgMockScore}% Match` : 'No data yet'}
                 </p>
               </div>
@@ -205,15 +213,15 @@ export default function MockInterview() {
         {/* Section 1: Choose Interview Type */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-[#004ac6] text-white flex items-center justify-center text-xs font-black shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xs font-black shadow-md shadow-blue-500/20">
                 1
               </span>
-              <h2 className="text-xl font-extrabold text-[#0b1c30] tracking-tight">
+              <h2 className="text-xl font-black text-white tracking-tight">
                 Select Interview Type
               </h2>
             </div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 bg-slate-900/60 backdrop-blur-xl px-3 py-1 rounded-full border border-white/[0.08] shadow-lg shadow-black/20">
               3 Modes Available
             </span>
           </div>
@@ -242,15 +250,15 @@ export default function MockInterview() {
         {/* Section 2: Choose Difficulty Level */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-[#004ac6] text-white flex items-center justify-center text-xs font-black shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xs font-black shadow-md shadow-blue-500/20">
                 2
               </span>
-              <h2 className="text-xl font-extrabold text-[#0b1c30] tracking-tight">
+              <h2 className="text-xl font-black text-white tracking-tight">
                 Choose Difficulty Level
               </h2>
             </div>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400 bg-slate-900/60 backdrop-blur-xl px-3 py-1 rounded-full border border-white/[0.08] shadow-lg shadow-black/20">
               Calibrated to Role Level
             </span>
           </div>
@@ -262,43 +270,43 @@ export default function MockInterview() {
         </section>
 
         {/* Section 3: Fine-Tune Preferences */}
-        <section className="bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-6 md:p-8 space-y-6 shadow-xs hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100/80">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-[#004ac6] text-white flex items-center justify-center text-xs font-black shadow-xs">
+        <section className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 md:p-8 space-y-6 shadow-sm hover:shadow-md transition-all duration-300 ring-1 ring-white/[0.06]">
+          <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xs font-black shadow-md shadow-blue-500/20">
                 3
               </span>
-              <h2 className="text-xl font-extrabold text-[#0b1c30] tracking-tight">
+              <h2 className="text-xl font-black text-white tracking-tight">
                 Fine-Tune Session Settings
               </h2>
             </div>
-            <span className="text-xs font-extrabold bg-blue-50 text-[#004ac6] px-3.5 py-1.5 rounded-full border border-blue-100 shadow-xs">
+            <span className="text-xs font-extrabold bg-blue-500/10 text-blue-400 px-3.5 py-1.5 rounded-full border border-blue-500/20 shadow-lg shadow-black/20">
               Customizable
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Target Role Input */}
-            <div className="space-y-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#0b1c30] flex items-center gap-2">
-                <Briefcase className="h-4 w-4 text-[#004ac6]" /> Target Job Role
+            <div className="space-y-2.5">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-blue-400" /> Target Job Role
               </label>
               <input
                 type="text"
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
                 placeholder="e.g. Frontend Developer, DevOps Engineer"
-                className="w-full rounded-2xl border border-slate-200/80 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-[#0b1c30] focus:border-[#004ac6] focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#004ac6]/20 transition-all shadow-inner"
+                className="w-full rounded-2xl border border-white/[0.08] bg-slate-800/50 px-4 py-3 text-sm font-semibold text-white focus:border-blue-400 focus:bg-slate-900/60 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
               />
-              <p className="text-[11px] font-medium text-[#434655]">
+              <p className="text-[11px] font-medium text-slate-400">
                 Questions will be tailored specifically to this role.
               </p>
             </div>
 
             {/* Question Count Selector */}
-            <div className="space-y-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#0b1c30] flex items-center gap-2">
-                <Clock className="h-4 w-4 text-[#004ac6]" /> Question Count
+            <div className="space-y-2.5">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                <Clock className="h-4 w-4 text-blue-400" /> Question Count
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[3, 5, 10].map((count) => (
@@ -308,23 +316,23 @@ export default function MockInterview() {
                     onClick={() => setQuestionCount(count)}
                     className={`py-3 rounded-2xl text-xs font-extrabold border transition-all duration-200 cursor-pointer ${
                       questionCount === count
-                        ? "bg-[#004ac6] text-white border-[#004ac6] shadow-md hover:-translate-y-0.5"
-                        : "bg-slate-50/80 text-slate-600 border-slate-200/80 hover:bg-slate-100 hover:border-slate-300 hover:shadow-xs"
+                        ? "bg-blue-500/20 text-blue-400 border-blue-500/30 shadow-md hover:-translate-y-0.5"
+                        : "bg-slate-800/50 text-slate-300 border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] hover:shadow-xs"
                     }`}
                   >
                     {count} Qs ({count * 5} mins)
                   </button>
                 ))}
               </div>
-              <p className="text-[11px] font-medium text-[#434655]">
+              <p className="text-[11px] font-medium text-slate-400">
                 Estimated duration: ~{questionCount * 5} minutes total.
               </p>
             </div>
 
             {/* Response Mode Toggle (Text vs Voice) */}
-            <div className="space-y-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#0b1c30] flex items-center gap-2">
-                <Mic className="h-4 w-4 text-[#004ac6]" /> Response Mode
+            <div className="space-y-2.5">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                <Mic className="h-4 w-4 text-blue-400" /> Response Mode
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -332,8 +340,8 @@ export default function MockInterview() {
                   onClick={() => setResponseMode("text")}
                   className={`flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-extrabold border transition-all duration-200 cursor-pointer ${
                     responseMode === "text"
-                      ? "bg-[#004ac6] text-white border-[#004ac6] shadow-md hover:-translate-y-0.5"
-                      : "bg-slate-50/80 text-slate-600 border-slate-200/80 hover:bg-slate-100 hover:border-slate-300 hover:shadow-xs"
+                      ? "bg-blue-500/20 text-blue-400 border-blue-500/30 shadow-md hover:-translate-y-0.5"
+                      : "bg-slate-800/50 text-slate-300 border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] hover:shadow-xs"
                   }`}
                 >
                   <MessageSquare className="h-4 w-4" /> Text Input
@@ -343,14 +351,14 @@ export default function MockInterview() {
                   onClick={() => setResponseMode("voice")}
                   className={`flex items-center justify-center gap-2 py-3 rounded-2xl text-xs font-extrabold border transition-all duration-200 cursor-pointer ${
                     responseMode === "voice"
-                      ? "bg-[#004ac6] text-white border-[#004ac6] shadow-md hover:-translate-y-0.5"
-                      : "bg-slate-50/80 text-slate-600 border-slate-200/80 hover:bg-slate-100 hover:border-slate-300 hover:shadow-xs"
+                      ? "bg-blue-500/20 text-blue-400 border-blue-500/30 shadow-md hover:-translate-y-0.5"
+                      : "bg-slate-800/50 text-slate-300 border-white/[0.06] hover:bg-white/[0.06] hover:border-white/[0.1] hover:shadow-xs"
                   }`}
                 >
                   <Mic className="h-4 w-4" /> Voice Mode
                 </button>
               </div>
-              <p className="text-[11px] font-medium text-[#434655]">
+              <p className="text-[11px] font-medium text-slate-400">
                 Choose between typing answers or speech-to-text live audio.
               </p>
             </div>
@@ -358,18 +366,19 @@ export default function MockInterview() {
         </section>
 
         {/* Section 4: Start Interview Banner CTA */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#004ac6] via-[#1a56d6] to-indigo-600 p-8 md:p-10 shadow-xl shadow-[#004ac6]/20 text-white hover:shadow-2xl transition-all duration-300">
-          <div className="absolute -top-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <section className="relative overflow-hidden rounded-3xl bg-slate-900/80 backdrop-blur-xl border border-white/[0.08] p-8 md:p-10 shadow-xl shadow-black/30 hover:shadow-2xl transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-purple-600/20 pointer-events-none" />
+          <div className="absolute -top-12 -right-12 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-extrabold text-amber-300 uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-extrabold text-amber-400 uppercase tracking-wider">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                 Session Ready to Initialize
               </div>
-              <h3 className="text-2xl md:text-3xl font-black leading-snug">
+              <h3 className="text-2xl md:text-3xl font-black leading-snug text-white">
                 Ready for your {selectedCardInfo?.title}?
               </h3>
-              <p className="text-sm text-white/80 max-w-xl">
+              <p className="text-sm text-slate-300 max-w-xl">
                 Configuration: <strong className="text-white">{selectedDifficulty} Difficulty</strong> •{" "}
                 <strong className="text-white">{targetRole}</strong> •{" "}
                 <strong className="text-white">{questionCount} Questions</strong> ({responseMode.toUpperCase()} mode).
@@ -378,9 +387,9 @@ export default function MockInterview() {
 
             <button
               onClick={handleStartInterview}
-              className="group relative flex items-center justify-center gap-3 bg-amber-400 hover:bg-amber-300 text-[#0b1c30] px-8 py-4 rounded-2xl font-black text-base shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer shrink-0"
+              className="group relative flex items-center justify-center gap-3 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-900 px-8 py-4 rounded-2xl font-black text-base shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer shrink-0"
             >
-              <Play className="h-5 w-5 fill-current text-[#0b1c30]" />
+              <Play className="h-5 w-5 fill-current text-slate-900" />
               Start Interview Now
               <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </button>
@@ -390,7 +399,7 @@ export default function MockInterview() {
         {/* Section 5: Past Mock Sessions — dynamic */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-extrabold text-[#0b1c30]">Your Practice History</h3>
+            <h3 className="text-lg font-extrabold text-white">Your Practice History</h3>
             {!statsLoading && mockSessions > 0 && (
               <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">{mockSessions} session{mockSessions !== 1 ? 's' : ''} completed</span>
             )}
@@ -400,70 +409,70 @@ export default function MockInterview() {
             /* Loading skeleton */
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[0, 1].map((i) => (
-                <div key={i} className="bg-white/80 border border-slate-200/80 rounded-2xl p-5 animate-pulse">
+                <div key={i} className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5 animate-pulse">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-slate-100" />
+                    <div className="w-12 h-12 rounded-xl bg-slate-800/50" />
                     <div className="space-y-2 flex-1">
-                      <div className="h-4 w-3/4 bg-slate-100 rounded" />
-                      <div className="h-3 w-1/2 bg-slate-100 rounded" />
+                      <div className="h-4 w-3/4 bg-slate-800/50 rounded" />
+                      <div className="h-3 w-1/2 bg-slate-800/50 rounded" />
                     </div>
-                    <div className="h-6 w-16 bg-slate-100 rounded-full" />
+                    <div className="h-6 w-16 bg-slate-800/50 rounded-full" />
                   </div>
                 </div>
               ))}
             </div>
           ) : mockSessions === 0 ? (
             /* No sessions yet */
-            <div className="bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-8 text-center space-y-3 shadow-xs">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#004ac6] shadow-xs">
+            <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 text-center space-y-3 shadow-xs">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-xs">
                 <BarChart2 className="h-6 w-6" />
               </div>
-              <h4 className="font-extrabold text-sm text-[#0b1c30]">No interviews yet</h4>
-              <p className="text-xs text-[#434655] max-w-xs mx-auto">
+              <h4 className="font-extrabold text-sm text-white">No interviews yet</h4>
+              <p className="text-xs text-slate-400 max-w-xs mx-auto">
                 Complete your first mock interview to see your history and track your progress here.
               </p>
             </div>
           ) : (
             /* Show last up to 2 sessions based on stats */
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-5 flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+              <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5 flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#004ac6] flex items-center justify-center font-bold shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-md shadow-blue-500/20">
                     <BarChart2 className="h-6 w-6" />
                   </div>
                   <div>
-                    <h4 className="font-extrabold text-sm text-[#0b1c30]">
+                    <h4 className="font-extrabold text-sm text-white">
                       {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)} Round #{mockSessions}
                     </h4>
-                    <p className="text-xs text-[#434655] font-medium">{selectedDifficulty} • {targetRole} • Most recent</p>
+                    <p className="text-xs text-slate-400 font-medium">{selectedDifficulty} • {targetRole} • Most recent</p>
                   </div>
                 </div>
-                <span className={`text-xs font-black px-3 py-1.5 rounded-full border shadow-xs ${
+                <span className={`text-xs font-black px-3 py-1.5 rounded-full border shadow-lg shadow-black/20 ${
                   avgMockScore >= 80
-                    ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
                     : avgMockScore >= 60
-                    ? 'text-amber-700 bg-amber-50 border-amber-200'
-                    : 'text-rose-700 bg-rose-50 border-rose-200'
+                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                    : 'text-rose-400 bg-rose-500/10 border-rose-500/20'
                 }`}>
                   {avgMockScore}% Avg
                 </span>
               </div>
 
               {mockSessions >= 2 && (
-                <div className="bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-5 flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-5 flex items-center justify-between hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold shadow-xs">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-purple-500/20">
                       <UserCheck className="h-6 w-6" />
                     </div>
                     <div>
-                      <h4 className="font-extrabold text-sm text-[#0b1c30]">Round #{mockSessions - 1}</h4>
-                      <p className="text-xs text-[#434655] font-medium">{targetRole} • Previous session</p>
+                      <h4 className="font-extrabold text-sm text-white">Round #{mockSessions - 1}</h4>
+                      <p className="text-xs text-slate-400 font-medium">{targetRole} • Previous session</p>
                     </div>
                   </div>
-                  <span className={`text-xs font-black px-3 py-1.5 rounded-full border shadow-xs ${
+                  <span className={`text-xs font-black px-3 py-1.5 rounded-full border shadow-lg shadow-black/20 ${
                     avgMockScore >= 80
-                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                      : 'text-amber-700 bg-amber-50 border-amber-200'
+                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                      : 'text-amber-400 bg-amber-500/10 border-amber-500/20'
                   }`}>
                     {avgMockScore}% Avg
                   </span>

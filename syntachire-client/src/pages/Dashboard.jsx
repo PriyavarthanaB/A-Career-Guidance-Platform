@@ -29,6 +29,8 @@ import {
   Printer,
   X,
   FileDown,
+  Rocket,
+  Trophy,
 } from 'lucide-react';
 
 const QUICK_ACTIONS = [
@@ -39,7 +41,7 @@ const QUICK_ACTIONS = [
     route: '/analyzer',
     gradient: 'from-blue-600 to-indigo-600',
     badge: 'AI Powered',
-    badgeColor: 'bg-blue-100 text-blue-700',
+    badgeColor: 'bg-blue-500/15 text-blue-300 border-blue-500/25',
   },
   {
     title: 'Coding Practice',
@@ -48,7 +50,7 @@ const QUICK_ACTIONS = [
     route: '/coding-practice',
     gradient: 'from-violet-600 to-purple-600',
     badge: 'Role-Based',
-    badgeColor: 'bg-violet-100 text-violet-700',
+    badgeColor: 'bg-violet-500/15 text-violet-300 border-violet-500/25',
   },
   {
     title: 'Coding Hub',
@@ -57,7 +59,7 @@ const QUICK_ACTIONS = [
     route: '/coding-hub',
     gradient: 'from-emerald-600 to-teal-600',
     badge: 'Challenges',
-    badgeColor: 'bg-emerald-100 text-emerald-700',
+    badgeColor: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/25',
   },
   {
     title: 'Mock Interview',
@@ -66,7 +68,7 @@ const QUICK_ACTIONS = [
     route: '/mock-interview',
     gradient: 'from-amber-500 to-orange-500',
     badge: 'Live AI',
-    badgeColor: 'bg-amber-100 text-amber-700',
+    badgeColor: 'bg-amber-500/15 text-amber-300 border-amber-500/25',
   },
 ];
 
@@ -197,57 +199,63 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
   const streakBarTotal = Math.max(14, longestStreak);
 
   return (
-    <div className="bg-[#f8f9ff] text-[#0b1c30] min-h-screen font-sans flex relative overflow-hidden">
-      {/* Decorative background ambient blobs */}
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 left-10 w-[450px] h-[450px] bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-violet-400/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen font-sans flex relative overflow-hidden" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+      {/* Dynamic ambient background radial glows */}
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-blue-600/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-indigo-600/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-violet-600/8 rounded-full blur-[120px] pointer-events-none" />
 
       <Sidebar />
 
-      <main className="lg:ml-[280px] flex-1 min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-10 relative z-10">
+      <main className="lg:ml-[260px] flex-1 min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-10 relative z-10">
 
-        {/* Top Bar */}
-        <div className="flex items-center justify-between">
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md text-xs font-bold text-blue-700 ring-1 ring-blue-500/20 shadow-xs">
-            <Sparkles className="h-4 w-4 text-blue-600 animate-pulse" />
-            SyntacHire AI Dashboard
+        {/* Top Navigation & Status Bar */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.08] backdrop-blur-xl text-xs font-black text-blue-400 ring-1 ring-blue-500/20 shadow-lg group hover:scale-[1.02] transition-all">
+            <Sparkles className="h-4 w-4 text-blue-400 animate-pulse" />
+            <span className="tracking-tight">SyntacHire AI Career Success Engine</span>
           </div>
           <button
             onClick={handleLogout}
-            className="text-xs font-bold text-rose-600 border border-rose-200/80 bg-white/80 backdrop-blur-md hover:bg-rose-600 hover:text-white hover:border-rose-600 px-4 py-2 rounded-2xl transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer hover:scale-105 active:scale-95"
+            className="text-xs font-black text-rose-400 border border-rose-500/20 bg-rose-500/10 backdrop-blur-xl hover:bg-rose-500/20 hover:text-rose-300 px-4 py-2 rounded-2xl transition-all duration-200 shadow-xs hover:shadow-md cursor-pointer hover:scale-105 active:scale-95"
           >
             Sign Out
           </button>
         </div>
 
         {/* Hero Welcome Banner */}
-        <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#004ac6] via-[#1d5bd8] to-[#2563eb] p-8 md:p-10 shadow-2xl border border-white/20">
-          <div className="absolute -top-16 -right-16 w-64 h-64 bg-white/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-10 -left-10 w-52 h-52 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#003da5] via-[#004ac6] to-[#1d5bd8] p-8 md:p-11 shadow-2xl border border-white/20 group">
+          {/* Ambient light elements inside card */}
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-blue-400/25 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-yellow-400/20 rounded-full blur-2xl pointer-events-none" />
+          
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-3">
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/20 w-fit px-3 py-1 rounded-full shadow-inner">
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/20 w-fit px-3.5 py-1 rounded-full shadow-inner">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
-                <span className="text-xs font-bold text-white/90 uppercase tracking-wider">Active Session</span>
+                <span className="text-[10px] font-black text-white uppercase tracking-widest">Active Career Acceleration</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-snug tracking-tight">
-                Welcome back, <span className="text-yellow-300 drop-shadow-sm">{firstName}!</span> 👋
+              
+              <h1 className="text-3xl md:text-4xl font-black text-white leading-snug tracking-tight">
+                Welcome back, <span className="text-yellow-300 drop-shadow-sm">{firstName}!</span> 🚀
               </h1>
-              <p className="text-base text-white/80 font-normal max-w-lg leading-relaxed">
-                Your AI career engine is ready. Continue optimising for{' '}
-                <span className="font-bold text-white underline decoration-yellow-300/60 decoration-2 underline-offset-4">{user.targetRole}</span> roles.
+              
+              <p className="text-sm md:text-base text-white/85 font-medium max-w-xl leading-relaxed">
+                Your AI-powered career engine is active. Continuous optimization towards high-impact{' '}
+                <span className="font-extrabold text-white underline decoration-yellow-300/70 decoration-2 underline-offset-4">{user.targetRole}</span> roles.
               </p>
             </div>
-            <div className="flex flex-col items-start md:items-end gap-3">
+
+            <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
               <div className="flex items-center gap-2.5 bg-white/15 border border-white/25 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg hover:bg-white/20 transition-all duration-200">
                 <Target className="h-5 w-5 text-yellow-300 drop-shadow-xs" />
-                <span className="text-sm font-extrabold text-white tracking-wide">{user.targetRole}</span>
+                <span className="text-sm font-black text-white tracking-wide">{user.targetRole}</span>
               </div>
+              
               <div className="flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
-                <Flame className="h-4 w-4 text-orange-300 animate-pulse" />
-                <span className="text-xs font-bold text-white/90">
-                  {statsLoading ? '...' : `${streakDays}-day streak active`}
+                <Flame className="h-4 w-4 text-orange-300 animate-pulse fill-current" />
+                <span className="text-xs font-extrabold text-white/90">
+                  {statsLoading ? '...' : `${streakDays}-day active streak`}
                 </span>
               </div>
             </div>
@@ -255,31 +263,32 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
         </section>
 
         {/* Placement Readiness & Overall Productivity Summary */}
-        <section className="bg-white/90 backdrop-blur-2xl border border-white ring-1 ring-slate-900/5 rounded-[2.5rem] p-6 md:p-8 shadow-xl space-y-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+        <section className="bg-slate-900/60 backdrop-blur-2xl border border-white/[0.06] ring-1 ring-white/[0.06] rounded-[2.5rem] p-6 md:p-8 shadow-xl space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
           
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                <Award className="h-6 w-6" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
+                <Trophy className="h-6 w-6 text-yellow-300" />
               </div>
               <div>
-                <h2 className="text-xl font-extrabold text-[#0b1c30] tracking-tight">Placement Readiness & Productivity Summary</h2>
-                <p className="text-xs text-slate-500 font-semibold">Connected evaluation for target role: <span className="text-blue-700 font-bold">{user.targetRole}</span></p>
+                <h2 className="text-xl font-black text-white tracking-tight">Placement Readiness &amp; Success Summary</h2>
+                <p className="text-xs text-slate-400 font-semibold">Real-time score calibration for target role: <span className="text-blue-400 font-extrabold">{user.targetRole}</span></p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setShowReportModal(true)}
-                className="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 px-3.5 py-1.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer shadow-2xs hover:shadow-xs"
+                className="flex items-center gap-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 px-4 py-2 rounded-2xl text-xs font-black transition-all cursor-pointer shadow-lg shadow-black/20 hover:shadow-xs hover:scale-105 active:scale-95"
               >
                 <Eye className="h-4 w-4" />
                 View Report
               </button>
               <button
                 onClick={handleDownloadReportFile}
-                className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3.5 py-1.5 rounded-2xl text-xs font-extrabold transition-all cursor-pointer shadow-xs hover:shadow-md"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-2xl text-xs font-black transition-all cursor-pointer shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
               >
                 <Download className="h-4 w-4" />
                 Download Report
@@ -291,23 +300,23 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             
             {/* Overall Placement Readiness Meter (Left Column - 4 cols) */}
-            <div className="lg:col-span-4 bg-gradient-to-br from-slate-900 via-[#0b1c30] to-indigo-950 text-white rounded-3xl p-6 flex flex-col justify-between shadow-xl relative overflow-hidden border border-slate-800">
-              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="lg:col-span-4 bg-gradient-to-br from-slate-950 via-[#0b1c30] to-indigo-950 text-white rounded-3xl p-6 flex flex-col justify-between shadow-xl relative overflow-hidden border border-slate-800/80 group">
+              <div className="absolute -right-10 -bottom-10 w-44 h-44 bg-blue-500/15 rounded-full blur-2xl pointer-events-none" />
               
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full border border-yellow-400/20">
-                  Target Role Readiness
+                  Target Readiness Score
                 </span>
-                <h3 className="text-lg font-extrabold text-white tracking-tight pt-2">Placement Competency Index</h3>
+                <h3 className="text-lg font-black text-white tracking-tight pt-1">Placement Competency Index</h3>
                 <p className="text-xs text-slate-400 font-normal leading-relaxed">
-                  Aggregated readiness derived from ATS Resume Match, DSA Solved Rates, and AI Interview Scores.
+                  Aggregated score calculated from ATS Resume Match, DSA Modules, and AI Interviews.
                 </p>
               </div>
 
               <div className="my-6 flex flex-col items-center justify-center relative">
                 <div className="relative flex items-center justify-center">
-                  <svg className="w-36 h-36 -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.1)" strokeWidth="8" fill="none" />
+                  <svg className="w-40 h-40 -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.08)" strokeWidth="8" fill="none" />
                     <circle
                       cx="50"
                       cy="50"
@@ -323,22 +332,23 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                     <defs>
                       <linearGradient id="readinessGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#38bdf8" />
-                        <stop offset="100%" stopColor="#818cf8" />
+                        <stop offset="50%" stopColor="#818cf8" />
+                        <stop offset="100%" stopColor="#facc15" />
                       </linearGradient>
                     </defs>
                   </svg>
                   <div className="absolute flex flex-col items-center">
-                    <span className="text-3xl font-black text-white">{readinessIndex}%</span>
-                    <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">Ready</span>
+                    <span className="text-3xl font-black text-white tracking-tight">{readinessIndex}%</span>
+                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Ready</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs font-bold pt-2 border-t border-white/10 text-slate-300">
+              <div className="flex items-center justify-between text-xs font-bold pt-3 border-t border-white/10 text-slate-300">
                 <span>Status: <strong className={readinessIndex >= 75 ? 'text-emerald-400' : 'text-amber-400'}>{readinessIndex >= 75 ? 'Placement Ready 🎯' : (readinessIndex > 0 ? 'In Progress ⚡' : 'New Candidate 🌱')}</strong></span>
                 <button
                   onClick={() => navigate('/analyzer')}
-                  className="text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors cursor-pointer"
+                  className="text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors cursor-pointer font-black"
                 >
                   Details <ChevronRight className="h-3.5 w-3.5" />
                 </button>
@@ -349,28 +359,28 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
             <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
               
               {/* ATS Resume Alignment Card */}
-              <div className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 space-y-3">
+              <div className="bg-slate-800/50 border border-white/[0.08] rounded-3xl p-5 space-y-3 shadow-lg shadow-black/20">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <FileCheck className="h-5 w-5 text-blue-600" />
-                    <h4 className="text-sm font-extrabold text-[#0b1c30]">Resume ATS Match Rate</h4>
+                    <FileCheck className="h-5 w-5 text-blue-400" />
+                    <h4 className="text-sm font-black text-white">Resume ATS Match Rate</h4>
                   </div>
-                  <span className={`text-sm font-black px-2.5 py-0.5 rounded-full border ${hasUploadedResume ? 'text-blue-600 bg-blue-100/80 border-blue-200' : 'text-slate-500 bg-slate-100 border-slate-200'}`}>
+                  <span className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${hasUploadedResume ? 'text-blue-300 bg-blue-500/15 border-blue-500/25' : 'text-slate-400 bg-slate-700/50 border-white/[0.08]'}`}>
                     {hasUploadedResume ? `${atsScore}% ATS` : 'Not Uploaded'}
                   </span>
                 </div>
-                <div className="h-2 bg-slate-200/70 rounded-full overflow-hidden">
+                <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden p-0.5 border border-white/[0.06]">
                   <div 
-                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-700" 
+                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-700 shadow-xs" 
                     style={{ width: `${atsScore}%` }}
                   />
                 </div>
-                <p className="text-xs text-slate-500 font-normal flex items-center justify-between">
+                <p className="text-xs text-slate-400 font-normal flex items-center justify-between">
                   <span>{hasUploadedResume ? `Last analyzed: ${resumeData.fileName || 'Resume.pdf'}` : 'No resume uploaded yet for this account.'}</span>
                   {!hasUploadedResume && (
                     <button
                       onClick={() => navigate('/analyzer')}
-                      className="text-blue-600 hover:underline font-bold text-xs cursor-pointer ml-2"
+                      className="text-blue-400 hover:underline font-extrabold text-xs cursor-pointer ml-2"
                     >
                       Upload PDF →
                     </button>
@@ -381,15 +391,15 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
               {/* Extracted vs Missing Skills */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
                 {/* Verified Skills */}
-                <div className="bg-emerald-50/60 border border-emerald-100/80 rounded-2xl p-4 space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-emerald-800 uppercase tracking-wider">
-                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-emerald-400 uppercase tracking-wider">
+                    <ShieldCheck className="h-4 w-4 text-emerald-400" />
                     Verified Skills
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {extractedSkills.length > 0 ? (
                       extractedSkills.slice(0, 4).map((skill, idx) => (
-                        <span key={idx} className="text-[10px] font-bold bg-white text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200/60 shadow-2xs">
+                        <span key={idx} className="text-[10px] font-extrabold bg-emerald-500/15 text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-500/20 shadow-lg shadow-black/20">
                           ✓ {skill}
                         </span>
                       ))
@@ -400,15 +410,15 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                 </div>
 
                 {/* Target Role Skill Gaps */}
-                <div className="bg-rose-50/60 border border-rose-100/80 rounded-2xl p-4 space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-rose-800 uppercase tracking-wider">
-                    <AlertCircle className="h-4 w-4 text-rose-600" />
+                <div className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-rose-400 uppercase tracking-wider">
+                    <AlertCircle className="h-4 w-4 text-rose-400" />
                     Target Role Gaps
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {missingSkills.length > 0 ? (
                       missingSkills.slice(0, 3).map((skill, idx) => (
-                        <span key={idx} className="text-[10px] font-bold bg-white text-rose-700 px-2 py-0.5 rounded-md border border-rose-200/60 shadow-2xs">
+                        <span key={idx} className="text-[10px] font-extrabold bg-rose-500/15 text-rose-300 px-2 py-0.5 rounded-md border border-rose-500/20 shadow-lg shadow-black/20">
                           ! {skill}
                         </span>
                       ))
@@ -422,41 +432,41 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
             </div>
 
             {/* Placement Action Checklist (Right Column - 3 cols) */}
-            <div className="lg:col-span-3 bg-gradient-to-b from-blue-50/60 to-indigo-50/60 border border-blue-100 rounded-3xl p-5 flex flex-col justify-between space-y-4">
+            <div className="lg:col-span-3 bg-blue-500/8 border border-blue-500/20 rounded-3xl p-5 flex flex-col justify-between space-y-4 shadow-lg shadow-black/20">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-indigo-600" />
-                  <h4 className="text-xs font-black uppercase text-indigo-950 tracking-wider">Readiness Milestones</h4>
+                  <Layers className="h-4 w-4 text-indigo-400" />
+                  <h4 className="text-xs font-black uppercase text-white tracking-wider">Readiness Milestones</h4>
                 </div>
 
                 <ul className="space-y-2.5">
-                  <li className="flex items-center justify-between text-xs font-bold text-slate-700 bg-white/80 p-2.5 rounded-xl border border-slate-200/60">
+                  <li className="flex items-center justify-between text-xs font-extrabold text-slate-300 bg-white/[0.05] p-2.5 rounded-xl border border-white/[0.08] shadow-lg shadow-black/20">
                     <span className="flex items-center gap-2">
-                      <CheckCircle2 className={`h-4 w-4 ${atsScore >= 70 ? 'text-emerald-500' : 'text-slate-300'}`} />
+                      <CheckCircle2 className={`h-4 w-4 ${atsScore >= 70 ? 'text-emerald-500' : 'text-slate-500'}`} />
                       ATS Optimized
                     </span>
-                    <span className="text-[10px] font-black text-blue-600">{atsScore}%</span>
+                    <span className="text-[10px] font-black text-blue-400">{atsScore}%</span>
                   </li>
-                  <li className="flex items-center justify-between text-xs font-bold text-slate-700 bg-white/80 p-2.5 rounded-xl border border-slate-200/60">
+                  <li className="flex items-center justify-between text-xs font-extrabold text-slate-300 bg-white/[0.05] p-2.5 rounded-xl border border-white/[0.08] shadow-lg shadow-black/20">
                     <span className="flex items-center gap-2">
-                      <CheckCircle2 className={`h-4 w-4 ${completionPct >= 20 ? 'text-emerald-500' : 'text-slate-300'}`} />
+                      <CheckCircle2 className={`h-4 w-4 ${completionPct >= 20 ? 'text-emerald-500' : 'text-slate-500'}`} />
                       DSA Progress
                     </span>
-                    <span className="text-[10px] font-black text-violet-600">{completionPct}%</span>
+                    <span className="text-[10px] font-black text-violet-400">{completionPct}%</span>
                   </li>
-                  <li className="flex items-center justify-between text-xs font-bold text-slate-700 bg-white/80 p-2.5 rounded-xl border border-slate-200/60">
+                  <li className="flex items-center justify-between text-xs font-extrabold text-slate-300 bg-white/[0.05] p-2.5 rounded-xl border border-white/[0.08] shadow-lg shadow-black/20">
                     <span className="flex items-center gap-2">
-                      <CheckCircle2 className={`h-4 w-4 ${mockSessionsCount > 0 ? 'text-emerald-500' : 'text-slate-300'}`} />
+                      <CheckCircle2 className={`h-4 w-4 ${mockSessionsCount > 0 ? 'text-emerald-500' : 'text-slate-500'}`} />
                       Mock Interview
                     </span>
-                    <span className="text-[10px] font-black text-amber-600">{mockSessionsCount} run</span>
+                    <span className="text-[10px] font-black text-amber-400">{mockSessionsCount} run</span>
                   </li>
                 </ul>
               </div>
 
               <button
                 onClick={() => navigate('/coding-practice')}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs py-3 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs py-3 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
               >
                 Boost Placement Score <ArrowRight className="h-4 w-4" />
               </button>
@@ -468,8 +478,8 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
         {/* Quick Access Cards */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-extrabold text-[#0b1c30] tracking-tight">Quick Access</h2>
-            <span className="text-xs font-extrabold text-slate-400 bg-slate-100/80 px-3 py-1 rounded-full border border-slate-200/60">4 tools available</span>
+            <h2 className="text-xl font-black text-white tracking-tight">Quick Access Tools</h2>
+            <span className="text-xs font-black text-slate-400 bg-white/[0.06] backdrop-blur-md px-3 py-1 rounded-full border border-white/[0.08] shadow-lg shadow-black/20">4 tools active</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -479,22 +489,26 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                 <div
                   key={action.title}
                   onClick={() => navigate(action.route)}
-                  className="group relative bg-white/85 backdrop-blur-xl border border-white/80 ring-1 ring-slate-900/5 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col gap-5"
+                  className="group relative bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] ring-1 ring-white/[0.06] rounded-3xl p-6 shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col gap-5"
                 >
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center shadow-lg shadow-blue-500/10 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center shadow-lg shadow-blue-500/15 group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className="h-6 w-6 text-white" />
                   </div>
+                  
                   <span className={`absolute top-5 right-5 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border shadow-2xs ${action.badgeColor}`}>
                     {action.badge}
                   </span>
+                  
                   <div className="flex-1 space-y-2">
-                    <h3 className="font-extrabold text-[#0b1c30] text-base leading-snug group-hover:text-blue-600 transition-colors">{action.title}</h3>
-                    <p className="text-xs text-slate-500 font-normal leading-relaxed">{action.desc}</p>
+                    <h3 className="font-black text-slate-200 text-base leading-snug group-hover:text-blue-400 transition-colors">{action.title}</h3>
+                    <p className="text-xs text-slate-400 font-normal leading-relaxed">{action.desc}</p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#004ac6] group-hover:gap-2.5 transition-all">
+                  
+                  <div className="flex items-center gap-1.5 text-xs font-black text-blue-400 group-hover:gap-2.5 transition-all">
                     <span>Open</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
+                  
                   <div className={`absolute inset-0 bg-gradient-to-br ${action.gradient} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-300 pointer-events-none rounded-3xl`} />
                 </div>
               );
@@ -506,16 +520,16 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
         <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
           {/* Streak Card */}
-          <div className="bg-white/85 backdrop-blur-xl border border-white/80 ring-1 ring-slate-900/5 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 space-y-4">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] ring-1 ring-white/[0.06] rounded-3xl p-6 shadow-lg shadow-black/20 hover:shadow-md transition-all duration-300 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Current Streak</h3>
-              <div className="w-9 h-9 rounded-2xl bg-amber-50 flex items-center justify-center border border-amber-100">
+              <h3 className="text-xs font-black text-slate-200 uppercase tracking-wider">Current Streak</h3>
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/15 flex items-center justify-center border border-amber-500/25 shadow-lg shadow-black/20">
                 <Flame className="h-5 w-5 text-amber-500 fill-current animate-pulse" />
               </div>
             </div>
             {statsLoading ? (
               <div className="flex items-center gap-2 text-slate-400">
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin text-amber-500" />
                 <span className="text-sm font-semibold">Loading…</span>
               </div>
             ) : (
@@ -523,12 +537,12 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                 <p className="text-4xl font-black text-amber-500 tracking-tight">
                   {streakDays} <span className="text-sm font-bold text-slate-400">days</span>
                 </p>
-                <p className="text-xs text-slate-400 font-bold">Personal Best: {longestStreak} days 🏆</p>
+                <p className="text-xs text-slate-400 font-extrabold">Personal Best: {longestStreak} days 🏆</p>
                 <div className="flex gap-1.5 pt-1">
                   {Array.from({ length: streakBarTotal }, (_, i) => (
                     <div
                       key={i}
-                      className={`flex-1 h-2 rounded-full transition-all duration-300 ${i < streakDays ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-xs shadow-amber-400/40' : 'bg-slate-100'}`}
+                      className={`flex-1 h-2 rounded-full transition-all duration-300 ${i < streakDays ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-xs shadow-amber-400/40' : 'bg-slate-700/50'}`}
                     />
                   ))}
                 </div>
@@ -537,16 +551,16 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
           </div>
 
           {/* XP Card */}
-          <div className="bg-white/85 backdrop-blur-xl border border-white/80 ring-1 ring-slate-900/5 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 space-y-4">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] ring-1 ring-white/[0.06] rounded-3xl p-6 shadow-lg shadow-black/20 hover:shadow-md transition-all duration-300 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">XP Earned</h3>
-              <div className="w-9 h-9 rounded-2xl bg-yellow-50 flex items-center justify-center border border-yellow-100">
+              <h3 className="text-xs font-black text-slate-200 uppercase tracking-wider">XP Earned</h3>
+              <div className="w-10 h-10 rounded-2xl bg-yellow-500/15 flex items-center justify-center border border-yellow-500/25 shadow-lg shadow-black/20">
                 <Star className="h-5 w-5 text-yellow-500 fill-current" />
               </div>
             </div>
             {statsLoading ? (
               <div className="flex items-center gap-2 text-slate-400">
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin text-yellow-500" />
                 <span className="text-sm font-semibold">Loading…</span>
               </div>
             ) : (
@@ -554,8 +568,8 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                 <p className="text-4xl font-black text-yellow-500 tracking-tight">
                   {xp.toLocaleString()} <span className="text-sm font-bold text-slate-400">XP</span>
                 </p>
-                <p className="text-xs text-slate-400 font-bold">+{todayXp} XP earned today</p>
-                <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
+                <p className="text-xs text-slate-400 font-extrabold">+{todayXp} XP earned today</p>
+                <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden p-0.5 border border-white/[0.06]">
                   <div
                     className="h-full bg-gradient-to-r from-yellow-400 via-amber-400 to-amber-500 rounded-full transition-all duration-700 shadow-xs"
                     style={{ width: `${xpLevel}%` }}
@@ -566,16 +580,16 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
           </div>
 
           {/* Problems Solved */}
-          <div className="bg-white/85 backdrop-blur-xl border border-white/80 ring-1 ring-slate-900/5 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300 space-y-4">
+          <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] ring-1 ring-white/[0.06] rounded-3xl p-6 shadow-lg shadow-black/20 hover:shadow-md transition-all duration-300 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Problems Solved</h3>
-              <div className="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center border border-emerald-100">
+              <h3 className="text-xs font-black text-slate-200 uppercase tracking-wider">Problems Solved</h3>
+              <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center border border-emerald-500/25 shadow-lg shadow-black/20">
                 <TrendingUp className="h-5 w-5 text-emerald-500" />
               </div>
             </div>
             {statsLoading ? (
               <div className="flex items-center gap-2 text-slate-400">
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin text-emerald-500" />
                 <span className="text-sm font-semibold">Loading…</span>
               </div>
             ) : (
@@ -583,8 +597,8 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                 <p className="text-4xl font-black text-emerald-500 tracking-tight">
                   {solvedProblems} <span className="text-sm font-bold text-slate-400">/ {totalProblems}</span>
                 </p>
-                <p className="text-xs text-slate-400 font-bold">{completionPct}% overall completion</p>
-                <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
+                <p className="text-xs text-slate-400 font-extrabold">{completionPct}% overall completion</p>
+                <div className="h-2.5 bg-slate-700/50 rounded-full overflow-hidden p-0.5 border border-white/[0.06]">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-700 shadow-xs"
                     style={{ width: `${completionPct}%` }}
@@ -596,19 +610,19 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
         </section>
 
         {/* AI Tip Banner */}
-        <section className="bg-gradient-to-r from-indigo-50/90 via-blue-50/90 to-purple-50/90 border border-indigo-100/80 backdrop-blur-md rounded-3xl p-6 flex items-start gap-4 shadow-sm hover:shadow-md transition-all duration-300">
+        <section className="bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-purple-500/10 border border-indigo-500/20 backdrop-blur-md rounded-3xl p-6 flex items-start gap-4 shadow-lg shadow-black/20 hover:shadow-md transition-all duration-300">
           <div className="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
             <Zap className="h-5 w-5" />
           </div>
           <div className="space-y-1 flex-1">
-            <p className="text-xs font-black text-indigo-900 uppercase tracking-wider">AI Career Tip of the Day</p>
-            <p className="text-sm text-indigo-950 font-normal leading-relaxed">
-              For <strong className="font-bold text-indigo-900">{user.targetRole}</strong> roles, mastering Dynamic Programming and Graph algorithms gives you a significant advantage in top-tier technical interviews. Start with module-based practice today!
+            <p className="text-xs font-black text-indigo-300 uppercase tracking-wider">AI Career Tip of the Day</p>
+            <p className="text-sm text-slate-200 font-medium leading-relaxed">
+              For <strong className="font-black text-indigo-300">{user.targetRole}</strong> roles, mastering Dynamic Programming and Graph algorithms gives you a significant advantage in top-tier technical interviews. Start with module-based practice today!
             </p>
           </div>
           <button
             onClick={() => navigate('/coding-practice')}
-            className="shrink-0 group flex items-center gap-1.5 text-xs font-extrabold text-indigo-600 hover:text-indigo-800 bg-white/80 hover:bg-white px-4 py-2.5 rounded-2xl border border-indigo-200/60 shadow-2xs hover:shadow-sm transition-all duration-200 cursor-pointer hover:translate-x-0.5"
+            className="shrink-0 group flex items-center gap-1.5 text-xs font-black text-indigo-300 hover:text-indigo-200 bg-white/[0.08] hover:bg-white/[0.12] px-4 py-2.5 rounded-2xl border border-indigo-500/25 shadow-lg shadow-black/20 hover:shadow-xs transition-all duration-200 cursor-pointer hover:scale-105"
           >
             Start <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
@@ -617,38 +631,38 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
         {/* PREDICTIVE REPORT MODAL */}
         {showReportModal && (
           <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-            <div className="bg-white border border-slate-200 rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-6 p-6 sm:p-8 relative animate-in zoom-in-95 duration-200">
+            <div className="bg-slate-900/95 border border-white/[0.10] rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-6 p-6 sm:p-8 relative animate-in zoom-in-95 duration-200">
               
               {/* Modal Top Controls */}
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-extrabold text-[#0b1c30]">SyntacHire AI Predictive Report</h3>
-                    <p className="text-xs text-slate-500 font-semibold">Candidate: <strong className="text-slate-800">{user.name}</strong> • Role: <strong className="text-blue-700">{user.targetRole}</strong></p>
+                    <h3 className="text-lg font-black text-white">SyntacHire AI Predictive Report</h3>
+                    <p className="text-xs text-slate-400 font-semibold">Candidate: <strong className="text-slate-200">{user.name}</strong> • Role: <strong className="text-blue-400">{user.targetRole}</strong></p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => window.print()}
-                    className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 bg-white/[0.08] hover:bg-white/[0.12] text-slate-300 px-3.5 py-2 rounded-xl text-xs font-black transition-colors cursor-pointer"
                   >
                     <Printer className="h-4 w-4" />
                     Print
                   </button>
                   <button
                     onClick={handleDownloadReportFile}
-                    className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+                    className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-black transition-all shadow-md cursor-pointer"
                   >
                     <Download className="h-4 w-4" />
                     Download (.txt)
                   </button>
                   <button
                     onClick={() => setShowReportModal(false)}
-                    className="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-9 h-9 rounded-full bg-white/[0.08] hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -656,49 +670,49 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
               </div>
 
               {/* Report Body */}
-              <div className="space-y-6 text-slate-800">
+              <div className="space-y-6 text-slate-300">
 
                 {/* Section 1: Executive Summary */}
-                <div className="bg-gradient-to-br from-slate-900 via-[#0b1c30] to-indigo-950 text-white rounded-3xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="bg-gradient-to-br from-slate-950 via-[#0b1c30] to-indigo-950 text-white rounded-3xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
                   <div className="space-y-2 max-w-lg">
                     <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full border border-yellow-400/20">
                       Predictive Evaluation Result
                     </span>
-                    <h4 className="text-xl font-extrabold text-white">Target Role Placement Competency Index</h4>
+                    <h4 className="text-xl font-black text-white">Target Role Placement Competency Index</h4>
                     <p className="text-xs text-slate-300 font-normal leading-relaxed">
                       Based on current resume ATS match ({atsScore}%), solved DSA modules ({solvedProblems}/{totalProblems}), and mock interview readiness score ({mockScoreVal}%).
                     </p>
                   </div>
                   <div className="flex flex-col items-center bg-white/10 border border-white/15 backdrop-blur-md px-8 py-5 rounded-2xl shrink-0">
                     <span className="text-4xl font-black text-yellow-300">{readinessIndex}%</span>
-                    <span className="text-[10px] font-extrabold uppercase text-white/80 tracking-wider mt-1">Placement Ready</span>
+                    <span className="text-[10px] font-black uppercase text-white/80 tracking-wider mt-1">Placement Ready</span>
                   </div>
                 </div>
 
                 {/* Section 2: Resume ATS & Skill Gaps */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-5 space-y-3">
-                    <h5 className="text-xs font-black uppercase text-emerald-900 tracking-wider flex items-center gap-2">
-                      <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
+                    <h5 className="text-xs font-black uppercase text-emerald-400 tracking-wider flex items-center gap-2">
+                      <ShieldCheck className="h-4 w-4 text-emerald-400" />
                       Verified Resume Competencies ({extractedSkills.length})
                     </h5>
                     <div className="flex flex-wrap gap-1.5">
                       {extractedSkills.map((s, i) => (
-                        <span key={i} className="text-xs font-bold bg-white text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs">
+                        <span key={i} className="text-xs font-extrabold bg-emerald-500/15 text-emerald-300 px-2.5 py-1 rounded-lg border border-emerald-500/20 shadow-lg shadow-black/20">
                           ✓ {s}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-rose-50/70 border border-rose-200/80 rounded-2xl p-5 space-y-3">
-                    <h5 className="text-xs font-black uppercase text-rose-900 tracking-wider flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-rose-600" />
+                  <div className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-5 space-y-3">
+                    <h5 className="text-xs font-black uppercase text-rose-400 tracking-wider flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-rose-400" />
                       Role Skill Gaps to Address ({missingSkills.length})
                     </h5>
                     <div className="flex flex-wrap gap-1.5">
                       {missingSkills.map((s, i) => (
-                        <span key={i} className="text-xs font-bold bg-white text-rose-800 px-2.5 py-1 rounded-lg border border-rose-200 shadow-2xs">
+                        <span key={i} className="text-xs font-extrabold bg-rose-500/15 text-rose-300 px-2.5 py-1 rounded-lg border border-rose-500/20 shadow-lg shadow-black/20">
                           ! {s}
                         </span>
                       ))}
@@ -707,26 +721,26 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
                 </div>
 
                 {/* Section 3: Predictive Strategic Roadmap */}
-                <div className="bg-blue-50/60 border border-blue-100 rounded-3xl p-6 space-y-4">
-                  <h5 className="text-xs font-black uppercase text-blue-950 tracking-wider flex items-center gap-2">
-                    <Target className="h-4 w-4 text-blue-600" />
+                <div className="bg-blue-500/8 border border-blue-500/15 rounded-3xl p-6 space-y-4">
+                  <h5 className="text-xs font-black uppercase text-white tracking-wider flex items-center gap-2">
+                    <Target className="h-4 w-4 text-blue-400" />
                     Strategic Placement Action Plan
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded-2xl border border-blue-100 space-y-1.5 shadow-2xs">
-                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">STEP 1</span>
-                      <h6 className="text-xs font-extrabold text-slate-900">Resume Optimization</h6>
-                      <p className="text-[11px] text-slate-500 font-normal">Incorporate projects highlighting <strong className="text-slate-800">{missingSkills.slice(0, 2).join(' & ')}</strong>.</p>
+                    <div className="bg-white/[0.05] p-4 rounded-2xl border border-white/[0.06] space-y-1.5 shadow-lg shadow-black/20">
+                      <span className="text-[10px] font-black text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-md">STEP 1</span>
+                      <h6 className="text-xs font-black text-white">Resume Optimization</h6>
+                      <p className="text-[11px] text-slate-400 font-normal">Incorporate projects highlighting <strong className="text-slate-200">{missingSkills.slice(0, 2).join(' & ')}</strong>.</p>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-blue-100 space-y-1.5 shadow-2xs">
-                      <span className="text-[10px] font-black text-violet-600 bg-violet-50 px-2 py-0.5 rounded-md">STEP 2</span>
-                      <h6 className="text-xs font-extrabold text-slate-900">DSA Module Mastery</h6>
-                      <p className="text-[11px] text-slate-500 font-normal">Solve 10 problems in Module 01 (Arrays) and Module 10 (Dynamic Programming).</p>
+                    <div className="bg-white/[0.05] p-4 rounded-2xl border border-white/[0.06] space-y-1.5 shadow-lg shadow-black/20">
+                      <span className="text-[10px] font-black text-violet-300 bg-violet-500/20 px-2 py-0.5 rounded-md">STEP 2</span>
+                      <h6 className="text-xs font-black text-white">DSA Module Mastery</h6>
+                      <p className="text-[11px] text-slate-400 font-normal">Solve 10 problems in Module 01 (Arrays) and Module 10 (Dynamic Programming).</p>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-blue-100 space-y-1.5 shadow-2xs">
-                      <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">STEP 3</span>
-                      <h6 className="text-xs font-extrabold text-slate-900">Mock Interview Simulation</h6>
-                      <p className="text-[11px] text-slate-500 font-normal">Complete 2 technical interview sessions to boost communication metrics.</p>
+                    <div className="bg-white/[0.05] p-4 rounded-2xl border border-white/[0.06] space-y-1.5 shadow-lg shadow-black/20">
+                      <span className="text-[10px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-md">STEP 3</span>
+                      <h6 className="text-xs font-black text-white">Mock Interview Simulation</h6>
+                      <p className="text-[11px] text-slate-400 font-normal">Complete 2 technical interview sessions to boost communication metrics.</p>
                     </div>
                   </div>
                 </div>
@@ -734,11 +748,11 @@ Report generated automatically by SyntacHire AI Career Guidance Platform.
               </div>
 
               {/* Modal Footer */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-400 font-semibold">
+              <div className="flex items-center justify-between pt-4 border-t border-white/[0.06] text-xs text-slate-400 font-semibold">
                 <span>SyntacHire AI Automated Career Engine</span>
                 <button
                   onClick={() => setShowReportModal(false)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl transition-all cursor-pointer"
+                  className="bg-white/[0.08] hover:bg-white/[0.12] text-white font-black px-5 py-2.5 rounded-xl transition-all cursor-pointer"
                 >
                   Close Report
                 </button>
