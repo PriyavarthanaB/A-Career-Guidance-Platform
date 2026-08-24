@@ -155,6 +155,10 @@ export default function CodingPractice() {
     const solvedDisplay = statsLoading ? '…' : `${apiSolved} / ${apiTotal}`;
     const solvedSub     = statsLoading ? 'Calculating…' : `${apiPct}% Complete`;
 
+    const todaySolved = userStats?.todaySolvedCount ?? 0;
+    const targetDaily = userStats?.dailyGoal ?? 3;
+    const remainingDaily = Math.max(0, targetDaily - todaySolved);
+
     return [
       {
         title: "Current Streak",
@@ -186,10 +190,14 @@ export default function CodingPractice() {
       },
       {
         title: "Daily Goal",
-        value: statsLoading ? '…' : `${Math.min(apiSolved % 3, 3)} / 3 Solved`,
+        value: statsLoading ? '…' : `${todaySolved} / ${targetDaily} Solved`,
         icon: <Target className="h-6 w-6 text-rose-500" />,
         bg: "bg-rose-50 border-rose-200 text-rose-900",
-        sub: statsLoading ? 'Calculating…' : (apiSolved % 3 === 0 ? 'Goal reached! 🎉' : `${3 - (apiSolved % 3)} problem${3 - (apiSolved % 3) !== 1 ? 's' : ''} left!`)
+        sub: statsLoading
+          ? 'Calculating…'
+          : todaySolved >= targetDaily
+          ? 'Goal reached! 🎉'
+          : `${remainingDaily} problem${remainingDaily !== 1 ? 's' : ''} left today!`
       }
     ];
   }, [modules, userStats, statsLoading]);

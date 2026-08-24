@@ -13,6 +13,7 @@ import PracticePage from './pages/PracticePage';
 import CodingWorkspace from './pages/CodingWorkspace';
 import MockInterview from './pages/MockInterview';
 import InterviewSession from './pages/InterviewSession';
+import InterviewHistory from './pages/InterviewHistory';
 import Settings from './pages/Settings';
 
 // Protected Route Guard
@@ -113,6 +114,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <InterviewSession />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mock-interview/history"
+          element={
+            <ProtectedRoute>
+              <InterviewHistory />
             </ProtectedRoute>
           }
         />

@@ -6,8 +6,20 @@ const QuestionSchema = new mongoose.Schema(
     category: { type: String, default: 'General' },
     hint: { type: String },
     userAnswer: { type: String, default: '' },
+    audioUrl: { type: String, default: '' },
+    answerStartedAt: { type: Date },
+    answerEndedAt: { type: Date },
+    durationMs: { type: Number, default: 0 },
     score: { type: Number, default: 0 },
-    strengths: { type: String, default: '' },
+    technicalScore: { type: Number, default: 0 },
+    problemSolvingScore: { type: Number, default: 0 },
+    communicationScore: { type: Number, default: 0 },
+    relevanceScore: { type: Number, default: 0 },
+    confidenceScore: { type: Number, default: 0 },
+    aiFeedback: { type: String, default: '' },
+    strengths: { type: [String], default: [] },
+    weaknesses: { type: [String], default: [] },
+    missingPoints: { type: [String], default: [] },
     improvements: { type: String, default: '' },
   },
   { _id: true }
@@ -53,6 +65,34 @@ const InterviewSchema = new mongoose.Schema(
     },
     questions: [QuestionSchema],
     overallScore: {
+      type: Number,
+      default: 0,
+    },
+    overallTechnicalScore: {
+      type: Number,
+      default: 0,
+    },
+    overallProblemSolvingScore: {
+      type: Number,
+      default: 0,
+    },
+    overallCommunicationScore: {
+      type: Number,
+      default: 0,
+    },
+    overallRelevanceScore: {
+      type: Number,
+      default: 0,
+    },
+    overallConfidenceScore: {
+      type: Number,
+      default: 0,
+    },
+    overallTimeManagementScore: {
+      type: Number,
+      default: 0,
+    },
+    totalDurationMs: {
       type: Number,
       default: 0,
     },

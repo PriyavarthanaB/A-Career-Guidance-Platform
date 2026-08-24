@@ -56,31 +56,41 @@ exports.getUserStats = async (req, res) => {
           )
         : 0;
 
-    // ── 5. Calculate streak ─────────────────────────────────────────────────
+    // ── 5. Calculate streak from User.loginStreak (real daily login tracking) ──
     let streakDays = 0;
     let longestStreak = 0;
 
-    if (progress?.practiceStreak) {
-      // Use stored streak from UserDSAProgress if available
-      streakDays = progress.practiceStreak.current || 0;
-      longestStreak = progress.practiceStreak.longest || streakDays;
-    } else if (userObj) {
-      // Derive from account age + activity
-      const createdDate = userObj.createdAt || new Date();
-      const daysSinceJoined = Math.max(
-        0,
-        Math.floor((new Date() - new Date(createdDate)) / (1000 * 60 * 60 * 24))
-      );
-      // Streak is at most days since joining; grows with activity
-      streakDays = Math.min(
-        daysSinceJoined,
-        userSolvedFromProgress + mockSessionsCount + completedReadingsCount
-      );
-      longestStreak = Math.max(streakDays, streakDays + 1);
-    } else {
-      // Anonymous / no user context — derive purely from activity count
-      streakDays = Math.min(userSolvedFromProgress + mockSessionsCount, 7);
-      longestStreak = streakDays;
+    if (userObj) {
+      const hasStreakData = userObj.loginStreak && userObj.loginStreak.lastLoginDate;
+
+      if (!hasStreakData) {
+        // Backfill for existing users who registered before the streak feature was added
+        const now = new Date();
+        userObj.loginStreak = {
+          currentStreak: 1,
+          longestStreak: 1,
+          lastLoginDate: now,
+        };
+        try { await userObj.save(); } catch (_) {}
+        streakDays = 1;
+        longestStreak = 1;
+      } else {
+        const lastLogin = new Date(userObj.loginStreak.lastLoginDate);
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastLoginDay = new Date(lastLogin.getFullYear(), lastLogin.getMonth(), lastLogin.getDate());
+        const diffDays = Math.round((todayStart.getTime() - lastLoginDay.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 1) {
+          // Logged in today or yesterday — streak is still alive
+          streakDays = userObj.loginStreak.currentStreak || 1;
+        } else {
+          // More than 1 day since last login — streak has expired
+          streakDays = 0;
+        }
+
+        longestStreak = userObj.loginStreak.longestStreak || 0;
+      }
     }
 
     // ── 6. Calculate XP ────────────────────────────────────────────────────
@@ -92,6 +102,13 @@ exports.getUserStats = async (req, res) => {
       streakDays * 15;
 
     const todayXp = Math.min(xp, 50 + userSolvedFromProgress * 10);
+
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const todaySolvedCount = progress?.solvedProblems
+      ? progress.solvedProblems.filter((p) => p.solvedAt && new Date(p.solvedAt) >= todayStart).length
+      : 0;
 
     // ── 7. Completion percentage ────────────────────────────────────────────
     const completionPercentage = totalProblems
@@ -110,6 +127,8 @@ exports.getUserStats = async (req, res) => {
         xp,
         todayXp,
         solvedProblems: userSolvedFromProgress,
+        todaySolvedCount,
+        dailyGoal: 3,
         totalProblems: totalProblems || 120,
         mockSessionsCount,
         avgMockScore,

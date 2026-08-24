@@ -2,14 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import API from "../api/axios";
 import Sidebar from "../components/Sidebar";
-import VoiceRecorder from "../components/VoiceRecorder";
-import Orb from "../components/Orb";
+import InterviewRecorder from "../components/interview/InterviewRecorder";
 import {
   ArrowLeft,
   Sparkles,
   Send,
-  Mic,
-  MicOff,
   CheckCircle2,
   Clock,
   HelpCircle,
@@ -24,6 +21,8 @@ import {
   Target,
   Volume2,
   VolumeX,
+  Mic,
+  User,
 } from "lucide-react";
 
 // Fallback questions if the backend does not return a session payload.
@@ -116,11 +115,14 @@ export default function InterviewSession() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
+  const [showRecorder, setShowRecorder] = useState(config.responseMode === "voice");
+  const [recordingStatus, setRecordingStatus] = useState("idle");
+  const [recordingData, setRecordingData] = useState(null);
   const [evaluating, setEvaluating] = useState(false);
   const [currentFeedback, setCurrentFeedback] = useState(null);
   const [answersList, setAnswersList] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
+  const [sessionResult, setSessionResult] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
 
@@ -158,22 +160,32 @@ export default function InterviewSession() {
 
   // Submit single answer for AI evaluation via Gemini API
   const handleSubmitAnswer = async () => {
-    if (!answer.trim()) return;
+    if (!answer.trim() && !recordingData?.blob) return;
     setEvaluating(true);
+    setCurrentFeedback(null);
 
     try {
       let feedbackObj = null;
 
       if (config.interviewId) {
-        // Send to session submit endpoint
-        const res = await API.post(`/api/interview/${config.interviewId}/submit`, {
-          questionIndex: currentIndex,
-          answer: answer.trim(),
+        const formData = new FormData();
+        formData.append('questionIndex', currentIndex);
+        formData.append('answer', answer.trim());
+
+        if (recordingData?.blob) {
+          formData.append('recording', recordingData.blob, `interview-${config.interviewId}-question-${currentIndex + 1}.${recordingData.blob.type.split('/')[1] || 'webm'}`);
+          formData.append('answerStartedAt', recordingData.startedAt);
+          formData.append('answerEndedAt', recordingData.endedAt);
+          formData.append('durationMs', String(recordingData.durationMs));
+        }
+
+        const res = await API.post(`/api/interview/${config.interviewId}/submit`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
         });
+
         feedbackObj = res.data.feedback || res.data.questionData;
       } else {
-        // Standalone evaluate call
-        const res = await API.post("/api/interview/evaluate", {
+        const res = await API.post('/api/interview/evaluate', {
           question: currentQ.q,
           answer: answer.trim(),
           targetRole: config.targetRole,
@@ -184,33 +196,53 @@ export default function InterviewSession() {
       }
 
       setCurrentFeedback(feedbackObj);
-      setAnswersList((prev) => [...prev, feedbackObj]);
+      setAnswersList((prev) => [...prev, { ...feedbackObj, question: currentQ.q }]);
     } catch (err) {
-      console.error("Gemini AI Evaluation Error:", err);
-      // Heuristic fallback
+      console.error('Gemini AI Evaluation Error:', err);
       const fallbackObj = {
-        score: 82,
-        strengths: ["Clear problem-solving approach and technical terms."],
-        weaknesses: ["Could detail time/space complexity analysis further."],
-        missingPoints: ["Explicit rollback and error fallback strategies."],
-        idealAnswer: "An ideal answer covers problem context, trade-offs, and metrics.",
-        followUpQuestion: "How would your solution handle 10x traffic bursts?",
+        score: 78,
+        strengths: ['Clear structure and relevant examples.'],
+        weaknesses: ['Could add more edge case handling and performance detail.'],
+        missingPoints: ['Explicit rollback strategy and validation checks.'],
+        idealAnswer: 'An ideal answer includes architecture, trade-offs, and rigorous validation.',
+        followUpQuestion: 'How would you test this solution in a production environment?',
       };
       setCurrentFeedback(fallbackObj);
-      setAnswersList((prev) => [...prev, fallbackObj]);
+      setAnswersList((prev) => [...prev, { ...fallbackObj, question: currentQ.q }]);
     } finally {
       setEvaluating(false);
     }
   };
 
-  // Next question handler
-  const handleNext = () => {
+  const finishInterviewSession = async () => {
+    if (!config.interviewId) {
+      setIsFinished(true);
+      return;
+    }
+
+    setEvaluating(true);
+    try {
+      const res = await API.patch(`/api/interview/${config.interviewId}/finish`);
+      if (res.data?.success) {
+        setSessionResult(res.data.data || res.data);
+      }
+    } catch (err) {
+      console.error('Failed to complete interview session:', err);
+    } finally {
+      setEvaluating(false);
+      setIsFinished(true);
+    }
+  };
+
+  const handleNext = async () => {
     setCurrentFeedback(null);
-    setAnswer("");
+    setAnswer('');
+    setRecordingData(null);
+    setRecordingStatus('idle');
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      setIsFinished(true);
+      await finishInterviewSession();
     }
   };
 
@@ -293,19 +325,13 @@ export default function InterviewSession() {
                     </div>
 
                     <div className="mt-4 flex flex-col sm:flex-row items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/70 p-4">
-                      <div className={`relative h-24 w-24 shrink-0 rounded-full border border-slate-200 bg-gradient-to-br from-[#0f172a] to-[#1d4ed8] p-2 shadow-inner transition-transform duration-300 ${isSpeaking ? "scale-105" : "scale-100"}`}>
-                        <Orb
-                          hue={isSpeaking ? 205 : 260}
-                          hoverIntensity={isSpeaking ? 0.35 : 0.22}
-                          rotateOnHover={false}
-                          backgroundColor={isSpeaking ? "#0f172a" : "#111827"}
-                        />
-                        <div className={`absolute bottom-3 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-white/90 shadow-lg ${isSpeaking ? "animate-ping" : ""}`} />
+                      <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-[#004ac6] shadow-inner">
+                        <User className="h-12 w-12" />
                       </div>
                       <div className="space-y-2">
-                        <p className="text-sm font-extrabold text-[#0b1c30]">Live interviewer avatar</p>
+                        <p className="text-sm font-extrabold text-[#0b1c30]">Interview assistant</p>
                         <p className="text-sm text-[#434655]">
-                          The assistant reads each question aloud and animates the avatar while speaking, making the practice feel more natural.
+                          This session is audio-first: your answers are captured by voice and reviewed by AI. No webcam required.
                         </p>
                       </div>
                     </div>
@@ -323,45 +349,80 @@ export default function InterviewSession() {
                 {/* Answer Area */}
                 {!currentFeedback ? (
                   <div className="space-y-4 pt-4">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-extrabold uppercase tracking-wider text-[#0b1c30]">
-                        Your Response
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setIsRecording(!isRecording)}
-                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all duration-200 cursor-pointer ${
-                          isRecording
-                            ? "bg-rose-50 text-rose-600 border-rose-200 shadow-xs"
-                            : "bg-slate-50/80 text-slate-600 border-slate-200/80 hover:bg-slate-100 hover:shadow-xs"
-                        }`}
-                      >
-                        {isRecording ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}
-                        {isRecording ? "Switch to Text Area" : "Use Voice Recorder"}
-                      </button>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-extrabold uppercase tracking-wider text-[#0b1c30]">
+                          Your Response
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Record your answer with audio or type a structured response. Both are saved for review.
+                        </p>
+                      </div>
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-[#0b1c30]">
+                        <Mic className="h-3.5 w-3.5 text-[#004ac6]" /> {recordingStatus === 'recording' ? 'Live recording active' : recordingStatus === 'paused' ? 'Recording paused' : recordingStatus === 'stopped' ? 'Recording captured' : 'Ready to record'}
+                      </div>
                     </div>
 
-                    {isRecording || config.responseMode === "voice" ? (
-                      <VoiceRecorder
-                        onTranscriptChange={(liveText) => setAnswer(liveText)}
-                        onFinalTranscript={(finalText) => setAnswer(finalText)}
-                        silenceDelay={3500}
-                        autoStopOnSilence={true}
-                      />
-                    ) : (
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setShowRecorder(true)}
+                          className={`rounded-2xl px-4 py-3 text-sm font-bold transition ${showRecorder ? 'bg-[#004ac6] text-white' : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'}`}
+                        >
+                          Voice Recorder
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowRecorder(false)}
+                          className={`rounded-2xl px-4 py-3 text-sm font-bold transition ${!showRecorder ? 'bg-[#004ac6] text-white' : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'}`}
+                        >
+                          Text Answer Only
+                        </button>
+                      </div>
+
+                      {showRecorder ? (
+                        <InterviewRecorder
+                          onRecordingReady={(blob, metadata) => {
+                            setRecordingData({ blob, ...metadata });
+                          }}
+                          onStatusChange={(status) => setRecordingStatus(status)}
+                          label="Interview response capture"
+                        />
+                      ) : null}
+
                       <textarea
                         rows={6}
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
-                        placeholder="Type your structured answer here. Be thorough and specify trade-offs..."
+                        placeholder="Type your answer here. If you recorded audio, you may summarize the key points as text."
                         className="w-full rounded-2xl border border-slate-200/80 bg-slate-50/60 p-4 text-sm font-medium text-[#0b1c30] focus:border-[#004ac6] focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#004ac6]/20 transition-all leading-relaxed shadow-inner"
                       />
-                    )}
 
-                    <div className="flex items-center justify-end">
+                      {recordingData?.blob && (
+                        <div className="rounded-3xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-800">
+                          Recorded audio ready for submission ({Math.round(recordingData.durationMs / 1000)} sec).
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (showRecorder) {
+                            setRecordingData(null);
+                            setRecordingStatus('idle');
+                          }
+                          setAnswer('');
+                        }}
+                        className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-100 transition"
+                      >
+                        Clear Response
+                      </button>
                       <button
                         onClick={handleSubmitAnswer}
-                        disabled={!answer.trim() || evaluating}
+                        disabled={evaluating || (!answer.trim() && !recordingData?.blob)}
                         className="flex items-center gap-2 bg-gradient-to-r from-[#004ac6] to-blue-600 hover:from-[#003bb0] hover:to-blue-700 text-white px-6 py-3.5 rounded-2xl text-xs font-extrabold shadow-md shadow-[#004ac6]/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 disabled:opacity-50 cursor-pointer"
                       >
                         {evaluating ? (

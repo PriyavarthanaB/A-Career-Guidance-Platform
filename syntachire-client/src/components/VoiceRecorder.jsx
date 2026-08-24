@@ -13,7 +13,7 @@ import { Mic, MicOff, Square, Sparkles, Volume2, AlertCircle, Trash2 } from "luc
 export default function VoiceRecorder({
   onTranscriptChange,
   onFinalTranscript,
-  silenceDelay = 3500,
+  silenceDelay = 7000,
   autoStopOnSilence = true,
 }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -76,96 +76,100 @@ export default function VoiceRecorder({
     }, silenceDelay);
   }, [autoStopOnSilence, silenceDelay, clearSilenceTimer, stopRecording]);
 
-  // Start recording handler
-  const startRecording = useCallback(() => {
+  // Create and configure a SpeechRecognition instance
+  const initializeRecognition = useCallback(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setError("Web Speech API is not supported in your browser.");
-      return;
+      throw new Error('Web Speech API not supported');
     }
 
-    setError(null);
-    setTranscript("");
-    setInterimText("");
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
 
+    recognition.onstart = () => {
+      setIsRecording(true);
+      isRecordingRef.current = true;
+      resetSilenceTimer();
+    };
+
+    recognition.onresult = (event) => {
+      resetSilenceTimer(); // Activity detected -> reset silence countdown
+
+      let finalAccumulated = '';
+      let currentInterim = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const res = event.results[i];
+        const text = res[0]?.transcript || '';
+        if (res.isFinal) {
+          finalAccumulated += text + ' ';
+        } else {
+          currentInterim += text;
+        }
+      }
+
+      if (finalAccumulated) {
+        setTranscript((prev) => {
+          const updated = prev + finalAccumulated;
+          if (onTranscriptChange) {
+            onTranscriptChange(updated.trim());
+          }
+          return updated;
+        });
+      }
+
+      setInterimText(currentInterim);
+    };
+
+    recognition.onerror = (event) => {
+      console.warn('Speech Recognition Error:', event.error);
+      if (event.error === 'no-speech') {
+        return;
+      }
+      if (event.error === 'not-allowed') {
+        setError('Microphone permission denied. Please allow microphone access.');
+      } else {
+        setError(`Speech error: ${event.error}`);
+      }
+      stopRecording();
+    };
+
+    recognition.onend = () => {
+      if (isRecordingRef.current) {
+        try {
+          const nextRecognition = initializeRecognition();
+          recognitionRef.current = nextRecognition;
+          nextRecognition.start();
+        } catch (_) {
+          stopRecording();
+        }
+      } else {
+        setIsRecording(false);
+      }
+    };
+
+    return recognition;
+  }, [resetSilenceTimer, stopRecording, onTranscriptChange]);
+
+  // Start recording handler
+  const startRecording = useCallback(() => {
     try {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-
-      recognition.onstart = () => {
-        setIsRecording(true);
-        isRecordingRef.current = true;
-        resetSilenceTimer();
-      };
-
-      recognition.onresult = (event) => {
-        resetSilenceTimer(); // Activity detected -> reset silence countdown
-
-        let finalAccumulated = "";
-        let currentInterim = "";
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const res = event.results[i];
-          const text = res[0].transcript;
-          if (res.isFinal) {
-            finalAccumulated += text + " ";
-          } else {
-            currentInterim += text;
-          }
-        }
-
-        if (finalAccumulated) {
-          setTranscript((prev) => {
-            const updated = prev + finalAccumulated;
-            if (onTranscriptChange) {
-              onTranscriptChange(updated.trim());
-            }
-            return updated;
-          });
-        }
-
-        setInterimText(currentInterim);
-      };
-
-      recognition.onerror = (event) => {
-        console.warn("Speech Recognition Error:", event.error);
-        if (event.error === "no-speech") {
-          // Handled by silence detection
-          return;
-        }
-        if (event.error === "not-allowed") {
-          setError("Microphone permission denied. Please allow microphone access.");
-        } else {
-          setError(`Speech error: ${event.error}`);
-        }
-        stopRecording();
-      };
-
-      recognition.onend = () => {
-        if (isRecordingRef.current) {
-          // If ended unexpectedly while still supposed to record, restart
-          try {
-            recognition.start();
-          } catch (_) {
-            stopRecording();
-          }
-        } else {
-          setIsRecording(false);
-        }
-      };
-
+      const recognition = initializeRecognition();
       recognitionRef.current = recognition;
+      setError(null);
+      setTranscript('');
+      setInterimText('');
       recognition.start();
     } catch (err) {
-      console.error("Failed to initialize SpeechRecognition:", err);
-      setError("Could not access microphone.");
+      console.error('Failed to initialize SpeechRecognition:', err);
+      setError('Could not access microphone. Please allow permission and try again.');
       stopRecording();
     }
-  }, [resetSilenceTimer, stopRecording, onTranscriptChange]);
+  }, [initializeRecognition, stopRecording]);
 
   // Clean up timers & recognition on unmount
   useEffect(() => {

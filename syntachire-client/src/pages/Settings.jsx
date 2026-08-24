@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import API from "../api/axios";
 import {
   User,
   Mail,
@@ -22,6 +23,7 @@ import {
   AlertTriangle,
   Eye,
   EyeOff,
+  Loader2,
 } from "lucide-react";
 
 const TABS = [
@@ -48,6 +50,8 @@ export default function Settings() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
   const [saved, setSaved] = useState(false);
+  const [reanalyzing, setReanalyzing] = useState(false);
+  const [reanalyzeMsg, setReanalyzeMsg] = useState("");
 
   // Profile state
   const [profile, setProfile] = useState({
@@ -89,6 +93,13 @@ export default function Settings() {
     animations: true,
   });
 
+  // Account Deletion Password Confirmation States
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   // Load user from localStorage
   useEffect(() => {
     try {
@@ -110,21 +121,68 @@ export default function Settings() {
     } catch (_) {}
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       const stored = localStorage.getItem("user");
       const existing = stored ? JSON.parse(stored) : {};
       const updated = { ...existing, ...profile };
       localStorage.setItem("user", JSON.stringify(updated));
+
+      // Trigger automatic resume re-analysis for new targetRole
+      setReanalyzing(true);
+      setReanalyzeMsg("Updating target role & re-analyzing resume with AI...");
+      try {
+        const res = await API.post("/api/resume/reanalyze-for-role", {
+          targetRole: profile.targetRole,
+        });
+        if (res.data?.message) {
+          setReanalyzeMsg(res.data.message);
+        }
+      } catch (apiErr) {
+        console.warn("Re-analysis notice:", apiErr);
+      } finally {
+        setReanalyzing(false);
+      }
     } catch (_) {}
     setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setTimeout(() => {
+      setSaved(false);
+      setReanalyzeMsg("");
+    }, 3500);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");
+  };
+
+  const handleConfirmDeleteAccount = async (e) => {
+    e.preventDefault();
+    if (!confirmPassword) {
+      setDeleteError("Please enter your password to confirm account deletion.");
+      return;
+    }
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      const token = localStorage.getItem("token");
+      const res = await API.delete("/api/auth/delete-account", {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { password: confirmPassword },
+      });
+      if (res.data?.success) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/", { state: { message: "Your account and all associated user data have been permanently deleted." } });
+      }
+    } catch (err) {
+      console.error("Delete Account Error:", err.response);
+      const msg = err.response?.data?.message || err.response?.data?.error || "Incorrect password. Account deletion cancelled.";
+      setDeleteError(msg);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const avatarInitial = profile.name ? profile.name.charAt(0).toUpperCase() : "U";
@@ -156,13 +214,19 @@ export default function Settings() {
 
           <button
             onClick={handleSave}
+            disabled={reanalyzing}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-200 cursor-pointer shadow-lg ${
               saved
                 ? "bg-emerald-500 text-white shadow-emerald-500/25"
                 : "bg-[#004ac6] hover:bg-blue-600 text-white shadow-blue-600/25 hover:shadow-blue-500/35 hover:-translate-y-0.5"
             }`}
           >
-            {saved ? (
+            {reanalyzing ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : saved ? (
               <>
                 <CheckCircle2 className="h-4 w-4" />
                 Saved!
@@ -175,6 +239,14 @@ export default function Settings() {
             )}
           </button>
         </div>
+
+        {/* Re-analysis Status Alert Banner */}
+        {(saved || reanalyzing) && (
+          <div className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-900 p-4 rounded-2xl text-xs font-extrabold shadow-sm animate-in fade-in duration-300">
+            {reanalyzing ? <Loader2 className="h-4.5 w-4.5 text-blue-600 animate-spin shrink-0" /> : <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 shrink-0" />}
+            <span>{reanalyzeMsg || "Target role updated! Your resume has been automatically re-analyzed by AI for this new role."}</span>
+          </div>
+        )}
 
         {/* Layout: tabs + content */}
         <div className="flex flex-col md:flex-row gap-6">
@@ -390,7 +462,14 @@ export default function Settings() {
                   <p className="text-xs text-rose-700 leading-relaxed font-medium">
                     Deleting your account will permanently remove all your progress, interview records, and data. This action cannot be undone.
                   </p>
-                  <button className="flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer shadow-md shadow-rose-600/25 hover:-translate-y-0.5">
+                  <button
+                    onClick={() => {
+                      setShowDeleteModal(true);
+                      setConfirmPassword("");
+                      setDeleteError("");
+                    }}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer shadow-md shadow-rose-600/25 hover:-translate-y-0.5"
+                  >
                     <Trash2 className="h-4 w-4" />
                     Delete Account
                   </button>
@@ -499,6 +578,91 @@ export default function Settings() {
           </div>
         </div>
       </main>
+
+      {/* Delete Account Password Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-white border border-rose-100 rounded-3xl shadow-2xl max-w-md w-full p-6 md:p-8 space-y-6 animate-in zoom-in-95 duration-200">
+            
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-slate-900">Confirm Account Deletion</h3>
+                <p className="text-xs text-rose-600 font-medium">Permanent & Irreversible</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-500 leading-relaxed font-normal">
+              This action will permanently delete your account profile, all uploaded resumes, DSA practice statistics, and mock interview reports. Please enter your password to proceed.
+            </p>
+
+            <form onSubmit={handleConfirmDeleteAccount} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700">Enter Your Password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 focus:border-rose-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {deleteError && (
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 shrink-0 text-rose-500" />
+                  <span>{deleteError}</span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setConfirmPassword("");
+                    setDeleteError("");
+                  }}
+                  disabled={deleting}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={deleting || !confirmPassword}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/25 transition cursor-pointer disabled:opacity-50"
+                >
+                  {deleting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                      Permanently Delete Account
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ const resumeSchema = new mongoose.Schema({
     required: true 
   },
   fileName: { type: String, required: true },
+  targetRole: { type: String },
   rawText: { type: String },
   atsScore: { type: Number, default: 0 },
   extractedSkills: [{ type: String }],

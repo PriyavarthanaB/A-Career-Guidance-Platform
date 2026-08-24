@@ -5,9 +5,14 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  targetRole: { type: String, default: 'Full Stack Developer' }
+  targetRole: { type: String, default: 'Full Stack Developer' },
+  loginStreak: {
+    currentStreak: { type: Number, default: 0 },
+    longestStreak: { type: Number, default: 0 },
+    lastLoginDate: { type: Date, default: null },
+  },
 }, { 
   timestamps: true // Automatically creates 'createdAt' and 'updatedAt' fields
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema);

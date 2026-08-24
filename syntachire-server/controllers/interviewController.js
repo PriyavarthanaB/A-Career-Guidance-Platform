@@ -1,7 +1,22 @@
 const Interview = require('../models/Interview');
 const { evaluateAnswerWithGemini } = require('../services/geminiService');
 
-// Seed Question Generator tailored by type & role
+const shuffleArray = (array) => array.slice().sort(() => Math.random() - 0.5);
+
+const selectQuestionSet = (pool, count, difficultyLabel) => {
+  const filtered = pool.filter((q) => q.difficulty === difficultyLabel);
+  const source = filtered.length >= count ? filtered : pool;
+  const chosen = shuffleArray(source).slice(0, Math.min(count, source.length));
+
+  if (chosen.length < count) {
+    const remaining = shuffleArray(pool.filter((item) => !chosen.includes(item)));
+    chosen.push(...remaining.slice(0, count - chosen.length));
+  }
+
+  return chosen;
+};
+
+// Seed Question Generator tailored by type, difficulty, and role
 const generateQuestionsForRole = (type, difficulty, targetRole, count = 5) => {
   const roleStr = targetRole || 'Software Engineer';
   const normalizedRole = (roleStr || '').toLowerCase();
@@ -60,89 +75,121 @@ const generateQuestionsForRole = (type, difficulty, targetRole, count = 5) => {
   const QUESTION_BANK = {
     hr: [
       {
-        question: `Tell me about a time you faced a significant disagreement with a teammate while working on a ${roleStr} project and how you resolved it.`,
-        category: 'Conflict Resolution & Teamwork',
-        hint: 'Use the STAR method and focus on empathy, ownership, and a constructive outcome.',
+        question: `Tell me about a time you worked successfully with a team to deliver a ${roleStr} project on time.`,
+        category: 'Teamwork & Delivery',
+        difficulty: 'easy',
+        hint: 'Keep this answer clear, practical, and focused on collaboration.',
       },
       {
-        question: `Why do you want to work as a ${roleStr}, and how does this role align with your long-term career growth?`,
-        category: 'Motivation & Career Goals',
-        hint: 'Connect your growth story to product impact, learning, and the role’s responsibilities.',
+        question: `Why are you interested in this ${roleStr} role and what motivates you to contribute?`,
+        category: 'Motivation & Career Fit',
+        difficulty: 'easy',
+        hint: 'Share meaningful motivations and how they match the role’s impact.',
       },
       {
-        question: `Describe a situation where priorities changed suddenly near a deadline. How did you adapt while keeping quality high?`,
+        question: `Describe how you handled a sudden change in priorities on a project.`,
         category: 'Adaptability & Delivery',
-        hint: 'Show communication, prioritization, and calm decision-making under pressure.',
+        difficulty: 'medium',
+        hint: 'Show how you stayed calm, communicated, and adjusted your plan.',
       },
       {
-        question: `How do you receive feedback on your work when it challenges your approach to a ${roleStr} problem?`,
+        question: `How do you use feedback to improve your work on a ${roleStr} assignment?`,
         category: 'Feedback & Growth',
-        hint: 'Mention humility, curiosity, and how you improve after feedback.',
+        difficulty: 'medium',
+        hint: 'Explain a concrete example of listening, learning, and improving.',
       },
       {
-        question: `Give an example of when you took initiative without formal authority to improve a delivery or experience.`,
+        question: `Tell me about a disagreement with a teammate and how you turned it into a better result.`,
+        category: 'Conflict Resolution',
+        difficulty: 'hard',
+        hint: 'Explain your process, empathy, and how you reached a constructive conclusion.',
+      },
+      {
+        question: `Share an example of taking ownership to improve a process or delivery outcome.`,
         category: 'Ownership & Initiative',
-        hint: 'Describe the problem, the action you took, and the measurable result.',
+        difficulty: 'medium',
+        hint: 'Describe the action you took and the measurable result.',
       },
     ],
     technical: [
       {
-        question: `How would you design a scalable ${roleContext.example} that handles high traffic and needs strong reliability for a ${roleStr} role?`,
-        category: 'System Design & Scalability',
-        hint: "Discuss architecture decisions, trade-offs, and how you'd scale under load.",
+        question: `What is the difference between GET and POST requests and when would you use each?`,
+        category: 'Web Fundamentals',
+        difficulty: 'easy',
+        hint: 'Answer with clear examples of safe reads versus state-changing writes.',
       },
       {
-        question: `Explain how you would optimize ${roleContext.focus} in a production ${roleStr} setup.`,
+        question: `How would you explain the difference between an array and an object in a real application?`,
+        category: 'Data Structures',
+        difficulty: 'easy',
+        hint: 'Keep your answer simple and use a practical example.',
+      },
+      {
+        question: `Explain how you would optimize ${roleContext.focus} in a production ${roleStr} system.`,
         category: 'Practical Engineering',
-        hint: 'Include performance, debugging, testing, and maintainability considerations.',
+        difficulty: 'medium',
+        hint: 'Describe performance, reliability, and maintainability trade-offs.',
       },
       {
-        question: `Compare the trade-offs you would consider when choosing between different storage, API, or deployment patterns for a ${roleStr} system.`,
-        category: 'Architecture Trade-offs',
-        hint: 'Mention latency, consistency, cost, complexity, and operational concerns.',
-      },
-      {
-        question: `How would you approach debugging a production issue in a ${roleStr} system when the symptoms are unclear?`,
+        question: `How would you debug a production issue in a ${roleStr} system when the symptoms are unclear?`,
         category: 'Debugging & Resilience',
-        hint: 'Mention observability, logs, metrics, and rollback or mitigation strategies.',
+        difficulty: 'medium',
+        hint: 'Mention observability, logging, and rollback or mitigation steps.',
+      },
+      {
+        question: `How would you design a scalable ${roleContext.example} that needs strong reliability and low latency?`,
+        category: 'System Design',
+        difficulty: 'hard',
+        hint: 'Cover architecture, trade-offs, and how you would handle failures.',
       },
       {
         question: `What would you improve first in a legacy ${roleStr} codebase that is slowing down delivery?`,
-        category: 'Refactoring & Maintainability',
+        category: 'Maintainability',
+        difficulty: 'medium',
         hint: 'Discuss prioritization, risk reduction, and iterative improvements.',
       },
     ],
     mixed: [
       {
-        question: `Walk me through an end-to-end ${roleContext.example} you would build for a ${roleStr} role and explain your key trade-offs.`,
-        category: 'Architecture & Trade-offs',
-        hint: 'Cover requirements, data flow, technical choices, and delivery concerns.',
-      },
-      {
-        question: `How do you balance writing clean, tested code with meeting aggressive deadlines in a ${roleStr} environment?`,
+        question: `How do you balance writing clean, tested code with meeting aggressive deadlines?`,
         category: 'Engineering Pragmatism',
-        hint: 'Show how you balance quality, speed, and business priorities.',
+        difficulty: 'easy',
+        hint: 'Give a simple example of balancing quality and speed.',
       },
       {
-        question: `How would you ensure the solution is reliable, secure, and maintainable for a ${roleStr} role?`,
+        question: `What steps would you take to add value quickly on a new team?`,
+        category: 'Onboarding & Ownership',
+        difficulty: 'easy',
+        hint: 'Talk about learning fast, communicating clearly, and delivering impact.',
+      },
+      {
+        question: `Explain how you would ensure a solution is reliable, secure, and maintainable.`,
         category: 'Reliability & Security',
-        hint: 'Mention testing, monitoring, authentication, permissions, and fallback strategies.',
+        difficulty: 'medium',
+        hint: 'Mention testing, monitoring, authentication, and fallback strategies.',
       },
       {
-        question: `Tell me about a technical challenge you solved and how you measured whether the solution actually worked.`,
+        question: `Tell me about a technical challenge you solved and how you measured success.`,
         category: 'Outcome & Measurement',
+        difficulty: 'medium',
         hint: 'Reference metrics, feedback loops, or user impact where possible.',
       },
       {
-        question: `If you were joining a new team in a ${roleStr} role tomorrow, how would you ramp up quickly and add value?`,
-        category: 'Onboarding & Ownership',
-        hint: 'Discuss learning, communication, context gathering, and early wins.',
+        question: `Walk me through an end-to-end ${roleContext.example} you would build and explain your key trade-offs.`,
+        category: 'Architecture & Trade-offs',
+        difficulty: 'hard',
+        hint: 'Cover requirements, data flow, technical choices, and delivery concerns.',
+      },
+      {
+        question: `How would you handle a situation where product goals and technical constraints conflict?`,
+        category: 'Product & Engineering',
+        difficulty: 'medium',
+        hint: 'Show how you balance stakeholder needs with practical technical solutions.',
       },
     ],
   };
 
   const pool = QUESTION_BANK[type] || QUESTION_BANK.mixed;
-  const result = [];
   const safeCount = Math.max(1, Number(count) || 5);
   const difficultyHint = difficultyLabel === 'hard'
     ? 'Focus on depth, trade-offs, and edge cases.'
@@ -150,19 +197,18 @@ const generateQuestionsForRole = (type, difficulty, targetRole, count = 5) => {
       ? 'Keep your answer clear and practical.'
       : 'Provide a balanced explanation with concrete examples.';
 
-  for (let i = 0; i < safeCount; i++) {
-    const qObj = pool[i % pool.length];
-    result.push({
-      question: qObj.question,
-      category: qObj.category,
-      hint: `${qObj.hint} ${difficultyHint}`,
-      userAnswer: '',
-      score: 0,
-      strengths: '',
-      improvements: '',
-    });
-  }
-  return result;
+  const selectedQuestions = selectQuestionSet(pool, safeCount, difficultyLabel);
+
+  return selectedQuestions.map((qObj) => ({
+    question: qObj.question,
+    category: qObj.category,
+    hint: `${qObj.hint} ${difficultyHint}`,
+    userAnswer: '',
+    score: 0,
+    strengths: '',
+    improvements: '',
+    difficulty: qObj.difficulty || 'medium',
+  }));
 };
 
 /**
@@ -291,7 +337,7 @@ exports.getInterviewById = async (req, res) => {
  */
 exports.submitAnswer = async (req, res) => {
   try {
-    const { questionIndex, answer } = req.body;
+    const { questionIndex, answer, answerStartedAt, answerEndedAt, durationMs } = req.body;
     const interview = await Interview.findById(req.params.id);
 
     if (!interview) {
@@ -312,6 +358,9 @@ exports.submitAnswer = async (req, res) => {
     }
 
     const currentQuestion = interview.questions[targetIndex];
+    const audioUrl = req.file
+      ? `/uploads/interviews/${req.file.filename}`
+      : currentQuestion.audioUrl || '';
 
     // Query Gemini API
     const geminiFeedback = await evaluateAnswerWithGemini({
@@ -323,13 +372,27 @@ exports.submitAnswer = async (req, res) => {
     });
 
     currentQuestion.userAnswer = answer || '';
-    currentQuestion.score = geminiFeedback.score;
+    currentQuestion.audioUrl = audioUrl;
+    currentQuestion.answerStartedAt = answerStartedAt ? new Date(answerStartedAt) : currentQuestion.answerStartedAt;
+    currentQuestion.answerEndedAt = answerEndedAt ? new Date(answerEndedAt) : currentQuestion.answerEndedAt;
+    currentQuestion.durationMs = durationMs ? Number(durationMs) : currentQuestion.durationMs;
+    currentQuestion.score = geminiFeedback.score || 0;
+    currentQuestion.technicalScore = geminiFeedback.technicalScore || 0;
+    currentQuestion.problemSolvingScore = geminiFeedback.problemSolvingScore || 0;
+    currentQuestion.communicationScore = geminiFeedback.communicationScore || 0;
+    currentQuestion.relevanceScore = geminiFeedback.relevanceScore || 0;
+    currentQuestion.confidenceScore = geminiFeedback.confidenceScore || 0;
+    currentQuestion.aiFeedback = geminiFeedback.aiFeedback || geminiFeedback.idealAnswer || '';
     currentQuestion.strengths = Array.isArray(geminiFeedback.strengths)
-      ? geminiFeedback.strengths.join(' ')
-      : geminiFeedback.strengths;
-    currentQuestion.improvements = Array.isArray(geminiFeedback.weaknesses)
-      ? geminiFeedback.weaknesses.join(' ')
-      : geminiFeedback.weaknesses;
+      ? geminiFeedback.strengths
+      : geminiFeedback.strengths ? [geminiFeedback.strengths] : [];
+    currentQuestion.weaknesses = Array.isArray(geminiFeedback.weaknesses)
+      ? geminiFeedback.weaknesses
+      : geminiFeedback.weaknesses ? [geminiFeedback.weaknesses] : [];
+    currentQuestion.missingPoints = Array.isArray(geminiFeedback.missingPoints)
+      ? geminiFeedback.missingPoints
+      : geminiFeedback.missingPoints ? [geminiFeedback.missingPoints] : [];
+    currentQuestion.improvements = geminiFeedback.improvements || '';
 
     await interview.save();
 
@@ -369,11 +432,26 @@ exports.finishInterview = async (req, res) => {
       ? Math.round(
           answered.reduce((acc, curr) => acc + curr.score, 0) / answered.length
         )
-      : 85;
+      : 0;
+
+    const average = (field) =>
+      answered.length
+        ? Math.round(
+            answered.reduce((acc, curr) => acc + (curr[field] || 0), 0) /
+              answered.length
+          )
+        : 0;
 
     interview.status = 'completed';
     interview.overallScore = avgScore;
+    interview.overallTechnicalScore = average('technicalScore');
+    interview.overallProblemSolvingScore = average('problemSolvingScore');
+    interview.overallCommunicationScore = average('communicationScore');
+    interview.overallRelevanceScore = average('relevanceScore');
+    interview.overallConfidenceScore = average('confidenceScore');
+    interview.overallTimeManagementScore = average('timeManagementScore');
     interview.completedAt = new Date();
+    interview.totalDurationMs = interview.completedAt - new Date(interview.startedAt || interview.completedAt);
     interview.summary = `Candidate completed ${answered.length}/${interview.questions.length} questions in a ${interview.difficulty} ${interview.type.toUpperCase()} interview round for ${interview.targetRole}. Overall match score: ${avgScore}%.`;
 
     await interview.save();

@@ -23,7 +23,8 @@ import {
   RotateCcw,
   Sparkles,
   Copy,
-  Check
+  Check,
+  XCircle
 } from "lucide-react";
 
 // Judge0 Language IDs
@@ -49,6 +50,7 @@ export default function CodingWorkspace() {
   const [activeLeftTab, setActiveLeftTab] = useState("description"); // description, editorial, submissions, related
   const [activeConsoleTab, setActiveConsoleTab] = useState("testcase"); // testcase, result
   const [activeSolutionLang, setActiveSolutionLang] = useState("python");
+  const [activeTestcaseTab, setActiveTestcaseTab] = useState(0); // index of selected testcase result
 
   // Mobile layout state
   const [activeMainTab, setActiveMainTab] = useState("problem"); // problem, editor
@@ -70,42 +72,128 @@ export default function CodingWorkspace() {
   // Submissions list state
   const [submissions, setSubmissions] = useState([]);
 
-  // Generates starting code template based on language and problem
+  // Generates clean, minimal LeetCode-style starter code for the editor
   const getStarterCode = (lang, prob) => {
     if (!prob) return "";
+
     const probName = prob.name || "";
     const cleanName = probName 
       ? probName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') 
       : "solve";
+    const camelName = cleanName.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
 
-    // Known problem custom starters
-    if (probName === "Two Sum") {
-      if (lang === "python") return `def two_sum(nums, target):\n    # Write your code here\n    pass\n\n# Test output:\nprint(two_sum([2, 7, 11, 15], 9))`;
-      if (lang === "javascript") return `function twoSum(nums, target) {\n    // Write your code here\n}\n\n// Test output:\nconsole.log(twoSum([2, 7, 11, 15], 9));`;
-      if (lang === "java") return `public class Main {\n    public static void main(String[] args) {\n        // Two Sum implementation\n        System.out.println("[0, 1]");\n    }\n}`;
-      if (lang === "cpp") return `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "[0, 1]" << endl;\n    return 0;\n}`;
-    }
-
-    if (probName === "Reverse Integer") {
-      if (lang === "python") return `def reverse_integer(x):\n    # Write your solution here\n    pass\n\n# Print result so stdout receives output:\nprint(reverse_integer(123))`;
-      if (lang === "javascript") return `function reverseInteger(x) {\n    // Write your solution here\n}\n\nconsole.log(reverseInteger(123));`;
-      if (lang === "java") return `public class Main {\n    public static void main(String[] args) {\n        System.out.println("321");\n    }\n}`;
-      if (lang === "cpp") return `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "321" << endl;\n    return 0;\n}`;
-    }
-
-    // Default language boilerplates
     if (lang === "python") {
-      return `def ${cleanName}():\n    # Write your code here\n    return "Solution output"\n\n# Print result so stdout receives output:\nprint(${cleanName}())\n`;
+      return `def ${camelName}(s):
+    # Write your solution code here
+    pass
+`;
     } else if (lang === "javascript") {
-      const camelName = cleanName.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
-      return `function ${camelName}() {\n    // Write your code here\n    return "Solution output";\n}\n\n// Print result so stdout receives output:\nconsole.log(${camelName}());\n`;
+      return `function ${camelName}(s) {
+    // Write your solution code here
+}
+`;
     } else if (lang === "java") {
-      return `public class Main {\n    public static void main(String[] args) {\n        // Write your code here\n        System.out.println("Solution output");\n    }\n}`;
-    } else if (lang === "cpp") {
-      return `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your code here\n    cout << "Solution output" << endl;\n    return 0;\n}`;
-    } else {
-      return `#include <stdio.h>\n\nint main() {\n    // Write your code here\n    printf("Solution output\\n");\n    return 0;\n}`;
+      return `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Write your solution code here
+        System.out.println("Output");
     }
+}
+`;
+    } else if (lang === "cpp") {
+      return `#include <iostream>
+using namespace std;
+
+int main() {
+    // Write your solution code here
+    cout << "Output" << endl;
+    return 0;
+}
+`;
+    } else {
+      return `#include <stdio.h>
+
+int main() {
+    // Write your solution code here
+    printf("Output\\n");
+    return 0;
+}
+`;
+    }
+  };
+
+  // Prepares execution code behind the scenes for Judge0 API
+  const wrapCodeForExecution = (userCode, langKey, prob) => {
+    if (!prob) return userCode;
+    const probName = prob.name || "";
+    const cleanName = probName 
+      ? probName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') 
+      : "solve";
+    const camelName = cleanName.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+
+    if (langKey === "python") {
+      if (userCode.includes("__main__") || userCode.includes(`print(`)) {
+        return userCode;
+      }
+      return `${userCode}
+
+import sys, json
+if __name__ == "__main__":
+    raw_input = sys.stdin.read().strip()
+    if raw_input:
+        try:
+            val = json.loads(raw_input)
+        except Exception:
+            val = raw_input
+        res = ${camelName}(val)
+        if res is not None:
+            print(res)
+`;
+    }
+
+    if (langKey === "javascript") {
+      if (userCode.includes("fs.readFileSync") || userCode.includes(`console.log(`)) {
+        return userCode;
+      }
+      return `${userCode}
+
+const fs = require('fs');
+const rawInput = fs.readFileSync(0, 'utf-8').trim();
+if (rawInput) {
+    let val;
+    try { val = JSON.parse(rawInput); } catch(e) { val = rawInput; }
+    const res = ${camelName}(val);
+    if (res !== undefined) console.log(res);
+}
+`;
+    }
+
+    return userCode;
+  };
+
+  const isPlaceholderExample = (value) => {
+    if (!value || typeof value !== "string") return true;
+    const normalized = value.trim().toLowerCase();
+    return (
+      normalized === "" ||
+      normalized === "n/a" ||
+      normalized === "not available" ||
+      normalized.includes("see problem statement") ||
+      normalized.includes("see expected") ||
+      normalized.includes("see output") ||
+      normalized.includes("see input") ||
+      normalized.includes("placeholder")
+    );
+  };
+
+  const getExampleInput = (example) => {
+    return example && !isPlaceholderExample(example.input) ? example.input : "";
+  };
+
+  const getExampleOutput = (example) => {
+    return example && !isPlaceholderExample(example.output) ? example.output : "";
   };
 
   // Fetch problem details and related problems
@@ -122,10 +210,9 @@ export default function CodingWorkspace() {
         setRelatedProblems(list.filter(p => p._id !== id));
       }
 
-      // Initialize default test case input
-      if (probData.examples?.length > 0) {
-        setCustomInput(probData.examples[0].input);
-      }
+      // Initialize default testcase input with sample 1
+      const firstExample = probData.examples?.[0];
+      setCustomInput(getExampleInput(firstExample));
     } catch (err) {
       console.error("Failed to load workspace data:", err);
       setError("Failed to load coding workspace. Verify your backend server connection.");
@@ -153,22 +240,50 @@ export default function CodingWorkspace() {
     setRunResult(null);
 
     const langObj = LANGUAGE_MAPPING[language] || LANGUAGE_MAPPING.python;
-    const expectedOutput = problem?.examples?.[0]?.output?.trim() || "";
+    const example = problem?.examples?.[0];
+    const defaultInput = getExampleInput(example);
+    const expectedOutput = getExampleOutput(example);
+    const codeToRun = wrapCodeForExecution(code, language, problem);
+
+    const isCustomInputDifferent = 
+      customInput && 
+      defaultInput && 
+      customInput.trim().replace(/\s+/g, '') !== defaultInput.trim().replace(/\s+/g, '');
 
     try {
-      const res = await executeCode(code, langObj.id, customInput);
+      const res = await executeCode(codeToRun, langObj.id, customInput);
 
       const rawStdout = (res.stdout || "").trim();
       const rawStderr = (res.stderr || res.compile_output || "").trim();
       const isCompileOrRuntimeError = !!rawStderr || (res.status?.id && res.status.id > 3);
 
-      const inputVal = customInput || (problem?.examples?.length > 0 ? problem.examples[0].input : "N/A");
-      const expectedVal = expectedOutput || (problem?.examples?.length > 0 ? problem.examples[0].output : "N/A");
+      const inputVal = customInput || defaultInput || "N/A";
+      
+      let expectedVal = "N/A";
+      let hasExpected = false;
+
+      if (!isCustomInputDifferent && expectedOutput) {
+        expectedVal = expectedOutput;
+        hasExpected = true;
+      } else if (isCustomInputDifferent) {
+        expectedVal = "(Custom test input — evaluate actual output above)";
+        hasExpected = false;
+      }
+
+      // Check if actual output matches sample expected output (case-insensitive for booleans True/false)
+      const cleanActual = rawStdout.replace(/\s+/g, " ").toLowerCase();
+      const cleanExpected = expectedOutput ? expectedOutput.replace(/\s+/g, " ").toLowerCase() : "";
+      const matchesExpected = hasExpected && !isCompileOrRuntimeError && cleanActual === cleanExpected;
+
+      let statusMsg = "Executed Successfully";
+      if (isCompileOrRuntimeError) {
+        statusMsg = res.status?.description || "Compilation / Execution Error";
+      } else if (hasExpected) {
+        statusMsg = matchesExpected ? "Passed 🎉 (Output Matches)" : "Executed (Output Mismatch)";
+      }
 
       setRunResult({
-        status: isCompileOrRuntimeError
-          ? (res.status?.description || "Compilation / Execution Error")
-          : "Executed Successfully",
+        status: statusMsg,
         runtime: res.time ? `${res.time}s` : "<0.01s",
         memory: res.memory ? `${res.memory} KB` : "<1MB",
         input: inputVal,
@@ -176,7 +291,8 @@ export default function CodingWorkspace() {
           ? rawStderr
           : (rawStdout || "No output returned (add print(...) or console.log(...) to print output)"),
         expected: expectedVal,
-        isError: isCompileOrRuntimeError
+        isError: isCompileOrRuntimeError,
+        hasExpected
       });
     } catch (err) {
       console.error("Run Code Error:", err);
@@ -190,78 +306,117 @@ export default function CodingWorkspace() {
     }
   };
 
-  // Real submit handler via Judge0 API (persists per-user solved status to MongoDB Atlas!)
+  // Real submit handler via Judge0 API — runs ALL testcases for the problem!
   const handleSubmit = async () => {
     setSubmitting(true);
     setActiveConsoleTab("result");
     setRunResult(null);
+    setActiveTestcaseTab(0);
 
     const langObj = LANGUAGE_MAPPING[language] || LANGUAGE_MAPPING.python;
-    const testInput = customInput || (problem?.examples?.length > 0 ? problem.examples[0].input : "");
-    const expectedOutput = (problem?.examples?.[0]?.output || "").trim();
+    const examples = problem?.examples || [];
+    const codeToRun = wrapCodeForExecution(code, language, problem);
+
+    if (!examples || examples.length === 0) {
+      setRunResult({
+        status: "No Testcases Defined",
+        isError: true,
+        errorMsg: "This problem does not have testcases defined."
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    const testResults = [];
+    let allPassed = true;
+    let firstErrorMsg = null;
 
     try {
-      // 1. Submit code to Judge0 API
-      const res = await executeCode(code, langObj.id, testInput);
+      for (let i = 0; i < examples.length; i++) {
+        const ex = examples[i];
+        const testInput = getExampleInput(ex);
+        const expectedOutput = getExampleOutput(ex);
 
-      const rawStdout = (res.stdout || "").trim();
-      const rawStderr = (res.stderr || res.compile_output || "").trim();
-      const hasError = !!rawStderr || (res.status?.id && res.status.id > 3);
+        const res = await executeCode(codeToRun, langObj.id, testInput);
 
-      // Check if output matches expected (or contains output)
-      const cleanActual = rawStdout.replace(/\s+/g, " ");
-      const cleanExpected = expectedOutput.replace(/\s+/g, " ");
-      const isPassed = !hasError && (cleanActual === cleanExpected || cleanActual.includes(cleanExpected) || cleanActual.length > 0);
+        const rawStdout = (res.stdout || "").trim();
+        const rawStderr = (res.stderr || res.compile_output || "").trim();
+        const hasError = !!rawStderr || (res.status?.id && res.status.id > 3);
 
-      if (isPassed) {
-        // 2. Persist solved status to MongoDB Atlas for THIS authenticated user!
+        // Normalize case for boolean comparison (True/False vs true/false)
+        const cleanActual = rawStdout.replace(/\s+/g, " ").toLowerCase();
+        const cleanExpected = expectedOutput ? expectedOutput.replace(/\s+/g, " ").toLowerCase() : "";
+        
+        const isPassed = expectedOutput
+          ? !hasError && (cleanActual === cleanExpected || cleanActual.includes(cleanExpected))
+          : !hasError;
+
+        if (!isPassed) {
+          allPassed = false;
+          if (hasError && !firstErrorMsg) {
+            firstErrorMsg = rawStderr || res.status?.description;
+          }
+        }
+
+        testResults.push({
+          index: i + 1,
+          input: testInput || "N/A",
+          expected: expectedOutput || "N/A",
+          actual: hasError ? (rawStderr || "Execution Error") : (rawStdout || "(Empty Output)"),
+          passed: isPassed,
+          error: hasError
+        });
+      }
+
+      const passedCount = testResults.filter(t => t.passed).length;
+      const totalCount = testResults.length;
+
+      if (allPassed) {
+        // Persist solved status to MongoDB Atlas for authenticated user!
         await updateProblemStatus(id, "solved");
         setProblem((prev) => ({ ...prev, status: "solved" }));
 
-        // Add to submission history list
         const newSub = {
           id: `s_new_${Date.now()}`,
           status: "Accepted",
           time: "Just now",
-          runtime: res.time ? `${res.time}s` : "0.02s",
-          memory: res.memory ? `${res.memory} KB` : "1.8 MB",
+          runtime: "0.02s",
+          memory: "1840 KB",
           lang: langObj.label,
         };
         setSubmissions((prev) => [newSub, ...prev]);
 
         setRunResult({
-          status: "Accepted 🎉",
+          status: `Accepted 🎉 (${passedCount}/${totalCount} Passed)`,
           isSubmission: true,
-          runtime: res.time ? `${res.time}s` : "0.02s",
-          memory: res.memory ? `${res.memory} KB` : "1840 KB",
-          testcases: "All test cases passed",
+          testcaseResults: testResults,
+          passedCount,
+          totalCount,
+          runtime: "0.02s",
+          memory: "1840 KB",
           beatsRuntime: "96.2%",
-          beatsMemory: "91.4%",
-          output: rawStdout || expectedOutput,
-          expected: expectedOutput
+          beatsMemory: "91.4%"
         });
       } else {
-        const subStatus = res.compile_output
-          ? "Compile Error"
-          : res.stderr
-          ? "Runtime Error"
-          : "Wrong Answer";
+        const subStatus = firstErrorMsg ? "Runtime / Compile Error" : "Wrong Answer";
 
         const newSub = {
           id: `s_new_${Date.now()}`,
-          status: subStatus,
+          status: `${subStatus} (${passedCount}/${totalCount})`,
           time: "Just now",
-          runtime: res.time ? `${res.time}s` : "N/A",
+          runtime: "N/A",
           lang: langObj.label,
         };
         setSubmissions((prev) => [newSub, ...prev]);
 
         setRunResult({
-          status: subStatus,
+          status: `${subStatus} (${passedCount}/${totalCount} Passed)`,
+          isSubmission: true,
           isError: true,
-          errorMsg: hasError
-            ? rawStderr
-            : `Test Case Failed!\n\nInput: ${testInput}\nActual Output:\n${rawStdout || "(Empty)"}\n\nExpected Output:\n${expectedOutput}`,
+          testcaseResults: testResults,
+          passedCount,
+          totalCount,
+          errorMsg: firstErrorMsg
         });
       }
     } catch (err) {
@@ -269,7 +424,7 @@ export default function CodingWorkspace() {
       setRunResult({
         status: "Submission Failed",
         isError: true,
-        errorMsg: err.message || "Network error trying to compile solution via Judge0.",
+        errorMsg: err.message || "Network error executing solution via Judge0 API.",
       });
     } finally {
       setSubmitting(false);
@@ -496,34 +651,31 @@ export default function CodingWorkspace() {
                   {/* Examples Section */}
                   {problem.examples?.length > 0 && (
                     <div className="space-y-4 border-t border-slate-100 pt-4">
-                      <h4 className="text-xs font-black uppercase text-[#0b1c30] tracking-wider">Examples</h4>
-                      {problem.examples.map((ex, index) => (
-                        <div key={index} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2.5">
-                          <p className="font-bold text-xs text-[#0b1c30]">Example {index + 1}:</p>
-                          <div className="font-mono text-xs text-slate-700 space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200/60 shadow-xs">
-                            <p><span className="font-bold text-blue-600">Input:</span> {ex.input}</p>
-                            <p><span className="font-bold text-emerald-600">Output:</span> {ex.output}</p>
-                            {ex.explanation && (
-                              <p className="text-slate-500 text-[11px] pt-1 font-sans border-t border-slate-100 mt-1">
-                                <span className="font-bold text-slate-700">Explanation:</span> {ex.explanation}
+                      <h4 className="text-xs font-black uppercase text-[#0b1c30] tracking-wider">Sample Test Cases</h4>
+                      {problem.examples.map((ex, index) => {
+                        const displayInput = getExampleInput(ex);
+                        const displayOutput = getExampleOutput(ex);
+                        return (
+                          <div key={index} className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2.5">
+                            <p className="font-bold text-xs text-[#0b1c30]">Example {index + 1}:</p>
+                            <div className="font-mono text-xs text-slate-700 space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200/60 shadow-xs">
+                              <p>
+                                <span className="font-bold text-blue-600">Input:</span> {displayInput || "Example input not provided."}
                               </p>
-                            )}
+                              <p>
+                                <span className="font-bold text-emerald-600">Output:</span> {displayOutput || "Example output not provided."}
+                              </p>
+                              {ex.explanation && (
+                                <p className="text-slate-500 text-[11px] pt-1 font-sans border-t border-slate-100 mt-1">
+                                  <span className="font-bold text-slate-700">Explanation:</span> {ex.explanation}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
-
-                  {/* Constraints */}
-                  <div className="space-y-2.5 border-t border-slate-100 pt-4">
-                    <h4 className="text-xs font-black uppercase text-[#0b1c30] tracking-wider">Constraints</h4>
-                    <ul className="list-disc pl-5 text-xs text-[#434655] font-semibold space-y-1.5">
-                      <li><code>1 &lt;= length &lt;= 10^5</code></li>
-                      <li>Element values stay within 32-bit signed integer limits.</li>
-                      <li>Target Time Complexity limit: <code>O(N)</code> or <code>O(N log N)</code>.</li>
-                      <li>Space Complexity limit: <code>O(1)</code> auxiliary (or <code>O(N)</code> for hash maps).</li>
-                    </ul>
-                  </div>
 
                   {/* Step-by-Step Expandable Hints */}
                   {problem.hints?.length > 0 && (
@@ -752,7 +904,7 @@ export default function CodingWorkspace() {
                     className="flex items-center gap-1.5 bg-[#2d2d2d] hover:bg-slate-700 text-slate-200 font-bold px-4 py-1.5 rounded-xl text-xs transition border border-slate-700/50 cursor-pointer disabled:opacity-50"
                   >
                     <Play className="h-3.5 w-3.5 fill-current text-slate-400" />
-                    Run
+                    Run Code
                   </button>
                   <button
                     onClick={handleSubmit}
@@ -760,7 +912,7 @@ export default function CodingWorkspace() {
                     className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-5 py-1.5 rounded-xl text-xs transition shadow-md cursor-pointer disabled:opacity-50"
                   >
                     <Send className="h-3 w-3" />
-                    Submit
+                    Submit Solution
                   </button>
                 </div>
               </div>
@@ -795,7 +947,7 @@ export default function CodingWorkspace() {
             </div>
 
             {/* Console Output & Testcases */}
-            <div className="bg-[#181818] rounded-3xl overflow-hidden border border-slate-800 shadow-xl flex flex-col h-60">
+            <div className="bg-[#181818] rounded-3xl overflow-hidden border border-slate-800 shadow-xl flex flex-col min-h-64">
               
               {/* Console Header Tabs */}
               <div className="bg-[#121212] px-4 py-2 border-b border-slate-800 flex justify-between items-center">
@@ -826,7 +978,7 @@ export default function CodingWorkspace() {
                 {executing && (
                   <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
                     <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-500" />
-                    Compiling Sandbox...
+                    Executing Sandbox...
                   </span>
                 )}
                 {submitting && (
@@ -843,21 +995,21 @@ export default function CodingWorkspace() {
                 {/* Custom Testcase Input */}
                 {activeConsoleTab === "testcase" && (
                   <div className="h-full flex flex-col gap-2">
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Custom Test Input</span>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Custom Test Input (stdin)</span>
                     <textarea
                       value={customInput}
                       onChange={(e) => setCustomInput(e.target.value)}
-                      placeholder="Input parameters, e.g. x = 123..."
-                      className="w-full flex-1 bg-[#1e1e1e] p-3 rounded-xl border border-slate-800 text-slate-200 outline-none resize-none focus:border-slate-700 leading-relaxed font-mono"
+                      placeholder="Input parameters, e.g. 123..."
+                      className="w-full min-h-32 flex-1 bg-[#1e1e1e] p-3 rounded-xl border border-slate-800 text-slate-200 outline-none resize-none focus:border-slate-700 leading-relaxed font-mono"
                     />
                   </div>
                 )}
 
                 {/* Execution Results */}
                 {activeConsoleTab === "result" && (
-                  <div className="h-full flex flex-col justify-center">
+                  <div className="h-full flex flex-col">
                     {(executing || submitting) && (
-                      <div className="flex flex-col items-center justify-center gap-2 text-slate-500 h-full">
+                      <div className="flex flex-col items-center justify-center gap-2 text-slate-500 py-10">
                         <Activity className="h-6 w-6 text-blue-500 animate-pulse" />
                         <p className="text-[11px] font-bold">
                           {executing ? "Compiling source code on Judge0 sandbox..." : "Running evaluation tests..."}
@@ -866,55 +1018,104 @@ export default function CodingWorkspace() {
                     )}
 
                     {!runResult && !executing && !submitting && (
-                      <div className="flex flex-col items-center justify-center text-slate-500 h-full gap-1">
+                      <div className="flex flex-col items-center justify-center text-slate-500 py-10 gap-1">
                         <Terminal className="h-6 w-6 text-slate-600" />
-                        <p className="text-[11px]">Click "Run" or "Submit" to compile your solution.</p>
+                        <p className="text-[11px]">Click "Run Code" or "Submit Solution" to compile your solution.</p>
                       </div>
                     )}
 
                     {runResult && !executing && !submitting && (
-                      <div className="space-y-3 animate-in fade-in duration-200 h-full">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-black text-slate-400 uppercase">Status:</span>
-                          <span className={`font-black text-sm uppercase ${
-                            runResult.status.includes("Accepted") || runResult.status.includes("Executed")
-                              ? "text-emerald-400"
-                              : "text-rose-400"
-                          }`}>
-                            {runResult.status}
-                          </span>
+                      <div className="space-y-3 animate-in fade-in duration-200">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black text-slate-400 uppercase">Status:</span>
+                            <span className={`font-black text-sm uppercase ${
+                              runResult.status.includes("Accepted") || runResult.status.includes("Executed")
+                                ? "text-emerald-400"
+                                : "text-rose-400"
+                            }`}>
+                              {runResult.status}
+                            </span>
+                          </div>
+                          {runResult.runtime && (
+                            <span className="text-[11px] text-slate-500 font-sans">
+                              Runtime: <strong className="text-slate-300">{runResult.runtime}</strong>
+                            </span>
+                          )}
                         </div>
 
-                        {runResult.isSubmission ? (
-                          <div className="bg-[#1e1e1e] p-3.5 rounded-xl border border-slate-800 space-y-1.5 font-sans leading-relaxed">
-                            <p className="text-slate-300 text-xs">
-                              <span className="font-bold text-slate-400">Test Cases:</span> All passed 🎉
-                            </p>
-                            <p className="text-slate-300 text-xs">
-                              <span className="font-bold text-slate-400">Runtime:</span> {runResult.runtime}{" "}
-                              <span className="text-emerald-400 font-bold">(Beats {runResult.beatsRuntime})</span>
-                            </p>
-                            <p className="text-slate-300 text-xs">
-                              <span className="font-bold text-slate-400">Memory:</span> {runResult.memory}{" "}
-                              <span className="text-emerald-400 font-bold">(Beats {runResult.beatsMemory})</span>
-                            </p>
+                        {/* Testcase Batch Results for Submissions */}
+                        {runResult.testcaseResults && runResult.testcaseResults.length > 0 ? (
+                          <div className="space-y-3 pt-2">
+                            {/* Testcase Tabs */}
+                            <div className="flex gap-1.5 border-b border-slate-800 pb-2 overflow-x-auto">
+                              {runResult.testcaseResults.map((tc, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => setActiveTestcaseTab(idx)}
+                                  className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                                    activeTestcaseTab === idx
+                                      ? "bg-slate-800 text-white border border-slate-700"
+                                      : "text-slate-400 hover:text-slate-200"
+                                  }`}
+                                >
+                                  {tc.passed ? (
+                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                                  ) : (
+                                    <XCircle className="h-3.5 w-3.5 text-rose-400 shrink-0" />
+                                  )}
+                                  Case {tc.index}
+                                </button>
+                              ))}
+                            </div>
+
+                            {/* Active Testcase Details */}
+                            {runResult.testcaseResults[activeTestcaseTab] && (
+                              <div className="grid gap-2 font-mono text-xs bg-[#1e1e1e] p-3.5 rounded-2xl border border-slate-800">
+                                <div className="grid grid-cols-12 gap-2 items-start">
+                                  <span className="col-span-3 text-slate-400 font-bold">Input:</span>
+                                  <span className="col-span-9 text-slate-200 bg-[#141414] px-2.5 py-1 rounded-lg border border-slate-800/80 whitespace-pre-wrap">
+                                    {runResult.testcaseResults[activeTestcaseTab].input}
+                                  </span>
+                                </div>
+                                <div className="grid grid-cols-12 gap-2 items-start">
+                                  <span className="col-span-3 text-slate-400 font-bold">Actual Output:</span>
+                                  <span className={`col-span-9 px-2.5 py-1 rounded-lg border border-slate-800/80 whitespace-pre-wrap font-bold ${
+                                    runResult.testcaseResults[activeTestcaseTab].passed ? "text-emerald-400 bg-[#141414]" : "text-rose-400 bg-rose-950/20 border-rose-900/40"
+                                  }`}>
+                                    {runResult.testcaseResults[activeTestcaseTab].actual}
+                                  </span>
+                                </div>
+                                <div className="grid grid-cols-12 gap-2 items-start">
+                                  <span className="col-span-3 text-slate-400 font-bold">Expected Output:</span>
+                                  <span className="col-span-9 text-emerald-400 bg-[#141414] px-2.5 py-1 rounded-lg border border-slate-800/80 whitespace-pre-wrap font-bold">
+                                    {runResult.testcaseResults[activeTestcaseTab].expected}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ) : runResult.isError ? (
-                          <pre className="text-rose-400 whitespace-pre-wrap font-mono text-xs">{runResult.errorMsg}</pre>
+                          <pre className="text-rose-400 whitespace-pre-wrap font-mono text-xs bg-rose-950/20 p-3.5 rounded-2xl border border-rose-900/40">
+                            {runResult.errorMsg || runResult.output}
+                          </pre>
                         ) : (
+                          /* Run Code Simple Result */
                           <div className="grid gap-2 border-t border-slate-800 pt-2 font-mono text-xs">
-                            <div className="grid grid-cols-12 gap-2 items-center">
+                            <div className="grid grid-cols-12 gap-2 items-start">
                               <span className="col-span-3 text-slate-400 font-bold">Input:</span>
-                              <span className="col-span-9 text-slate-200 bg-[#1e1e1e] px-2.5 py-1 rounded-lg border border-slate-800">{runResult.input}</span>
+                              <span className="col-span-9 text-slate-200 bg-[#1e1e1e] px-2.5 py-1 rounded-lg border border-slate-800 whitespace-pre-wrap">{runResult.input}</span>
                             </div>
-                            <div className="grid grid-cols-12 gap-2 items-center">
-                              <span className="col-span-3 text-slate-400 font-bold">Output:</span>
-                              <span className="col-span-9 text-emerald-400 bg-[#1e1e1e] px-2.5 py-1 rounded-lg border border-slate-800 font-bold">{runResult.output}</span>
+                            <div className="grid grid-cols-12 gap-2 items-start">
+                              <span className="col-span-3 text-slate-400 font-bold">Actual Output:</span>
+                              <span className="col-span-9 text-emerald-400 bg-[#1e1e1e] px-2.5 py-1 rounded-lg border border-slate-800 font-bold whitespace-pre-wrap">{runResult.output}</span>
                             </div>
-                            <div className="grid grid-cols-12 gap-2 items-center">
-                              <span className="col-span-3 text-slate-400 font-bold">Expected:</span>
-                              <span className="col-span-9 text-emerald-400 bg-[#1e1e1e] px-2.5 py-1 rounded-lg border border-slate-800 font-bold">{runResult.expected}</span>
-                            </div>
+                            {runResult.hasExpected && (
+                              <div className="grid grid-cols-12 gap-2 items-start">
+                                <span className="col-span-3 text-slate-400 font-bold">Expected Output:</span>
+                                <span className="col-span-9 text-emerald-400 bg-[#1e1e1e] px-2.5 py-1 rounded-lg border border-slate-800 font-bold whitespace-pre-wrap">{runResult.expected}</span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

@@ -26,9 +26,9 @@ export default function Sidebar() {
       icon: "description",
     },
     {
-      name: "Mock Interview",
-      path: "/mock-interview",
-      icon: "mic",
+      name: "Modules",
+      path: "/coding-practice",
+      icon: "school",
     },
     {
       name: "Coding Hub",
@@ -36,9 +36,9 @@ export default function Sidebar() {
       icon: "code",
     },
     {
-      name: "Coding Practice",
-      path: "/coding-practice",
-      icon: "school",
+      name: "Mock Interview",
+      path: "/mock-interview",
+      icon: "mic",
     },
     {
       name: "Settings",

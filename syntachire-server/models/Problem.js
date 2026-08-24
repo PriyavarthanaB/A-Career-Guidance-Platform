@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const exampleSchema = new mongoose.Schema(
   {
     input: { type: String, required: true },
-    output: { type: String, required: true },
+    output: { type: String, default: "" },
     explanation: { type: String, default: "" },
   },
   { _id: false }
