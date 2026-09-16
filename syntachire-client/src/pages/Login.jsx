@@ -89,7 +89,7 @@ const Login = () => {
   };
 
   return (
-    <div className="grid min-h-screen bg-[#070f1e] font-sans md:grid-cols-12 selection:bg-[#004ac6] selection:text-white">
+    <div className="grid min-h-screen bg-[#f4f7ff] font-sans md:grid-cols-12 selection:bg-blue-200 selection:text-blue-900">
       {/* BRAND & VISUAL PANEL (7 Cols) */}
       <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-slate-950 via-[#070f1e] to-indigo-955 p-12 text-white md:col-span-7 md:flex lg:p-16">
         
@@ -162,37 +162,37 @@ const Login = () => {
       </div>
 
       {/* LOGIN FORM PANEL (5 Cols) */}
-      <div className="flex items-center justify-center bg-slate-950/70 p-6 md:col-span-5 md:bg-[#070f1e] lg:p-12 relative overflow-hidden">
+      <div className="flex items-center justify-center bg-white p-6 md:col-span-5 lg:p-12 relative overflow-hidden">
         {/* Ambient background glow behind form */}
-        <div className="pointer-events-none absolute -right-20 top-1/3 h-80 w-80 rounded-full bg-[#004ac6]/15 blur-[120px]" />
+        <div className="pointer-events-none absolute -right-20 top-1/3 h-80 w-80 rounded-full bg-blue-500/8 blur-[120px]" />
         
-        <div className="w-full max-w-md space-y-8 rounded-3xl border border-slate-800/80 bg-slate-900/90 p-8 shadow-2xl shadow-black/50 backdrop-blur-2xl md:border md:border-slate-800/80 md:bg-slate-900/70 md:p-10 relative z-10">
+        <div className="w-full max-w-md space-y-8 rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60 md:border md:border-slate-200 md:bg-white md:p-10 relative z-10">
           
           {/* Mobile Header */}
           <div className="md:hidden">
-            <Link to="/" className="flex items-center gap-2 text-2xl font-bold tracking-tight text-white">
+            <Link to="/" className="flex items-center gap-2 text-2xl font-bold tracking-tight text-slate-900">
               <img
                 src="/assets/app_logo.png"
                 alt="SyntacHire AI logo"
                 className="h-8 w-8 rounded-lg object-cover"
               />
-              SyntacHire <span className="text-blue-400">AI</span>
+              SyntacHire <span className="text-blue-600">AI</span>
             </Link>
           </div>
 
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white lg:text-4xl">
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 lg:text-4xl">
               Welcome back
             </h2>
-            <p className="mt-2 text-base text-slate-400">
+            <p className="mt-2 text-base text-slate-500">
               Enter your credentials to access your dashboard.
             </p>
           </div>
 
           {/* Dynamic Error Alert */}
           {error && (
-            <div className="flex items-start gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm font-medium text-red-400 animate-in fade-in duration-300">
-              <AlertCircle className="h-5 w-5 shrink-0 text-red-400 mt-0.5" />
+            <div className="flex items-start gap-3 rounded-2xl border border-red-300/60 bg-red-50 p-4 text-sm font-medium text-red-600 animate-in fade-in duration-300">
+              <AlertCircle className="h-5 w-5 shrink-0 text-red-500 mt-0.5" />
               <div className="leading-relaxed">{error}</div>
             </div>
           )}
@@ -203,12 +203,12 @@ const Login = () => {
             <div className="space-y-2">
               <label
                 htmlFor="email"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-300"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-600"
               >
                 Email Address
               </label>
               <div className="relative group">
-                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-400" />
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-600" />
                 <input
                   id="email"
                   name="email"
@@ -217,15 +217,15 @@ const Login = () => {
                   value={form.email}
                   onChange={handleChange}
                   placeholder="name@company.com"
-                  className={`w-full rounded-xl border bg-slate-950/70 py-4 pl-12 pr-4 text-base text-white placeholder-slate-500 outline-none transition-all duration-200 focus:bg-slate-950 ${
+                  className={`w-full rounded-xl border bg-slate-50 py-4 pl-12 pr-4 text-base text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:bg-white ${
                     fieldErrors.email
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                      : "border-slate-800 hover:border-slate-700 focus:border-[#004ac6] focus:ring-2 focus:ring-[#004ac6]/25"
+                      ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                      : "border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
                   }`}
                 />
               </div>
               {fieldErrors.email && (
-                <p className="text-sm text-red-400 font-medium pl-1">{fieldErrors.email}</p>
+                <p className="text-sm text-red-500 font-medium pl-1">{fieldErrors.email}</p>
               )}
             </div>
 
@@ -234,7 +234,7 @@ const Login = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-xs font-bold uppercase tracking-wider text-slate-300"
+                  className="block text-xs font-bold uppercase tracking-wider text-slate-600"
                 >
                   Password
                 </label>
@@ -246,7 +246,7 @@ const Login = () => {
                 </Link>
               </div>
               <div className="relative group">
-                <Lock className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-400" />
+                <Lock className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-blue-600" />
                 <input
                   id="password"
                   name="password"
@@ -255,23 +255,23 @@ const Login = () => {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className={`w-full rounded-xl border bg-slate-950/70 py-4 pl-12 pr-12 text-base text-white placeholder-slate-500 outline-none transition-all duration-200 focus:bg-slate-950 ${
+                  className={`w-full rounded-xl border bg-slate-50 py-4 pl-12 pr-12 text-base text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:bg-white ${
                     fieldErrors.password
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                      : "border-slate-800 hover:border-slate-700 focus:border-[#004ac6] focus:ring-2 focus:ring-[#004ac6]/25"
+                      ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                      : "border-slate-200 hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-200 cursor-pointer"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-700 cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
               {fieldErrors.password && (
-                <p className="text-sm text-red-400 font-medium pl-1">{fieldErrors.password}</p>
+                <p className="text-sm text-red-500 font-medium pl-1">{fieldErrors.password}</p>
               )}
             </div>
 
@@ -296,11 +296,11 @@ const Login = () => {
           </form>
 
           {/* Footer Link */}
-          <div className="pt-2 text-center text-base text-slate-400">
+          <div className="pt-2 text-center text-base text-slate-500">
             Don't have an account?{" "}
             <Link 
               to="/signup" 
-              className="font-bold text-blue-400 hover:text-blue-300 transition-colors underline-offset-4 hover:underline"
+              className="font-bold text-blue-600 hover:text-blue-700 transition-colors underline-offset-4 hover:underline"
             >
               Sign Up for Free
             </Link>

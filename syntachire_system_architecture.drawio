@@ -1,0 +1,113 @@
+<mxfile host="app.diagrams.net" modified="2026-08-27T10:00:00.000Z" agent="SyntacHire AI" version="21.0.0" type="device">
+  <diagram id="SyntacHire_System_Architecture" name="SyntacHire System Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" background="#fcfcf9" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Document Title -->
+        <mxCell id="title" value="SYSTEM ARCHITECTURE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=24;fontFamily=Times New Roman;fontColor=#1e293b;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Client Section Swimlane Box -->
+        <mxCell id="client_box" value="Client (React 19 UI)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fontStyle=1;fontSize=14;fillColor=#f8fafc;strokeColor=#475569;rounded=1;arcSize=4;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="320" height="420" as="geometry" />
+        </mxCell>
+
+        <!-- Client UI Container -->
+        <mxCell id="ui_container" value="UI" style="swimlane;whiteSpace=wrap;html=1;startSize=25;horizontal=1;fontStyle=1;fontSize=12;fillColor=#ffffff;strokeColor=#cbd5e1;rounded=1;arcSize=4;fontColor=#334155;" vertex="1" parent="client_box">
+          <mxGeometry x="20" y="50" width="280" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- Candidate Actor -->
+        <mxCell id="user_actor" value="User / Candidate" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontSize=11;fontColor=#1e293b;" vertex="1" parent="ui_container">
+          <mxGeometry x="30" y="120" width="40" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- User Inputs Box -->
+        <mxCell id="user_inputs" value="User Inputs&#10;(Voice / Code / PDF)" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=12;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="ui_container">
+          <mxGeometry x="120" y="120" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- User to User Inputs Arrow -->
+        <mxCell id="arrow_user_to_input" value="Input Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=10;fontColor=#475569;strokeColor=#475569;" edge="1" parent="ui_container" source="user_actor" target="user_inputs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Server Section Swimlane Box -->
+        <mxCell id="server_box" value="Server (Node.js &amp; Express API)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fontStyle=1;fontSize=14;fillColor=#f8fafc;strokeColor=#475569;rounded=1;arcSize=4;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="460" y="140" width="530" height="420" as="geometry" />
+        </mxCell>
+
+        <!-- Process 1: Input Preprocessing -->
+        <mxCell id="proc1" value="Input Preprocessing&#10;&amp; Audio STT" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+          <mxGeometry x="20" y="90" width="130" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Process 2: Evaluation Engine -->
+        <mxCell id="proc2" value="Evaluation &amp; Execution&#10;Engine" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+          <mxGeometry x="180" y="90" width="130" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Process 3: Score Engine -->
+        <mxCell id="proc3" value="Placement Readiness&#10;Score Engine" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+          <mxGeometry x="340" y="90" width="130" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Process 4: Generate Response -->
+        <mxCell id="proc4" value="Generate Scorecard&#10;&amp; Feedback Response" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+          <mxGeometry x="340" y="240" width="130" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- External Services Box -->
+        <mxCell id="external_box" value="External Services&#10;(Google Gemini AI API &amp;&#10;Judge0 CE Sandbox)" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#eff6ff;strokeColor=#2563eb;dashed=1;dashPattern=5 5;fontColor=#1e40af;" vertex="1" parent="server_box">
+          <mxGeometry x="150" y="230" width="160" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Connecting Edges inside Server -->
+        <mxCell id="edge_p1_p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=1.5;" edge="1" parent="server_box" source="proc1" target="proc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_p2_p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=1.5;" edge="1" parent="server_box" source="proc2" target="proc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_p3_p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=1.5;" edge="1" parent="server_box" source="proc3" target="proc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_p2_ext" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563eb;strokeWidth=1.5;startArrow=classic;startFill=1;" edge="1" parent="server_box" source="proc2" target="external_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Request Arrow (Client to Server) -->
+        <mxCell id="req_arrow" value="Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=12;fontColor=#2563eb;strokeColor=#2563eb;strokeWidth=2;" edge="1" parent="1" source="user_inputs" target="proc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Response Arrow (Server to Client) -->
+        <mxCell id="resp_arrow" value="Response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=12;fontColor=#16a34a;strokeColor=#16a34a;strokeWidth=2;" edge="1" parent="1" source="proc4" target="user_inputs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="433" />
+              <mxPoint x="430" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- MongoDB Database Cylinder -->
+        <mxCell id="db_box" value="MongoDB Atlas&#10;Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontStyle=1;fontSize=12;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="290" width="110" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Edge Server Proc4 to DB -->
+        <mxCell id="edge_proc4_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16a34a;strokeWidth=2;startArrow=classic;startFill=1;" edge="1" parent="1" source="proc4" target="db_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

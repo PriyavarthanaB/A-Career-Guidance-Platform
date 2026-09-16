@@ -8,9 +8,9 @@ const DIFFICULTIES = [
     label: "Entry Level / Junior",
     description: "Foundational questions, supportive hints, and core CS/behavioral concepts.",
     icon: ShieldCheck,
-    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    activeBorder: "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/30",
-    activeDot: "bg-emerald-500 text-white",
+    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    activeBorder: "border-emerald-500 ring-2 ring-emerald-500/20 bg-white",
+    activeDot: "bg-emerald-500 text-white shadow-md shadow-emerald-500/30",
   },
   {
     id: "Medium",
@@ -18,9 +18,9 @@ const DIFFICULTIES = [
     label: "Mid-Level Engineer",
     description: "Standard industry interview scenarios, balanced coding, system design & HR rounds.",
     icon: Zap,
-    badgeColor: "bg-amber-100 text-amber-800 border-amber-200",
-    activeBorder: "border-amber-500 ring-2 ring-amber-500/20 bg-amber-50/30",
-    activeDot: "bg-amber-500 text-white",
+    badgeColor: "bg-amber-50 text-amber-800 border-amber-200",
+    activeBorder: "border-amber-500 ring-2 ring-amber-500/20 bg-white",
+    activeDot: "bg-amber-500 text-white shadow-md shadow-amber-500/30",
   },
   {
     id: "Hard",
@@ -28,9 +28,9 @@ const DIFFICULTIES = [
     label: "Senior / Staff Level",
     description: "Deep dive probing, strict technical criteria, complex system trade-offs & edge cases.",
     icon: Flame,
-    badgeColor: "bg-rose-100 text-rose-800 border-rose-200",
-    activeBorder: "border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/30",
-    activeDot: "bg-rose-500 text-white",
+    badgeColor: "bg-rose-50 text-rose-800 border-rose-200",
+    activeBorder: "border-rose-500 ring-2 ring-rose-500/20 bg-white",
+    activeDot: "bg-rose-500 text-white shadow-md shadow-rose-500/30",
   },
 ];
 
@@ -45,10 +45,10 @@ export default function DifficultySelector({ selectedDifficulty, onSelect }) {
           <div
             key={diff.id}
             onClick={() => onSelect(diff.id)}
-            className={`relative p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+            className={`relative p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between backdrop-blur-xl ${
               isSelected
-                ? `bg-white ${diff.activeBorder} shadow-md`
-                : "bg-white border-slate-200/80 hover:border-slate-300 hover:shadow-xs"
+                ? `${diff.activeBorder} shadow-lg -translate-y-0.5`
+                : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5"
             }`}
           >
             <div>
@@ -58,12 +58,12 @@ export default function DifficultySelector({ selectedDifficulty, onSelect }) {
                     className={`w-9 h-9 rounded-xl flex items-center justify-center ${
                       isSelected
                         ? diff.activeDot
-                        : "bg-slate-100 text-slate-600"
+                        : "bg-slate-100 text-slate-600 border border-slate-200"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h4 className="font-extrabold text-base text-[#0b1c30]">
+                  <h4 className="font-extrabold text-base text-slate-900">
                     {diff.title}
                   </h4>
                 </div>
@@ -75,20 +75,20 @@ export default function DifficultySelector({ selectedDifficulty, onSelect }) {
                 </span>
               </div>
 
-              <p className="text-xs text-slate-600 font-normal leading-relaxed mb-4">
+              <p className="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                 {diff.description}
               </p>
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-              <span className="font-semibold text-slate-400">Target Expectation</span>
+              <span className="font-semibold text-slate-500">Target Expectation</span>
               <div className="flex items-center gap-1.5 font-bold text-slate-700">
                 {isSelected ? (
-                  <span className="flex items-center gap-1 text-blue-600">
+                  <span className="flex items-center gap-1 text-blue-600 font-bold">
                     <Check className="h-3.5 w-3.5" /> Selected
                   </span>
                 ) : (
-                  <span className="text-slate-400">Select</span>
+                  <span className="text-slate-500">Select</span>
                 )}
               </div>
             </div>

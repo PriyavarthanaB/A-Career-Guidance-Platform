@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   targetRole: { type: String, default: 'Full Stack Developer' },
+  bio: { type: String, default: '' },
+  college: { type: String, default: '' },
+  graduationYear: { type: String, default: '' },
+  linkedin: { type: String, default: '' },
+  github: { type: String, default: '' },
   loginStreak: {
     currentStreak: { type: Number, default: 0 },
     longestStreak: { type: Number, default: 0 },

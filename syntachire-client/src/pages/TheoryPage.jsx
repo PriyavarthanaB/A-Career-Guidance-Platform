@@ -73,7 +73,7 @@ export default function TheoryPage() {
 
   if (loading) {
     return (
-      <div className=" text-white min-h-screen font-sans flex" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+      <div className="text-slate-900 bg-[#f4f7ff] min-h-screen font-sans flex flex-col">
         <Sidebar />
         <main className="lg:ml-[260px] flex-1 flex items-center justify-center min-h-screen">
           <div className="flex flex-col items-center gap-3 text-slate-400">
@@ -87,7 +87,7 @@ export default function TheoryPage() {
 
   if (error || !data) {
     return (
-      <div className=" text-white min-h-screen font-sans flex" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+      <div className="text-slate-900 bg-[#f4f7ff] min-h-screen font-sans flex flex-col">
         <Sidebar />
         <main className="lg:ml-[260px] flex-1 flex items-center justify-center min-h-screen p-6">
           <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-4 max-w-lg">
@@ -105,7 +105,7 @@ export default function TheoryPage() {
               </button>
               <Link 
                 to="/coding-practice"
-                className="bg-slate-900/60 border border-white/[0.08] hover:bg-slate-800/50 text-slate-300 text-xs font-bold px-5 py-2.5 rounded-xl transition"
+                className="bg-white border border-slate-200 hover:bg-slate-800/50 text-slate-300 text-xs font-bold px-5 py-2.5 rounded-xl transition"
               >
                 Back to Practice Sheet
               </Link>
@@ -120,7 +120,7 @@ export default function TheoryPage() {
   const theory = module.theory || {};
 
   return (
-    <div className=" text-white min-h-screen font-sans flex flex-col" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+    <div className="text-slate-900 bg-[#f4f7ff] min-h-screen font-sans flex flex-col">
       <Sidebar />
 
       {/* Main Content Area */}
@@ -176,24 +176,24 @@ export default function TheoryPage() {
             </button>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-[1.1]">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
             {module.name}
           </h2>
-          <p className="text-base text-slate-400 font-normal leading-relaxed max-w-3xl">
+          <p className="text-base text-slate-600 font-normal leading-relaxed max-w-3xl">
             {module.description}
           </p>
         </header>
 
         {/* 1. Overview */}
         {theory.overview && (
-          <section className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+          <section className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-500/100/20 flex items-center justify-center">
                 <Cpu className="h-4.5 w-4.5 text-blue-600" />
               </div>
               Module Overview & Motivation
             </h3>
-            <p className="text-base text-[#434655] leading-8 font-normal">
+            <p className="text-base text-slate-700 leading-8 font-normal">
               {theory.overview}
             </p>
           </section>
@@ -201,14 +201,14 @@ export default function TheoryPage() {
 
         {/* 2. Detailed Theory Narrative */}
         {theory.theoryText && (
-          <section className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+          <section className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-indigo-500/100/20 flex items-center justify-center">
                 <BookOpen className="h-4.5 w-4.5 text-indigo-600" />
               </div>
               Core Theoretical Foundations
             </h3>
-            <div className="text-sm text-[#434655] leading-relaxed font-normal whitespace-pre-line bg-slate-800/50 p-6 rounded-2xl border border-white/[0.06]">
+            <div className="text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line bg-slate-50 p-6 rounded-2xl border border-slate-200 text-slate-800">
               {theory.theoryText}
             </div>
           </section>
@@ -216,8 +216,8 @@ export default function TheoryPage() {
 
         {/* 3. Learning Objectives */}
         {theory.learningObjectives?.length > 0 && (
-          <section className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+          <section className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-emerald-500/100/20 flex items-center justify-center">
                 <Target className="h-4.5 w-4.5 text-emerald-600" />
               </div>
@@ -237,7 +237,7 @@ export default function TheoryPage() {
         {/* 4. Deep Dive Sections */}
         {theory.sections?.length > 0 && (
           <section className="space-y-6">
-            <h3 className="text-2xl font-black text-white flex items-center gap-2.5">
+            <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-500/100/20 flex items-center justify-center">
                 <Layers className="h-4.5 w-4.5 text-blue-600" />
               </div>
@@ -247,18 +247,18 @@ export default function TheoryPage() {
             {theory.sections.map((sec, index) => (
               <div 
                 key={index}
-                className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 md:p-8 shadow-xs space-y-4 hover:border-blue-200 transition-colors"
+                className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs space-y-4 hover:border-blue-200 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm">
                     {index + 1}
                   </div>
-                  <h4 className="text-xl font-extrabold text-white">
+                  <h4 className="text-lg font-bold text-slate-900">
                     {sec.title}
                   </h4>
                 </div>
 
-                <p className="text-sm text-[#434655] leading-relaxed font-normal whitespace-pre-line">
+                <p className="text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
                   {sec.content}
                 </p>
 
@@ -278,7 +278,7 @@ export default function TheoryPage() {
         {/* 5. Key Concepts & Patterns */}
         {theory.patterns?.length > 0 && (
           <section className="space-y-4">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-amber-500/100/20 flex items-center justify-center">
                 <Lightbulb className="h-4.5 w-4.5 text-amber-600" />
               </div>
@@ -288,9 +288,9 @@ export default function TheoryPage() {
               {theory.patterns.map((pat, index) => (
                 <div 
                   key={index}
-                  className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-2xl p-5 shadow-xs space-y-2 hover:border-amber-200 transition-colors"
+                  className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-2 hover:border-amber-200 transition-colors"
                 >
-                  <h4 className="font-extrabold text-sm text-white">{pat.title}</h4>
+                  <h4 className="font-bold text-sm text-slate-900">{pat.title}</h4>
                   <p className="text-xs text-slate-400 font-normal leading-relaxed">{pat.desc}</p>
                 </div>
               ))}
@@ -301,15 +301,15 @@ export default function TheoryPage() {
         {/* 6. Code Examples */}
         {theory.codeExamples?.length > 0 && (
           <section className="space-y-6">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-violet-100 flex items-center justify-center">
                 <FileCode className="h-4.5 w-4.5 text-violet-600" />
               </div>
               Implementation Code Examples
             </h3>
             {theory.codeExamples.map((ex, index) => (
-              <div key={index} className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 shadow-xs space-y-3">
-                <h4 className="text-base font-extrabold text-white">{ex.title}</h4>
+              <div key={index} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-3">
+                <h4 className="text-base font-bold text-slate-900">{ex.title}</h4>
                 <div className="bg-[#1e1e1e] rounded-2xl p-4 overflow-x-auto text-xs font-mono text-[#61afef] border border-slate-800">
                   <pre><code>{ex.code}</code></pre>
                 </div>
@@ -325,8 +325,8 @@ export default function TheoryPage() {
 
         {/* 7. Operational Complexity Table */}
         {theory.complexities?.length > 0 && (
-          <section className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+          <section className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-teal-100 flex items-center justify-center">
                 <Zap className="h-4.5 w-4.5 text-teal-600" />
               </div>
@@ -357,8 +357,8 @@ export default function TheoryPage() {
 
         {/* 8. Common Pitfalls & Mistakes */}
         {theory.commonMistakes?.length > 0 && (
-          <section className="bg-slate-900/60 border border-[#c3c6d7]/20 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+          <section className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-rose-500/100/20 flex items-center justify-center">
                 <ShieldAlert className="h-4.5 w-4.5 text-rose-600" />
               </div>
@@ -388,7 +388,7 @@ export default function TheoryPage() {
                 <Dumbbell className="h-3.5 w-3.5 text-white" />
                 <span className="text-[10px] font-black text-white uppercase tracking-widest">Practice Arena</span>
               </div>
-              <h3 className="text-xl font-extrabold text-white leading-snug">
+              <h3 className="text-xl font-bold text-slate-900 leading-snug">
                 Ready to test your skills?
               </h3>
               <p className="text-sm text-blue-100 font-normal max-w-sm">

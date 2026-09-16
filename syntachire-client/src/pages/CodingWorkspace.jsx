@@ -453,7 +453,7 @@ if (rawInput) {
         <div className="pointer-events-none absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[#004ac6]/15 rounded-full blur-[140px]" />
         <Sidebar />
         <main className="lg:ml-[280px] flex-1 flex items-center justify-center min-h-screen">
-          <div className="flex flex-col items-center gap-4 text-slate-400 bg-slate-900/70 p-8 rounded-3xl border border-slate-800 backdrop-blur-2xl shadow-2xl">
+          <div className="flex flex-col items-center gap-4 text-slate-500 bg-slate-900/70 p-8 rounded-3xl border border-slate-800 backdrop-blur-2xl shadow-2xl">
             <div className="relative">
               <Loader2 className="h-12 w-12 text-[#004ac6] animate-spin" />
               <div className="absolute inset-0 rounded-full bg-[#004ac6]/20 blur-md animate-pulse" />
@@ -467,14 +467,14 @@ if (rawInput) {
 
   if (error || !problem) {
     return (
-      <div className="bg-[#070f1e] text-slate-100 min-h-screen font-sans flex relative overflow-hidden">
+      <div className="bg-[#f4f7ff] text-slate-900 min-h-screen font-sans flex relative overflow-hidden">
         <Sidebar />
         <main className="lg:ml-[280px] flex-1 flex items-center justify-center min-h-screen p-6">
           <div className="bg-slate-900/90 border border-rose-500/30 rounded-3xl p-8 text-center space-y-5 max-w-lg shadow-2xl shadow-rose-950/20 backdrop-blur-2xl">
             <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
               <AlertTriangle className="h-7 w-7" />
             </div>
-            <h4 className="font-extrabold text-xl text-white">Workspace Initialization Error</h4>
+            <h4 className="font-extrabold text-xl text-slate-900">Workspace Initialization Error</h4>
             <p className="text-sm text-rose-300/90 leading-relaxed">{error || "Problem details not found."}</p>
             <div className="flex justify-center gap-3 pt-2">
               <button 
@@ -499,21 +499,21 @@ if (rawInput) {
   const solutionObj = problem.solution || {};
 
   return (
-    <div className="bg-[#070f1e] text-slate-100 min-h-screen font-sans flex flex-col relative selection:bg-[#004ac6] selection:text-white">
+    <div className="bg-[#f4f7ff] text-slate-900 min-h-screen font-sans flex flex-col relative">
       {/* Ambient background glows */}
-      <div className="pointer-events-none absolute top-0 right-1/4 w-[600px] h-[600px] bg-[#004ac6]/10 rounded-full blur-[160px]" />
-      <div className="pointer-events-none absolute bottom-10 left-1/3 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[150px]" />
+      <div className="pointer-events-none absolute top-0 right-1/4 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[160px]" />
+      <div className="pointer-events-none absolute bottom-10 left-1/3 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[150px]" />
 
       <Sidebar />
 
       {/* Main Workspace Frame */}
-      <main className="lg:ml-[280px] pl-14 lg:pl-0 min-h-screen px-3 md:px-6 py-5 max-w-[1440px] w-full mx-auto flex flex-col gap-4 relative z-10">
+      <main className="lg:ml-[260px] pl-14 lg:pl-0 min-h-screen px-3 md:px-6 py-5 max-w-[1440px] w-full mx-auto flex flex-col gap-4 relative z-10">
         
         {/* Top Breadcrumb & High-Tech Status Header */}
         <div className="flex flex-wrap items-center justify-between bg-slate-900/80 backdrop-blur-2xl px-5 py-3 rounded-2xl border border-slate-800/90 shadow-xl shadow-black/40 gap-3">
           <Link 
             to={problem.moduleId ? `/coding-hub?module=${problem.moduleId}` : "/coding-hub"}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-blue-400 transition-colors group"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-400 transition-colors group"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             Back to Problem Sheet
@@ -555,7 +555,7 @@ if (rawInput) {
             className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition ${
               activeMainTab === "problem"
                 ? "bg-[#004ac6] text-white shadow-lg shadow-blue-600/30"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-slate-500 hover:text-slate-200"
             }`}
           >
             Problem & Solution
@@ -565,7 +565,7 @@ if (rawInput) {
             className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition ${
               activeMainTab === "editor"
                 ? "bg-[#004ac6] text-white shadow-lg shadow-blue-600/30"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-slate-500 hover:text-slate-200"
             }`}
           >
             IDE & Console
@@ -587,7 +587,7 @@ if (rawInput) {
                 className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition cursor-pointer whitespace-nowrap ${
                   activeLeftTab === "description"
                     ? "bg-[#004ac6] text-white shadow-lg shadow-blue-600/25 border border-blue-400/30"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                    : "text-slate-500 hover:text-slate-200 hover:bg-slate-800/50"
                 }`}
               >
                 <Cpu className="h-3.5 w-3.5" />
@@ -598,7 +598,7 @@ if (rawInput) {
                 className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition cursor-pointer whitespace-nowrap ${
                   activeLeftTab === "editorial"
                     ? "bg-[#004ac6] text-white shadow-lg shadow-blue-600/25 border border-blue-400/30"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                    : "text-slate-500 hover:text-slate-200 hover:bg-slate-800/50"
                 }`}
               >
                 <BookOpen className="h-3.5 w-3.5" />
@@ -609,7 +609,7 @@ if (rawInput) {
                 className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition cursor-pointer whitespace-nowrap ${
                   activeLeftTab === "submissions"
                     ? "bg-[#004ac6] text-white shadow-lg shadow-blue-600/25 border border-blue-400/30"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                    : "text-slate-500 hover:text-slate-200 hover:bg-slate-800/50"
                 }`}
               >
                 <History className="h-3.5 w-3.5" />
@@ -620,7 +620,7 @@ if (rawInput) {
                 className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition cursor-pointer whitespace-nowrap ${
                   activeLeftTab === "related"
                     ? "bg-[#004ac6] text-white shadow-lg shadow-blue-600/25 border border-blue-400/30"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                    : "text-slate-500 hover:text-slate-200 hover:bg-slate-800/50"
                 }`}
               >
                 <Layers className="h-3.5 w-3.5" />
@@ -635,8 +635,8 @@ if (rawInput) {
               {activeLeftTab === "description" && (
                 <div className="space-y-6 animate-in fade-in duration-200">
                   <div className="space-y-2">
-                    <h3 className="text-2xl font-black text-white tracking-tight">{problem.name}</h3>
-                    {problem.subtitle && <p className="text-xs text-slate-400 font-semibold">{problem.subtitle}</p>}
+                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">{problem.name}</h3>
+                    {problem.subtitle && <p className="text-xs text-slate-500 font-semibold">{problem.subtitle}</p>}
                     
                     {/* Tags & Companies */}
                     <div className="flex flex-wrap gap-2 pt-1">
@@ -661,7 +661,7 @@ if (rawInput) {
                   {/* Examples Section */}
                   {problem.examples?.length > 0 && (
                     <div className="space-y-4 border-t border-slate-800/80 pt-4">
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
+                      <h4 className="text-xs font-black uppercase text-slate-500 tracking-wider flex items-center gap-2">
                         <Terminal className="h-4 w-4 text-blue-400" />
                         Sample Test Cases
                       </h4>
@@ -679,7 +679,7 @@ if (rawInput) {
                                 <span className="font-bold text-emerald-400">Output:</span> {displayOutput || "Example output not provided."}
                               </p>
                               {ex.explanation && (
-                                <p className="text-slate-400 text-[11px] pt-1.5 font-sans border-t border-slate-800/80 mt-1.5">
+                                <p className="text-slate-500 text-[11px] pt-1.5 font-sans border-t border-slate-800/80 mt-1.5">
                                   <span className="font-bold text-slate-300">Explanation:</span> {ex.explanation}
                                 </p>
                               )}
@@ -693,7 +693,7 @@ if (rawInput) {
                   {/* Step-by-Step Expandable Hints */}
                   {problem.hints?.length > 0 && (
                     <div className="space-y-2.5 border-t border-slate-800/80 pt-4">
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
+                      <h4 className="text-xs font-black uppercase text-slate-500 tracking-wider flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-amber-400" />
                         Step-by-Step Hints
                       </h4>
@@ -710,7 +710,7 @@ if (rawInput) {
                                   <Sparkles className="h-3.5 w-3.5 text-amber-400" />
                                   Hint {idx + 1}
                                 </span>
-                                <ChevronRight className={`h-4 w-4 text-slate-400 transition-transform ${isRevealed ? "rotate-90 text-blue-400" : ""}`} />
+                                <ChevronRight className={`h-4 w-4 text-slate-500 transition-transform ${isRevealed ? "rotate-90 text-blue-400" : ""}`} />
                               </button>
                               {isRevealed && (
                                 <div className="p-4 bg-slate-900/90 border-t border-slate-800 text-slate-300 font-medium leading-relaxed">
@@ -736,7 +736,7 @@ if (rawInput) {
                   
                   {/* Overview & Complexities */}
                   <div className="space-y-4">
-                    <h4 className="font-extrabold text-white text-sm">Intuition & Approach</h4>
+                    <h4 className="font-extrabold text-slate-900 text-sm">Intuition & Approach</h4>
                     <p className="text-xs text-slate-300 leading-relaxed font-normal bg-slate-950/40 p-4 rounded-2xl border border-slate-800">
                       {solutionObj.overview || `Analyze problem constraints, handle edge cases, and construct the optimal solution using standard data structures.`}
                     </p>
@@ -756,7 +756,7 @@ if (rawInput) {
                   {/* Multi-Language Solution Tabs */}
                   <div className="space-y-3 pt-2">
                     <div className="flex justify-between items-center">
-                      <h4 className="font-extrabold text-white text-sm">Solution Code</h4>
+                      <h4 className="font-extrabold text-slate-900 text-sm">Solution Code</h4>
                       <div className="flex gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
                         {["python", "js", "java", "cpp"].map((langKey) => (
                           <button
@@ -765,7 +765,7 @@ if (rawInput) {
                             className={`px-3 py-1 text-[10px] font-extrabold uppercase rounded-lg transition cursor-pointer ${
                               activeSolutionLang === langKey
                                 ? "bg-[#004ac6] text-white shadow-sm"
-                                : "text-slate-400 hover:text-slate-200"
+                                : "text-slate-500 hover:text-slate-200"
                             }`}
                           >
                             {langKey === "js" ? "JavaScript" : langKey}
@@ -795,7 +795,7 @@ if (rawInput) {
               {/* TAB 3: SUBMISSIONS HISTORY */}
               {activeLeftTab === "submissions" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <h4 className="text-sm font-extrabold text-white">Your Submission Logs</h4>
+                  <h4 className="text-sm font-extrabold text-slate-900">Your Submission Logs</h4>
                   {submissions.length > 0 ? (
                     <div className="space-y-3">
                       {submissions.map((sub) => (
@@ -810,7 +810,7 @@ if (rawInput) {
                             }`}>
                               {sub.status}
                             </p>
-                            <p className="text-[10px] text-slate-400 font-bold">{sub.time} • {sub.lang}</p>
+                            <p className="text-[10px] text-slate-500 font-bold">{sub.time} • {sub.lang}</p>
                           </div>
                           <span className="font-mono text-slate-300 font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-800">
                             {sub.runtime}
@@ -819,10 +819,10 @@ if (rawInput) {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-10 text-slate-400 space-y-3 bg-slate-950/40 rounded-2xl border border-slate-800/80">
+                    <div className="text-center py-10 text-slate-500 space-y-3 bg-slate-950/40 rounded-2xl border border-slate-800/80">
                       <History className="h-9 w-9 mx-auto text-slate-600" />
                       <p className="text-xs font-bold text-slate-300">No submissions recorded yet for this session.</p>
-                      <p className="text-[11px] text-slate-400">Click "Submit Solution" to run testcases and log attempts.</p>
+                      <p className="text-[11px] text-slate-500">Click "Submit Solution" to run testcases and log attempts.</p>
                     </div>
                   )}
                 </div>
@@ -831,7 +831,7 @@ if (rawInput) {
               {/* TAB 4: RELATED PROBLEMS */}
               {activeLeftTab === "related" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <h4 className="text-sm font-extrabold text-white">Similar Module Challenges</h4>
+                  <h4 className="text-sm font-extrabold text-slate-900">Similar Module Challenges</h4>
                   {relatedProblems.length > 0 ? (
                     <div className="space-y-2.5">
                       {relatedProblems.map((prob) => (
@@ -844,7 +844,7 @@ if (rawInput) {
                             <p className="text-xs font-bold text-slate-200 group-hover:text-blue-400 transition-colors">
                               {prob.name}
                             </p>
-                            <p className="text-[10px] text-slate-400 font-semibold">{prob.successRate || "80%"} success rate</p>
+                            <p className="text-[10px] text-slate-500 font-semibold">{prob.successRate || "80%"} success rate</p>
                           </div>
                           
                           <div className="flex items-center gap-2">
@@ -863,7 +863,7 @@ if (rawInput) {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-400">No other problems in this module.</p>
+                    <p className="text-xs text-slate-500">No other problems in this module.</p>
                   )}
                 </div>
               )}
@@ -908,7 +908,7 @@ if (rawInput) {
                   {/* Reset Code */}
                   <button
                     onClick={() => setCode(getStarterCode(language, problem))}
-                    className="p-2 text-slate-400 hover:text-white bg-[#111c33] hover:bg-slate-800 rounded-xl transition border border-slate-700/60 cursor-pointer"
+                    className="p-2 text-slate-500 hover:text-white bg-[#111c33] hover:bg-slate-800 rounded-xl transition border border-slate-700/60 cursor-pointer"
                     title="Reset to starter template"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
@@ -945,7 +945,7 @@ if (rawInput) {
                   value={code}
                   onChange={(val) => setCode(val || "")}
                   loading={
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#0b1324] text-slate-400 text-xs gap-3">
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#0b1324] text-slate-500 text-xs gap-3">
                       <Loader2 className="h-5 w-5 animate-spin text-[#004ac6]" />
                       Loading Monaco IDE environment...
                     </div>
@@ -976,7 +976,7 @@ if (rawInput) {
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                       activeConsoleTab === "testcase"
                         ? "bg-[#004ac6]/20 text-blue-400 border border-[#004ac6]/40 shadow-inner"
-                        : "text-slate-400 hover:text-slate-200"
+                        : "text-slate-500 hover:text-slate-200"
                     }`}
                   >
                     Testcase Input
@@ -986,7 +986,7 @@ if (rawInput) {
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
                       activeConsoleTab === "result"
                         ? "bg-[#004ac6]/20 text-blue-400 border border-[#004ac6]/40 shadow-inner"
-                        : "text-slate-400 hover:text-slate-200"
+                        : "text-slate-500 hover:text-slate-200"
                     }`}
                   >
                     <Terminal className="h-3.5 w-3.5" />
@@ -1014,7 +1014,7 @@ if (rawInput) {
                 {/* Custom Testcase Input */}
                 {activeConsoleTab === "testcase" && (
                   <div className="h-full flex flex-col gap-2">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Custom Test Input (stdin)</span>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Custom Test Input (stdin)</span>
                     <textarea
                       value={customInput}
                       onChange={(e) => setCustomInput(e.target.value)}
@@ -1028,7 +1028,7 @@ if (rawInput) {
                 {activeConsoleTab === "result" && (
                   <div className="h-full flex flex-col">
                     {(executing || submitting) && (
-                      <div className="flex flex-col items-center justify-center gap-3 text-slate-400 py-12">
+                      <div className="flex flex-col items-center justify-center gap-3 text-slate-500 py-12">
                         <Activity className="h-8 w-8 text-blue-400 animate-pulse" />
                         <p className="text-xs font-bold text-slate-300">
                           {executing ? "Compiling source code on Judge0 sandbox..." : "Running evaluation test suite..."}
@@ -1047,7 +1047,7 @@ if (rawInput) {
                       <div className="space-y-4 animate-in fade-in duration-200">
                         <div className="flex items-center justify-between bg-[#070e1c] p-3 rounded-2xl border border-slate-800">
                           <div className="flex items-center gap-2.5">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Status:</span>
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Status:</span>
                             <span className={`font-black text-sm uppercase ${
                               runResult.status.includes("Accepted") || runResult.status.includes("Executed")
                                 ? "text-emerald-400"
@@ -1057,7 +1057,7 @@ if (rawInput) {
                             </span>
                           </div>
                           {runResult.runtime && (
-                            <span className="text-xs text-slate-400 font-sans">
+                            <span className="text-xs text-slate-500 font-sans">
                               Runtime: <strong className="text-white font-mono">{runResult.runtime}</strong>
                             </span>
                           )}
@@ -1075,7 +1075,7 @@ if (rawInput) {
                                   className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                                     activeTestcaseTab === idx
                                       ? "bg-slate-800 text-white border border-slate-700 shadow-md"
-                                      : "text-slate-400 hover:text-slate-200"
+                                      : "text-slate-500 hover:text-slate-200"
                                   }`}
                                 >
                                   {tc.passed ? (
@@ -1092,13 +1092,13 @@ if (rawInput) {
                             {runResult.testcaseResults[activeTestcaseTab] && (
                               <div className="grid gap-2.5 font-mono text-xs bg-[#070e1c] p-4 rounded-2xl border border-slate-800">
                                 <div className="grid grid-cols-12 gap-2 items-start">
-                                  <span className="col-span-3 text-slate-400 font-bold">Input:</span>
+                                  <span className="col-span-3 text-slate-500 font-bold">Input:</span>
                                   <span className="col-span-9 text-slate-200 bg-[#0b1324] px-3 py-1.5 rounded-xl border border-slate-800/80 whitespace-pre-wrap">
                                     {runResult.testcaseResults[activeTestcaseTab].input}
                                   </span>
                                 </div>
                                 <div className="grid grid-cols-12 gap-2 items-start">
-                                  <span className="col-span-3 text-slate-400 font-bold">Actual Output:</span>
+                                  <span className="col-span-3 text-slate-500 font-bold">Actual Output:</span>
                                   <span className={`col-span-9 px-3 py-1.5 rounded-xl border border-slate-800/80 whitespace-pre-wrap font-bold ${
                                     runResult.testcaseResults[activeTestcaseTab].passed ? "text-emerald-400 bg-[#0b1324]" : "text-rose-400 bg-rose-950/30 border-rose-900/50"
                                   }`}>
@@ -1106,7 +1106,7 @@ if (rawInput) {
                                   </span>
                                 </div>
                                 <div className="grid grid-cols-12 gap-2 items-start">
-                                  <span className="col-span-3 text-slate-400 font-bold">Expected Output:</span>
+                                  <span className="col-span-3 text-slate-500 font-bold">Expected Output:</span>
                                   <span className="col-span-9 text-emerald-400 bg-[#0b1324] px-3 py-1.5 rounded-xl border border-slate-800/80 whitespace-pre-wrap font-bold">
                                     {runResult.testcaseResults[activeTestcaseTab].expected}
                                   </span>
@@ -1122,16 +1122,16 @@ if (rawInput) {
                           /* Run Code Simple Result */
                           <div className="grid gap-2.5 border-t border-slate-800 pt-3 font-mono text-xs">
                             <div className="grid grid-cols-12 gap-2 items-start">
-                              <span className="col-span-3 text-slate-400 font-bold">Input:</span>
+                              <span className="col-span-3 text-slate-500 font-bold">Input:</span>
                               <span className="col-span-9 text-slate-200 bg-[#070e1c] px-3 py-1.5 rounded-xl border border-slate-800 whitespace-pre-wrap">{runResult.input}</span>
                             </div>
                             <div className="grid grid-cols-12 gap-2 items-start">
-                              <span className="col-span-3 text-slate-400 font-bold">Actual Output:</span>
+                              <span className="col-span-3 text-slate-500 font-bold">Actual Output:</span>
                               <span className="col-span-9 text-emerald-400 bg-[#070e1c] px-3 py-1.5 rounded-xl border border-slate-800 font-bold whitespace-pre-wrap">{runResult.output}</span>
                             </div>
                             {runResult.hasExpected && (
                               <div className="grid grid-cols-12 gap-2 items-start">
-                                <span className="col-span-3 text-slate-400 font-bold">Expected Output:</span>
+                                <span className="col-span-3 text-slate-500 font-bold">Expected Output:</span>
                                 <span className="col-span-9 text-emerald-400 bg-[#070e1c] px-3 py-1.5 rounded-xl border border-slate-800 font-bold whitespace-pre-wrap">{runResult.expected}</span>
                               </div>
                             )}

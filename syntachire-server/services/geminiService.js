@@ -23,6 +23,85 @@ const isLikelyGibberishAnswer = (answer) => {
  * 
  * @returns {Promise<Object>} JSON containing score, strengths, weaknesses, missingPoints, idealAnswer, followUpQuestion
  */
+/**
+ * Validates and normalizes Gemini AI evaluation object structure
+ */
+const validateAndNormalizeEvaluation = (parsedData) => {
+  const clampScore = (val, fallback = 70) => {
+    const num = Number(val);
+    if (isNaN(num)) return fallback;
+    return Math.min(100, Math.max(0, Math.round(num)));
+  };
+
+  const toArray = (val) => {
+    if (Array.isArray(val)) return val.map((s) => String(s).trim()).filter(Boolean);
+    if (typeof val === 'string' && val.trim()) return [val.trim()];
+    return [];
+  };
+
+  const score = clampScore(parsedData.score, 75);
+
+  const strengths = toArray(parsedData.strengths);
+  if (strengths.length === 0) strengths.push('Delivered a relevant response addressing the core question.');
+
+  const weaknesses = toArray(parsedData.weaknesses);
+  if (weaknesses.length === 0) weaknesses.push('Could provide more concrete production metrics or trade-off examples.');
+
+  const missingConcepts = toArray(parsedData.missingConcepts || parsedData.missingPoints);
+  if (missingConcepts.length === 0) missingConcepts.push('Explicit edge-case handling or failure mode mitigation.');
+
+  const improvementFeedback = (parsedData.improvementFeedback || parsedData.aiFeedback || parsedData.idealAnswer || '').trim() ||
+    'Focus on structuring answers with clear technical trade-offs and practical examples.';
+
+  const idealAnswer = (parsedData.idealAnswer || '').trim() ||
+    'An ideal response addresses the core requirements, explains technical decisions, highlights trade-offs, and details edge cases.';
+
+  // All 7 evaluation dimensions
+  const technicalKnowledgeScore = clampScore(parsedData.technicalKnowledgeScore, score);
+  const correctnessScore       = clampScore(parsedData.correctnessScore, score);
+  const problemSolvingScore    = clampScore(parsedData.problemSolvingScore, score);
+  const communicationScore     = clampScore(parsedData.communicationScore, score);
+  const relevanceScore         = clampScore(parsedData.relevanceScore, score);
+  const confidenceScore        = clampScore(parsedData.confidenceScore, score);
+  const timeManagementScore    = clampScore(parsedData.timeManagementScore, score);
+
+  return {
+    score,
+    // 7-dimension scores
+    technicalKnowledgeScore,
+    correctnessScore,
+    problemSolvingScore,
+    communicationScore,
+    relevanceScore,
+    confidenceScore,
+    timeManagementScore,
+    // Legacy aliases kept for backward-compat
+    technicalScore: technicalKnowledgeScore,
+    technicalDepthScore: technicalKnowledgeScore,
+    completenessScore: correctnessScore,
+    strengths,
+    weaknesses,
+    missingConcepts,
+    missingPoints: missingConcepts,
+    improvementFeedback,
+    aiFeedback: improvementFeedback,
+    idealAnswer,
+    followUpQuestion: (parsedData.followUpQuestion || '').trim() || 'How would you monitor and test this in production?',
+  };
+};
+
+/**
+ * Evaluates candidate interview response using Google Gemini API
+ * 
+ * @param {Object} params
+ * @param {string} params.question - The interview question asked
+ * @param {string} params.answer - Candidate's spoken or typed answer
+ * @param {string} [params.targetRole] - Target job role (e.g. Full Stack Developer)
+ * @param {string} [params.difficulty] - Easy, Medium, or Hard
+ * @param {string} [params.type] - hr, technical, behavioral, or mixed
+ * 
+ * @returns {Promise<Object>} Evaluated and validated evaluation object
+ */
 exports.evaluateAnswerWithGemini = async ({
   question,
   answer,
@@ -42,7 +121,7 @@ exports.evaluateAnswerWithGemini = async ({
   }
 
   const prompt = `
-  You are an expert technical and HR interviewer evaluating a candidate for a "${targetRole}" position at "${difficulty}" difficulty level in a "${type.toUpperCase()}" interview round.
+  You are an expert technical and HR interviewer evaluating a candidate's response for a "${targetRole}" position at "${difficulty}" difficulty level during a "${type.toUpperCase()}" interview round.
 
   Interview Question:
   "${question}"
@@ -50,32 +129,40 @@ exports.evaluateAnswerWithGemini = async ({
   Candidate Response:
   "${answer}"
 
-  Evaluate the response thoroughly and return a valid JSON object with the following schema:
-  - score: An integer score from 0 to 100 based on overall technical accuracy, clarity, depth, relevance, and completeness.
-  - technicalScore: An integer score from 0 to 100 reflecting technical knowledge and correctness.
-  - problemSolvingScore: An integer score from 0 to 100 reflecting problem solving and structure.
-  - communicationScore: An integer score from 0 to 100 reflecting clarity, tone, and confidence.
-  - relevanceScore: An integer score from 0 to 100 showing how well the answer addressed the exact question.
-  - confidenceScore: An integer score from 0 to 100 reflecting the candidate's confidence and delivery.
-  - timeManagementScore: An integer score from 0 to 100 reflecting pacing and concise coverage.
-  - strengths: An array of strings highlighting strong points in the answer.
-  - weaknesses: An array of strings highlighting weak areas or inaccuracies.
-  - missingPoints: An array of key technical concepts, STAR points, or trade-offs that were omitted.
-  - aiFeedback: A concise feedback summary for the candidate.
-  - idealAnswer: A concise exemplary response demonstrating ideal structure and technical depth.
-  - followUpQuestion: A logical follow-up question to probe deeper into the candidate's knowledge.
+  EVALUATION CRITERIA (score each from 0-100):
+  1. Technical Knowledge: Accuracy, correctness, and domain-specific knowledge demonstrated
+  2. Correctness: Is the core information accurate and free of factual errors?
+  3. Problem Solving: Logical thinking, decomposition, trade-offs, and edge case awareness
+  4. Communication: Clarity, structure, STAR format (for behavioral), vocabulary, and coherence
+  5. Relevance: Does the response directly and completely address the exact question asked?
+  6. Confidence & Clarity: Decisiveness, conviction, and clarity of delivery
+  7. Time Management: Was the response concise and well-paced (not too brief or too verbose)?
 
-  Additional instructions:
-  1. If the answer is too short, contains only random characters, or does not meaningfully address the question, assign a score below 60 and clearly note that the response is not sufficient.
-  2. If the answer repeats unrelated words, use the actual technical or situational quality; do not reward gibberish.
-  3. Provide feedback that is clearly distinct for each answer based on the candidate’s response quality.
-  4. Keep all output strictly valid JSON without markdown code fences.
+  OUTPUT REQUIREMENT:
+  Return a strictly valid JSON object matching this schema:
+  {
+    "score": <overall integer score 0-100>,
+    "technicalKnowledgeScore": <integer 0-100>,
+    "correctnessScore": <integer 0-100>,
+    "problemSolvingScore": <integer 0-100>,
+    "communicationScore": <integer 0-100>,
+    "relevanceScore": <integer 0-100>,
+    "confidenceScore": <integer 0-100>,
+    "timeManagementScore": <integer 0-100>,
+    "strengths": [<array of strings listing clear strengths>],
+    "weaknesses": [<array of strings listing weak points or inaccuracies>],
+    "missingConcepts": [<array of strings listing missing technical concepts or trade-offs>],
+    "improvementFeedback": "<short, actionable improvement feedback summary>",
+    "idealAnswer": "<concise exemplary answer demonstrating ideal structure>",
+    "followUpQuestion": "<logical follow-up question to probe deeper>"
+  }
+
+  Do NOT include any markdown code blocks (e.g. \`\`\`json). Return pure JSON only.
   `;
 
   try {
     const ai = new GoogleGenAI({ apiKey });
 
-    // Query Gemini model
     const response = await ai.models.generateContent({
       model: 'gemini-3.5-flash-lite',
       contents: prompt,
@@ -84,20 +171,35 @@ exports.evaluateAnswerWithGemini = async ({
         responseSchema: {
           type: 'OBJECT',
           properties: {
-            score: { type: 'INTEGER' },
-            strengths: { type: 'ARRAY', items: { type: 'STRING' } },
-            weaknesses: { type: 'ARRAY', items: { type: 'STRING' } },
-            missingPoints: { type: 'ARRAY', items: { type: 'STRING' } },
-            idealAnswer: { type: 'STRING' },
-            followUpQuestion: { type: 'STRING' },
+            score:                   { type: 'INTEGER' },
+            technicalKnowledgeScore: { type: 'INTEGER' },
+            correctnessScore:        { type: 'INTEGER' },
+            problemSolvingScore:     { type: 'INTEGER' },
+            communicationScore:      { type: 'INTEGER' },
+            relevanceScore:          { type: 'INTEGER' },
+            confidenceScore:         { type: 'INTEGER' },
+            timeManagementScore:     { type: 'INTEGER' },
+            strengths:               { type: 'ARRAY', items: { type: 'STRING' } },
+            weaknesses:              { type: 'ARRAY', items: { type: 'STRING' } },
+            missingConcepts:         { type: 'ARRAY', items: { type: 'STRING' } },
+            improvementFeedback:     { type: 'STRING' },
+            idealAnswer:             { type: 'STRING' },
+            followUpQuestion:        { type: 'STRING' },
           },
           required: [
             'score',
+            'technicalKnowledgeScore',
+            'correctnessScore',
+            'problemSolvingScore',
+            'communicationScore',
+            'relevanceScore',
+            'confidenceScore',
+            'timeManagementScore',
             'strengths',
             'weaknesses',
-            'missingPoints',
+            'missingConcepts',
+            'improvementFeedback',
             'idealAnswer',
-            'followUpQuestion',
           ],
         },
       },
@@ -107,28 +209,136 @@ exports.evaluateAnswerWithGemini = async ({
     rawText = rawText.replace(/```json|```/g, '').trim();
     const parsedData = JSON.parse(rawText);
 
-    return {
-      score: Number(parsedData.score) || 80,
-      technicalScore: Number(parsedData.technicalScore) || 0,
-      problemSolvingScore: Number(parsedData.problemSolvingScore) || 0,
-      communicationScore: Number(parsedData.communicationScore) || 0,
-      relevanceScore: Number(parsedData.relevanceScore) || 0,
-      confidenceScore: Number(parsedData.confidenceScore) || 0,
-      timeManagementScore: Number(parsedData.timeManagementScore) || 0,
-      strengths: Array.isArray(parsedData.strengths) ? parsedData.strengths : [parsedData.strengths],
-      weaknesses: Array.isArray(parsedData.weaknesses) ? parsedData.weaknesses : [parsedData.weaknesses],
-      missingPoints: Array.isArray(parsedData.missingPoints) ? parsedData.missingPoints : [parsedData.missingPoints],
-      aiFeedback: parsedData.aiFeedback || parsedData.idealAnswer || '',
-      idealAnswer: parsedData.idealAnswer || '',
-      followUpQuestion: parsedData.followUpQuestion || '',
-    };
+    // Validate structured JSON response before returning/saving
+    return validateAndNormalizeEvaluation(parsedData);
   } catch (error) {
     console.error('Gemini API Evaluation Error:', error.message);
     
-    // Try fallback REST API call or heuristic fallback
     return await fallbackGeminiRestCall(apiKey, prompt).catch(() =>
       getFallbackEvaluation(question, answer)
     );
+  }
+};
+
+/**
+ * Generates a comprehensive final interview evaluation report using Gemini AI
+ * 
+ * @param {Object} params
+ * @param {string} params.targetRole - Target job role
+ * @param {string} params.type - Round type (hr, technical, behavioral, mixed)
+ * @param {string} params.difficulty - Interview difficulty level
+ * @param {number} params.overallScore - Calculated overall performance score
+ * @param {Object} params.categoryScores - { technical, problemSolving, communication, relevance, timeManagement }
+ * @param {Array} params.questions - Array of question evaluation objects
+ * @param {Array<string>} params.strongestTopics - Pre-aggregated strongest topics
+ * @param {Array<string>} params.weakestTopics - Pre-aggregated weakest topics
+ * 
+ * @returns {Promise<Object>} Final report JSON { summary, personalizedFeedback, recommendedTopics, strongestTopics, weakestTopics }
+ */
+exports.generateFinalReportWithGemini = async ({
+  targetRole = 'Full Stack Software Developer',
+  type = 'mixed',
+  difficulty = 'Medium',
+  overallScore = 80,
+  categoryScores = {},
+  questions = [],
+  strongestTopics = [],
+  weakestTopics = [],
+}) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  const defaultReport = {
+    summary: `Candidate completed the ${type.toUpperCase()} interview round for ${targetRole} with an overall score of ${overallScore}%.`,
+    personalizedFeedback: `Demonstrated good foundational knowledge in ${targetRole}. To reach senior competency, focus on deepening system architecture trade-offs, structured STAR delivery, and edge-case handling.`,
+    recommendedTopics: Array.isArray(weakestTopics) && weakestTopics.length > 0
+      ? weakestTopics
+      : ['System Design & Scalability', 'Advanced Data Structures & Algorithms', 'STAR Behavioral Metrics & Impact'],
+    strongestTopics: Array.isArray(strongestTopics) && strongestTopics.length > 0
+      ? strongestTopics
+      : ['Core Software Concepts', 'Problem Decomposition'],
+    weakestTopics: Array.isArray(weakestTopics) && weakestTopics.length > 0
+      ? weakestTopics
+      : ['Distributed Caching & Indexing', 'STAR Quantifiable Results'],
+  };
+
+  if (!apiKey) {
+    return defaultReport;
+  }
+
+  const questionSummaries = questions.map((q, idx) => `
+  Q${idx + 1} [${q.category || 'Topic'} - Score: ${q.score}%]:
+  - Question: "${q.question}"
+  - Answer: "${(q.userAnswer || '').slice(0, 200)}"
+  - Strengths: ${Array.isArray(q.strengths) ? q.strengths.join('; ') : 'None'}
+  - Weaknesses: ${Array.isArray(q.weaknesses) ? q.weaknesses.join('; ') : 'None'}
+  - Omitted Concepts: ${Array.isArray(q.missingPoints) ? q.missingPoints.join('; ') : 'None'}
+  `).join('\n');
+
+  const prompt = `
+  You are an executive engineering manager and interview evaluation specialist synthesizing a final performance report for a candidate who completed a "${type.toUpperCase()}" mock interview for a "${targetRole}" position at "${difficulty}" difficulty level.
+
+  PERFORMANCE METRICS:
+  - Overall Score: ${overallScore}%
+  - Technical Knowledge Score: ${categoryScores.technical || 0}%
+  - Problem Solving Score: ${categoryScores.problemSolving || 0}%
+  - Communication Score: ${categoryScores.communication || 0}%
+  - Relevance Score: ${categoryScores.relevance || 0}%
+  - Time Management Score: ${categoryScores.timeManagement || 0}%
+
+  CANDIDATE QUESTION PERFORMANCE BREAKDOWN:
+  ${questionSummaries || 'No question details available.'}
+
+  TASK:
+  Synthesize a professional, constructive, and highly personalized interview completion report in valid JSON format.
+
+  Return ONLY a valid JSON object matching this schema:
+  {
+    "summary": "<1-2 sentence executive overview summary of performance>",
+    "personalizedFeedback": "<Detailed personalized feedback paragraph addressing strengths, growth areas, technical depth, and actionable advice>",
+    "strongestTopics": [<array of 2 to 4 strongest technical or behavioral topics demonstrated by candidate>],
+    "weakestTopics": [<array of 2 to 4 weakest topics or skill gaps needing work>],
+    "recommendedTopics": [<array of 3 to 5 specific recommended learning topics, frameworks, or practice concepts>]
+  }
+
+  Return pure JSON text only without markdown code blocks.
+  `;
+
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.5-flash-lite',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'OBJECT',
+          properties: {
+            summary: { type: 'STRING' },
+            personalizedFeedback: { type: 'STRING' },
+            strongestTopics: { type: 'ARRAY', items: { type: 'STRING' } },
+            weakestTopics: { type: 'ARRAY', items: { type: 'STRING' } },
+            recommendedTopics: { type: 'ARRAY', items: { type: 'STRING' } },
+          },
+          required: ['summary', 'personalizedFeedback', 'strongestTopics', 'weakestTopics', 'recommendedTopics'],
+        },
+      },
+    });
+
+    let rawText = response.text || '';
+    rawText = rawText.replace(/```json|```/g, '').trim();
+    const parsedData = JSON.parse(rawText);
+
+    return {
+      summary: parsedData.summary || defaultReport.summary,
+      personalizedFeedback: parsedData.personalizedFeedback || defaultReport.personalizedFeedback,
+      strongestTopics: Array.isArray(parsedData.strongestTopics) && parsedData.strongestTopics.length ? parsedData.strongestTopics : defaultReport.strongestTopics,
+      weakestTopics: Array.isArray(parsedData.weakestTopics) && parsedData.weakestTopics.length ? parsedData.weakestTopics : defaultReport.weakestTopics,
+      recommendedTopics: Array.isArray(parsedData.recommendedTopics) && parsedData.recommendedTopics.length ? parsedData.recommendedTopics : defaultReport.recommendedTopics,
+    };
+  } catch (error) {
+    console.error('Gemini Final Report Generation Error:', error.message);
+    return defaultReport;
   }
 };
 

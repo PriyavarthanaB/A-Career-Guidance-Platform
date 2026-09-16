@@ -7,8 +7,10 @@ const {
   evaluateAnswer,
   getInterviewById,
   submitAnswer,
+  generateNextQuestion,
   finishInterview,
   getUserInterviews,
+  getUserProgress,
 } = require('../controllers/interviewController');
 
 // Optional auth middleware (attaches req.user if token present)
@@ -67,6 +69,9 @@ router.post('/start', optionalAuth, startInterview);
 // POST /api/interview/evaluate - Standalone answer evaluation via Gemini API
 router.post('/evaluate', optionalAuth, evaluateAnswer);
 
+// GET /api/interview/progress - Analytics & progress metrics across interviews
+router.get('/progress', optionalAuth, getUserProgress);
+
 // GET /api/interview/history - Fetch past interviews
 router.get('/history', optionalAuth, getUserInterviews);
 
@@ -75,6 +80,9 @@ router.get('/:id', optionalAuth, getInterviewById);
 
 // POST /api/interview/:id/submit - Submit response for a question and evaluate
 router.post('/:id/submit', optionalAuth, audioUpload.single('recording'), submitAnswer);
+
+// POST /api/interview/:id/next-question - Generate next single dynamic question
+router.post('/:id/next-question', optionalAuth, generateNextQuestion);
 
 // PATCH /api/interview/:id/finish - Complete interview session
 router.patch('/:id/finish', optionalAuth, finishInterview);

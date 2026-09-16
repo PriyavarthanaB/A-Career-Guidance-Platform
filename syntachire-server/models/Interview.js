@@ -34,7 +34,7 @@ const InterviewSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['hr', 'technical', 'mixed'],
+      enum: ['hr', 'technical', 'behavioral', 'mixed'],
       required: true,
       default: 'mixed',
     },
@@ -43,6 +43,10 @@ const InterviewSchema = new mongoose.Schema(
       enum: ['Easy', 'Medium', 'Hard'],
       required: true,
       default: 'Medium',
+    },
+    durationMinutes: {
+      type: Number,
+      default: 30,
     },
     targetRole: {
       type: String,
@@ -99,6 +103,22 @@ const InterviewSchema = new mongoose.Schema(
     summary: {
       type: String,
       default: '',
+    },
+    strongestTopics: {
+      type: [String],
+      default: [],
+    },
+    weakestTopics: {
+      type: [String],
+      default: [],
+    },
+    personalizedFeedback: {
+      type: String,
+      default: '',
+    },
+    recommendedTopics: {
+      type: [String],
+      default: [],
     },
     startedAt: {
       type: Date,

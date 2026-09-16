@@ -134,8 +134,7 @@ export default function CodingHub() {
 
   return (
     <div 
-      className="text-white min-h-screen font-sans flex relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)' }}
+      className="text-slate-900 bg-[#f4f7ff] min-h-screen font-sans flex relative overflow-hidden"
     >
       {/* Ambient background decorative blobs */}
       <div className="absolute top-0 right-1/4 w-[550px] h-[550px] bg-blue-600/8 rounded-full blur-[120px] pointer-events-none" />
@@ -148,14 +147,14 @@ export default function CodingHub() {
       <div className="lg:ml-[260px] flex-1 min-h-screen flex flex-col relative z-10">
 
         {/* Top header bar */}
-        <header className="sticky top-0 z-20 bg-slate-900/60 backdrop-blur-xl border-b border-white/[0.08] px-4 md:px-8 py-4 flex items-center justify-between gap-4 shadow-lg shadow-black/20">
+        <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex flex-col">
-              <div className="inline-flex items-center gap-2 text-xs font-black text-blue-400 bg-white/[0.04] backdrop-blur-md px-3.5 py-1 rounded-full border border-white/[0.06] shadow-lg shadow-black/20 w-fit mb-1">
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-600 bg-blue-50 px-3.5 py-1 rounded-full border border-blue-100 w-fit mb-1">
                 <Sparkles className="h-3.5 w-3.5 text-blue-400 animate-pulse" />
                 SyntacHire AI Coding Hub
               </div>
-              <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">
+              <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
                 {selectedModule ? selectedModule.name : "Select a Module"}
               </h1>
             </div>
@@ -165,16 +164,16 @@ export default function CodingHub() {
             {/* Mobile: show/hide modules list */}
             <button
               onClick={() => setMobileModulesOpen((v) => !v)}
-              className="md:hidden flex items-center gap-1.5 bg-white/[0.04] backdrop-blur-md border border-white/[0.06] text-xs font-black text-blue-400 px-3.5 py-2 rounded-2xl shadow-lg shadow-black/20 hover:scale-105 active:scale-95 transition-all"
+              className="md:hidden flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-xs font-bold text-blue-600 px-3.5 py-2 rounded-2xl shadow-xs hover:scale-105 active:scale-95 transition-all"
             >
               <Layers className="h-4 w-4" />
               Modules
             </button>
 
             {selectedModule && (
-              <div className="hidden sm:flex items-center gap-2.5 bg-white/[0.04] backdrop-blur-md border border-white/[0.06] rounded-2xl px-4 py-2 shadow-lg shadow-black/20">
+              <div className="hidden sm:flex items-center gap-2.5 bg-slate-100 border border-slate-200 rounded-2xl px-4 py-2 shadow-xs">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span className="text-xs font-black text-slate-300">
+                <span className="text-xs font-bold text-slate-700">
                   {solvedCount}/{problems.length} Solved
                 </span>
               </div>
@@ -190,15 +189,15 @@ export default function CodingHub() {
             className={`
               ${mobileModulesOpen ? "block" : "hidden"} md:block
               w-full md:w-72 lg:w-80 flex-shrink-0
-              bg-slate-900/60 backdrop-blur-xl border-r border-white/[0.08]
+              bg-white border-r border-slate-200
               overflow-y-auto
               ${mobileModulesOpen ? "absolute inset-0 z-30 md:relative md:z-auto" : ""}
             `}
           >
             {/* Mobile close */}
             {mobileModulesOpen && (
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] md:hidden">
-                <span className="font-black text-sm text-white">Choose a Module</span>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 md:hidden">
+                <span className="font-bold text-sm text-slate-900">Choose a Module</span>
                 <button
                   onClick={() => setMobileModulesOpen(false)}
                   className="text-slate-400 text-xs font-black"
@@ -208,11 +207,11 @@ export default function CodingHub() {
               </div>
             )}
 
-            <div className="p-4 border-b border-white/[0.06]">
-              <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">
+            <div className="p-4 border-b border-slate-100">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
                 Curated Practice Modules
               </h2>
-              <p className="text-[11px] text-slate-400 font-medium">
+              <p className="text-[11px] text-slate-500 font-medium">
                 {modules.length} modules • Click to load problem sandbox
               </p>
             </div>
@@ -249,17 +248,16 @@ export default function CodingHub() {
                       onClick={() => selectModule(mod)}
                       className={`w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all duration-200 cursor-pointer group ${
                         isActive
-                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-900/50 scale-[1.01]"
-                          : "hover:bg-white/[0.06] hover:text-blue-400 text-slate-400"
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20 scale-[1.01]"
+                          : "hover:bg-blue-50 hover:text-blue-600 text-slate-600"
                       }`}
                     >
                       <span className="text-base shrink-0 w-7 text-center">
                         {MODULE_ICONS[idx % MODULE_ICONS.length]}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-black leading-tight truncate ${isActive ? "text-white" : "text-white group-hover:text-blue-400"}`}>
-                          {mod.name}
-                        </p>
+                        <p className={`text-xs font-bold leading-tight truncate ${isActive ? "text-white" : "text-slate-800 group-hover:text-blue-600"}`}>
+                          {mod.name}</p>
                         <p className={`text-[10px] font-black mt-0.5 ${isActive ? "text-white/80" : diffColor}`}>
                           {mod.difficulty} · {mod.number}
                         </p>
@@ -282,8 +280,8 @@ export default function CodingHub() {
                 <div className="w-16 h-16 rounded-3xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-lg shadow-black/20">
                   <BookOpen className="h-8 w-8 text-blue-400" />
                 </div>
-                <h3 className="font-black text-lg text-white">Select a Module</h3>
-                <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+                <h3 className="font-bold text-lg text-slate-900">Select a Module</h3>
+                <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
                   Choose a module from the left panel to view its practice problems.
                 </p>
               </div>
@@ -317,19 +315,19 @@ export default function CodingHub() {
                 </div>
 
                 {/* Theory shortcut */}
-                <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 flex items-center justify-between gap-4 shadow-lg shadow-black/20 hover:shadow-xl transition-all duration-300">
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between gap-4 shadow-xs hover:shadow-md transition-all duration-300">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
+                    <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
                       <BookOpen className="h-5 w-5 text-blue-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-black text-white">Study Concepts &amp; Patterns First</p>
-                      <p className="text-xs text-slate-400 font-normal">Review algorithm blueprints and edge cases before coding</p>
+                      <p className="text-sm font-bold text-slate-900">Study Concepts &amp; Patterns First</p>
+                      <p className="text-xs text-slate-500 font-normal">Review algorithm blueprints and edge cases before coding</p>
                     </div>
                   </div>
                   <button
                     onClick={() => navigate(`/module/${selectedModule._id}/theory`)}
-                    className="shrink-0 flex items-center gap-1.5 bg-slate-800/80 hover:bg-white/[0.06] text-blue-400 hover:text-white text-xs font-black px-4 py-2.5 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-lg shadow-black/20 border border-white/[0.06]"
+                    className="shrink-0 flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer border border-blue-200/80"
                   >
                     Open Theory <ChevronRight className="h-3.5 w-3.5" />
                   </button>
@@ -343,7 +341,7 @@ export default function CodingHub() {
                     placeholder="Search problems in this module…"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-2xl border border-white/[0.08] bg-slate-800/50 backdrop-blur-xl text-sm font-medium text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all shadow-lg shadow-black/20"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-white text-sm font-medium text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/15 transition-all shadow-xs"
                   />
                 </div>
 
@@ -366,9 +364,9 @@ export default function CodingHub() {
                     </button>
                   </div>
                 ) : filteredProblems.length === 0 ? (
-                  <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-12 text-center space-y-3 shadow-lg shadow-black/20">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center space-y-3 shadow-lg shadow-black/20">
                     <Code2 className="h-10 w-10 text-slate-500 mx-auto" />
-                    <h4 className="font-black text-white">
+                    <h4 className="font-bold text-slate-900">
                       {searchQuery ? "No matches found" : "No problems yet"}
                     </h4>
                     <p className="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">
@@ -380,10 +378,10 @@ export default function CodingHub() {
                 ) : (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-black text-white">
+                      <h3 className="text-sm font-bold text-slate-900">
                         Practice Problems ({filteredProblems.length})
                       </h3>
-                      <span className="text-xs text-slate-400 font-black">
+                      <span className="text-xs text-slate-500 font-medium">
                         Click Solve to open Judge0 execution editor
                       </span>
                     </div>
@@ -395,17 +393,17 @@ export default function CodingHub() {
                       return (
                         <div
                           key={problem._id}
-                          className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 md:p-6 shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 space-y-4"
+                          className="bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 space-y-4"
                         >
                           {/* Header row */}
                           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                             <div className="flex items-start gap-3 flex-1 min-w-0">
-                              <span className="text-xs font-black text-slate-400 bg-slate-800/50 border border-white/[0.06] w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-lg shadow-black/20">
+                              <span className="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-lg shadow-black/20">
                                 {idx + 1}
                               </span>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <h4 className="text-base font-black text-white leading-tight">
+                                  <h4 className="text-base font-bold text-slate-900 leading-tight">
                                     {problem.name}
                                   </h4>
                                   {isSolved && (
@@ -416,7 +414,7 @@ export default function CodingHub() {
                                   )}
                                 </div>
                                 {problem.subtitle && (
-                                  <p className="text-xs text-slate-400 mt-0.5 font-normal">{problem.subtitle}</p>
+                                  <p className="text-xs text-slate-500 mt-0.5 font-normal">{problem.subtitle}</p>
                                 )}
                               </div>
                             </div>
@@ -456,13 +454,13 @@ export default function CodingHub() {
                               {problem.difficulty}
                             </span>
                             {problem.estimatedTime && (
-                              <span className="flex items-center gap-1 text-[10px] font-black text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-lg border border-white/[0.06]">
+                              <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                                 <Clock className="h-3 w-3" />
                                 {problem.estimatedTime}
                               </span>
                             )}
                             {problem.successRate && (
-                              <span className="flex items-center gap-1 text-[10px] font-black text-slate-400 bg-slate-800/50 px-2 py-0.5 rounded-lg border border-white/[0.06]">
+                              <span className="flex items-center gap-1 text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
                                 <BarChart2 className="h-3 w-3" />
                                 {problem.successRate} success
                               </span>
@@ -476,7 +474,7 @@ export default function CodingHub() {
                               {problem.tags.map((tag, i) => (
                                 <span
                                   key={i}
-                                  className="bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-lg border border-blue-500/20 shadow-sm"
+                                  className="bg-blue-50 text-blue-700 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg border border-blue-100"
                                 >
                                   {tag}
                                 </span>
@@ -491,7 +489,7 @@ export default function CodingHub() {
                               {problem.companies.map((c, i) => (
                                 <span
                                   key={i}
-                                  className="bg-slate-800/50 text-slate-400 text-[9px] font-extrabold px-2 py-0.5 rounded-lg border border-white/[0.06]"
+                                  className="bg-slate-100 text-slate-600 text-[9px] font-semibold px-2 py-0.5 rounded-lg border border-slate-200"
                                 >
                                   {c}
                                 </span>
@@ -501,12 +499,12 @@ export default function CodingHub() {
 
                           {/* Hints panel */}
                           {isHintOpen && problem.hints?.length > 0 && (
-                            <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 shadow-sm">
-                              <h5 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                            <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 shadow-xs">
+                              <h5 className="text-[10px] font-bold text-indigo-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                 <HelpCircle className="h-3.5 w-3.5 text-indigo-400" />
                                 Hints &amp; Key Observations
                               </h5>
-                              <ul className="space-y-1.5 text-xs text-slate-300 font-medium list-decimal pl-4 leading-relaxed">
+                              <ul className="space-y-1.5 text-xs text-slate-600 font-medium list-decimal pl-4 leading-relaxed">
                                 {problem.hints.map((hint, i) => (
                                   <li key={i}>{hint}</li>
                                 ))}

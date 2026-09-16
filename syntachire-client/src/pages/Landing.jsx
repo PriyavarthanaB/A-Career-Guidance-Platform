@@ -25,9 +25,9 @@ export default function Landing() {
   ];
 
   return (
-    <div className="bg-[#f8f9ff] text-[#0b1c30] min-h-screen overflow-x-hidden font-sans relative pb-20 selection:bg-[#004ac6] selection:text-white">
+    <div className="bg-[#f4f7ff] text-slate-900 min-h-screen overflow-x-hidden font-sans relative pb-20 selection:bg-blue-200 selection:text-blue-900">
       {/* Top Navbar */}
-      <nav className="fixed top-0 w-full z-40 flex justify-between items-center px-5 md:px-14 h-16 md:h-20 bg-[#0b1c30]/90 backdrop-blur-2xl border-b border-white/10 shadow-lg shadow-black/10 text-white">
+      <nav className="fixed top-0 w-full z-40 flex justify-between items-center px-5 md:px-14 h-16 md:h-20 bg-white/85 backdrop-blur-2xl border-b border-slate-200/80 shadow-sm text-slate-900">
         <div className="flex items-center gap-6 md:gap-10">
           <div 
             className="flex items-center gap-3 cursor-pointer" 
@@ -38,21 +38,21 @@ export default function Landing() {
               alt="SyntacHire AI logo"
               className="h-9 w-9 md:h-11 md:w-11 rounded-lg object-cover border border-white/10 shadow-sm"
             />
-            <span className="text-xl md:text-2xl font-extrabold text-blue-400 hover:text-blue-300 tracking-tight transition-colors duration-200">
+            <span className="text-xl md:text-2xl font-extrabold text-blue-600 hover:text-blue-700 tracking-tight transition-colors duration-200">
               SyntacHire AI
             </span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-base font-medium">
-            <a className="text-blue-400 font-bold border-b-2 border-blue-400 pb-1" href="#features">
+            <a className="text-blue-600 font-bold border-b-2 border-blue-500 pb-1" href="#features">
               Features
             </a>
-            <a className="text-slate-300 hover:text-white transition-colors duration-200" href="#resume">
+            <a className="text-slate-600 hover:text-slate-900 transition-colors duration-200" href="#resume">
               Resume
             </a>
-            <a className="text-slate-300 hover:text-white transition-colors duration-200" href="#interview">
+            <a className="text-slate-600 hover:text-slate-900 transition-colors duration-200" href="#interview">
               Interview
             </a>
-            <a className="text-slate-300 hover:text-white transition-colors duration-200" href="#coding">
+            <a className="text-slate-600 hover:text-slate-900 transition-colors duration-200" href="#coding">
               Coding
             </a>
           </div>
@@ -61,7 +61,7 @@ export default function Landing() {
         <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={() => navigate('/login')}
-            className="px-4 py-2 md:px-5 md:py-2.5 font-semibold text-sm md:text-base text-slate-200 hover:bg-white/10 rounded-xl transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+            className="px-4 py-2 md:px-5 md:py-2.5 font-semibold text-sm md:text-base text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
           >
             Log In
           </button>
@@ -157,32 +157,32 @@ export default function Landing() {
         </section>
 
         {/* Features Grid */}
-        <section id="resume" className="py-16 md:py-24 bg-[#f8f9ff] relative overflow-hidden">
+        <section id="resume" className="py-16 md:py-24 bg-white relative overflow-hidden">
           {/* Ambient background glows */}
           <div className="pointer-events-none absolute top-20 right-10 w-96 h-96 rounded-full bg-blue-400/10 blur-[130px]" />
           <div className="pointer-events-none absolute bottom-20 left-10 w-96 h-96 rounded-full bg-purple-400/10 blur-[130px]" />
 
           <div className="max-w-7xl mx-auto px-5 md:px-12 relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-20">
-              <span className="inline-block px-3.5 py-1 rounded-full bg-blue-100/70 text-blue-800 text-xs font-bold ring-1 ring-inset ring-blue-700/10 mb-3 uppercase tracking-wider">
+              <span className="inline-block px-3.5 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold ring-1 ring-inset ring-blue-200 mb-3 uppercase tracking-wider">
                 Platform Capabilities
               </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#0b1c30] mb-4 md:mb-5 tracking-tight">Master Every Stage of the Process</h2>
-              <p className="text-base md:text-lg text-[#434655] leading-relaxed">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4 md:mb-5 tracking-tight">Master Every Stage of the Process</h2>
+              <p className="text-base md:text-lg text-slate-600 leading-relaxed">
                 Our intelligent engine analyzes every data point to give you the competitive edge in today's job market.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8">
               {/* Feature 1 */}
-              <div className="md:col-span-8 bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-[24px] md:rounded-[32px] p-6 md:p-10 relative overflow-hidden group shadow-lg shadow-blue-500/5 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300">
+              <div className="md:col-span-8 bg-white border border-slate-200 rounded-[24px] md:rounded-[32px] p-6 md:p-10 relative overflow-hidden group shadow-sm hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/8 transition-all duration-300">
                 <div className="flex flex-col h-full justify-between relative z-10 min-h-[180px] md:min-h-[220px]">
                   <div>
                     <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-600/10 text-[#004ac6] border border-blue-600/20 rounded-2xl flex items-center justify-center mb-5 md:mb-6 group-hover:bg-[#004ac6] group-hover:text-white transition-all duration-300 shadow-sm">
                       <span className="material-symbols-outlined text-[28px] md:text-[32px]">description</span>
                     </div>
-                    <h3 className="text-xl md:text-2xl font-bold text-[#0b1c30] mb-3">AI Resume Scoring</h3>
-                    <p className="text-[#434655] max-w-lg text-sm md:text-base leading-relaxed">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3">AI Resume Scoring</h3>
+                    <p className="text-slate-600 max-w-lg text-sm md:text-base leading-relaxed">
                       Real-time ATS optimization that analyzes your content against industry-specific keywords and semantic relevance.
                     </p>
                   </div>
@@ -210,13 +210,13 @@ export default function Landing() {
               </div>
 
               {/* Feature 3 */}
-              <div id="interview" className="md:col-span-4 bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-[24px] md:rounded-[32px] p-6 md:p-10 flex flex-col justify-between group shadow-lg shadow-blue-500/5 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300">
+              <div id="interview" className="md:col-span-4 bg-white border border-slate-200 rounded-[24px] md:rounded-[32px] p-6 md:p-10 flex flex-col justify-between group shadow-sm hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/8 transition-all duration-300">
                 <div>
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-purple-600/10 text-purple-600 border border-purple-600/20 rounded-2xl flex items-center justify-center mb-5 md:mb-6 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300 shadow-sm">
                     <span className="material-symbols-outlined text-[28px] md:text-[32px]">mic</span>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-[#0b1c30] mb-3">Mock Interviews</h3>
-                  <p className="text-[#434655] text-sm md:text-base leading-relaxed">Practice HR and Technical rounds with AI avatars that provide instant behavioral feedback.</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3">Mock Interviews</h3>
+                  <p className="text-slate-600 text-sm md:text-base leading-relaxed">Practice HR and Technical rounds with AI avatars that provide instant behavioral feedback.</p>
                 </div>
                 <button
                   onClick={() => navigate('/mock-interview')}
@@ -228,13 +228,13 @@ export default function Landing() {
               </div>
 
               {/* Feature 4 */}
-              <div id="coding" className="md:col-span-8 bg-white/85 backdrop-blur-xl border border-slate-200/80 rounded-[24px] md:rounded-[32px] p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center overflow-hidden shadow-lg shadow-blue-500/5 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300">
+              <div id="coding" className="md:col-span-8 bg-white border border-slate-200 rounded-[24px] md:rounded-[32px] p-6 md:p-10 flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/8 transition-all duration-300">
                 <div className="flex-1">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-emerald-600/10 text-emerald-600 border border-emerald-600/20 rounded-2xl flex items-center justify-center mb-5 md:mb-6 shadow-sm">
                     <span className="material-symbols-outlined text-[28px] md:text-[32px]">code</span>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-[#0b1c30] mb-3">Coding Practice</h3>
-                  <p className="text-[#434655] text-sm md:text-base leading-relaxed">Tackle algorithmic challenges in an integrated AI-powered IDE with real-time code optimization hints.</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3">Coding Practice</h3>
+                  <p className="text-slate-600 text-sm md:text-base leading-relaxed">Tackle algorithmic challenges in an integrated AI-powered IDE with real-time code optimization hints.</p>
                 </div>
                 <div className="flex-1 w-full bg-[#0b1c30] border border-slate-800 rounded-2xl p-4 md:p-5 font-mono text-xs md:text-sm text-blue-300 shadow-2xl">
                   <div className="flex gap-2 mb-3 md:mb-4">
@@ -256,7 +256,7 @@ export default function Landing() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-16 md:py-20 bg-[#0b1c30] text-white text-center border-y border-white/10 relative overflow-hidden">
+        <section className="py-16 md:py-20 bg-[#1e3a8a] text-white text-center border-y border-white/10 relative overflow-hidden">
           <div className="pointer-events-none absolute -left-20 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-blue-600/10 blur-[100px]" />
           <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-indigo-600/10 blur-[100px]" />
 
@@ -287,7 +287,7 @@ export default function Landing() {
       </div>
 
       {/* Footer */}
-      <footer className="w-full py-10 md:py-12 px-5 md:px-14 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 bg-[#0b1c30] border-t border-white/10 text-slate-300 text-sm">
+      <footer className="w-full py-10 md:py-12 px-5 md:px-14 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 bg-[#1e3a8a] border-t border-white/10 text-slate-300 text-sm">
         <div className="flex flex-col gap-1 text-center md:text-left">
           <div className="flex items-center gap-3 justify-center md:justify-start">
             <img

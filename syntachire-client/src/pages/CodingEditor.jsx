@@ -123,7 +123,7 @@ export default function CodingEditor() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-[#f4f7ff] text-slate-900 p-4 sm:p-6 font-sans">
       <div className="mx-auto max-w-7xl space-y-4">
         
         {/* Top Header & Bar */}

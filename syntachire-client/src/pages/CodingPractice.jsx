@@ -21,7 +21,8 @@ import {
   Brain,
   ArrowRight,
   BookMarked,
-  Code2
+  Code2,
+  Compass
 } from "lucide-react";
 
 /* ─── Role → Priority Topic Map ───────────────────────────────────────────── */
@@ -242,13 +243,11 @@ export default function CodingPractice() {
 
   return (
     <div 
-      className="text-white min-h-screen font-sans flex flex-col relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)' }}
+      className="text-slate-900 bg-[#f4f7ff] min-h-screen font-sans flex flex-col relative overflow-hidden"
     >
       {/* Decorative background ambient blobs */}
-      <div className="absolute top-0 right-1/4 w-[550px] h-[550px] bg-blue-600/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-violet-600/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-indigo-600/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[550px] h-[550px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[450px] h-[450px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Sidebar navigation */}
       <Sidebar />
@@ -257,15 +256,15 @@ export default function CodingPractice() {
       <main className="lg:ml-[260px] min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-8 relative z-10">
         
         {/* Page Title Header */}
-        <header className="flex flex-col gap-2.5 border-b border-white/[0.08] pb-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/60 backdrop-blur-xl px-4 py-1.5 text-xs font-black text-blue-400 ring-1 ring-white/[0.06] w-fit shadow-lg shadow-black/20">
-            <Sparkles className="h-4 w-4 text-blue-400 animate-pulse" />
+        <header className="flex flex-col gap-2.5 border-b border-slate-200/80 pb-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-200 px-4 py-1.5 text-xs font-black text-blue-700 w-fit shadow-2xs">
+            <Sparkles className="h-4 w-4 text-blue-600 animate-pulse" />
             Interview Preparation &amp; Mastery Track
           </div>
-          <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
             Data Structures &amp; Algorithms Modules
           </h2>
-          <p className="text-sm text-slate-400 max-w-xl font-medium leading-relaxed">
+          <p className="text-sm text-slate-600 max-w-xl font-medium leading-relaxed">
             Accelerate your coding interview readiness through structured topic modules and real-time execution sandboxes.
           </p>
         </header>
@@ -275,7 +274,7 @@ export default function CodingPractice() {
           {stats.map((stat, i) => (
             <div 
               key={i} 
-              className={`p-5 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] flex flex-col justify-between shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300`}
+              className={`p-5 rounded-2xl bg-white border border-slate-200/80 flex flex-col justify-between shadow-sm shadow-slate-900/5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`}
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-black text-slate-400 uppercase tracking-wider">
@@ -284,8 +283,8 @@ export default function CodingPractice() {
                 {stat.icon}
               </div>
               <div>
-                <p className={`text-2xl font-black tracking-tight ${stat.bg.split(' ')[2] || 'text-white'}`}>{stat.value}</p>
-                <p className="text-[10px] opacity-90 font-extrabold mt-1 text-slate-400">{stat.sub}</p>
+                <p className="text-2xl font-black tracking-tight text-slate-900">{stat.value}</p>
+                <p className="text-[10px] opacity-90 font-extrabold mt-1 text-slate-500">{stat.sub}</p>
               </div>
             </div>
           ))}
@@ -316,10 +315,19 @@ export default function CodingPractice() {
                       <span className="font-black text-white underline decoration-yellow-300/70 decoration-2 underline-offset-4">{userRole}</span>.
                     </p>
                   </div>
-                  <span className={`shrink-0 self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 bg-white/20 border border-white/30 backdrop-blur-md rounded-full text-sm font-black text-white shadow-lg`}>
-                    <Brain className="h-4 w-4" />
-                    {userRole}
-                  </span>
+                  <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 border border-white/30 backdrop-blur-md rounded-full text-xs font-black text-white shadow-lg">
+                      <Brain className="h-4 w-4" />
+                      {userRole}
+                    </span>
+                    <button
+                      onClick={() => navigate("/roadmap")}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-950 hover:bg-slate-100 rounded-full text-xs font-black shadow-lg cursor-pointer transition-all hover:scale-105 active:scale-95"
+                    >
+                      <Compass className="h-4 w-4 text-blue-600" />
+                      View Full Roadmap →
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -340,7 +348,7 @@ export default function CodingPractice() {
                   return (
                     <div
                       key={mod._id}
-                      className="group relative bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 overflow-hidden"
+                      className="group relative bg-white border border-slate-200 rounded-2xl p-5 shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 overflow-hidden"
                     >
                       {/* Priority badge */}
                       <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-slate-800/80 border border-white/[0.08] flex items-center justify-center shadow-md">
@@ -510,7 +518,7 @@ export default function CodingPractice() {
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-lg shadow-black/20 animate-pulse space-y-4">
+                <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg shadow-black/20 animate-pulse space-y-4">
                   <div className="flex justify-between items-center">
                     <div className="h-6 w-16 bg-slate-800 rounded-md"></div>
                     <div className="h-6 w-12 bg-slate-800 rounded-md"></div>

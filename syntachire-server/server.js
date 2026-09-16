@@ -11,6 +11,7 @@ const problemRoutes = require("./routes/problem");
 const moduleRoutes = require("./routes/module"); 
 const interviewRoutes = require('./routes/interview');
 const userRoutes = require('./routes/user');
+const roadmapRoutes = require('./routes/roadmap');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/problems", problemRoutes);
 app.use("/api/modules", moduleRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/roadmap', roadmapRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/syntac_admin')

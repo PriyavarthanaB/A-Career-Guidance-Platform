@@ -271,25 +271,24 @@ export default function ResumeAnalyzer() {
   };
 
   return (
-    <div className="relative overflow-hidden min-h-screen text-white antialiased" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+    <div className="relative overflow-hidden min-h-screen text-slate-900 bg-[#f4f7ff] antialiased">
       {/* Decorative Multi-layered Ambient Background Glows */}
-      <div className="absolute -top-24 right-1/4 w-[650px] h-[650px] bg-gradient-to-br from-blue-500/20 via-indigo-500/15 to-violet-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-400/15 via-blue-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-20 right-10 w-[550px] h-[550px] bg-gradient-to-tl from-purple-500/15 via-indigo-400/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[650px] h-[650px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-1/3 w-[550px] h-[550px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <Sidebar />
       <main className="lg:ml-[260px] min-h-screen px-4 md:px-10 py-10 max-w-[1280px] w-full mx-auto space-y-10 relative z-10">
         
         {/* Header Section */}
         <div className="text-center space-y-3.5 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-950/60 backdrop-blur-md px-4 py-1.5 text-xs font-black text-blue-400 ring-1 ring-blue-500/30 shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-200 px-4 py-1.5 text-xs font-bold text-blue-700 shadow-xs">
             <Sparkles className="h-4 w-4 text-blue-400 animate-pulse" />
             AI Talent Calibration & ATS Optimization Engine
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
             Optimize Your Resume for <span className="bg-gradient-to-r from-[#004ac6] via-blue-600 to-indigo-600 bg-clip-text text-transparent">ATS Success</span>
           </h1>
-          <p className="text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
             Instant AI benchmark scan for your target role. Uncover real-time ATS match scores, extracted skill inventories, and high-impact structural recommendations.
           </p>
         </div>
@@ -300,32 +299,32 @@ export default function ResumeAnalyzer() {
           <div className="lg:col-span-5 space-y-5">
             
             {/* Locked Target Role Display Box */}
-            <div className="rounded-3xl border border-white/80 bg-slate-900/60 backdrop-blur-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 space-y-3.5 ring-1 ring-white/[0.06]">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-300 space-y-3.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Target className="h-4 w-4 text-blue-400" />
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-400">Target Job Role</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Target Job Role</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-amber-700 bg-amber-500/10/90 px-3 py-0.5 rounded-full border border-amber-200/90 shadow-lg shadow-black/20">
+                <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-amber-800 bg-amber-50 px-3 py-0.5 rounded-full border border-amber-200">
                   <Lock className="h-3 w-3 text-amber-600" />
                   Auto-Assigned
                 </div>
               </div>
 
               {/* Locked Role Card */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/60 border border-blue-100 rounded-2xl p-4 shadow-lg shadow-black/20">
+              <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-center gap-3.5">
                   <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#004ac6] to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/25 shrink-0">
                     <Briefcase className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-base font-extrabold text-white tracking-tight">{targetRole}</h4>
-                    <p className="text-[11px] text-slate-400 font-medium">Configured in your account profile</p>
+                    <h4 className="text-base font-bold text-slate-900 tracking-tight">{targetRole}</h4>
+                    <p className="text-[11px] text-slate-500 font-medium">Configured in your account profile</p>
                   </div>
                 </div>
                 <button
                   onClick={() => navigate('/settings')}
-                  className="flex items-center gap-1.5 text-xs font-extrabold text-blue-400 hover:text-blue-800 transition-colors cursor-pointer bg-slate-900/60 hover:bg-slate-900/60 px-3 py-1.5 rounded-xl border border-blue-200/80 shadow-lg shadow-black/20"
+                  className="flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-800 transition-colors cursor-pointer bg-white hover:bg-blue-50 px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs"
                   title="Change target role in Settings"
                 >
                   <SettingsIcon className="h-3.5 w-3.5" />
@@ -346,7 +345,7 @@ export default function ResumeAnalyzer() {
               className={`group relative flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition-all duration-300 ${
                 dragActive
                   ? "border-[#004ac6] bg-blue-500/10/90 scale-[1.01] shadow-xl ring-4 ring-[#004ac6]/15"
-                  : "border-slate-300/80 bg-slate-900/60 backdrop-blur-xl hover:border-[#004ac6]/70 hover:bg-blue-500/10/40 shadow-xs hover:shadow-xl hover:-translate-y-0.5 ring-1 ring-white/[0.06]"
+                  : "border-slate-300 bg-white hover:border-blue-500 hover:bg-blue-50/50 shadow-xs hover:shadow-md hover:-translate-y-0.5"
               }`}
             >
               <input
@@ -356,34 +355,34 @@ export default function ResumeAnalyzer() {
                 className="hidden"
                 onChange={(e) => pickFile(e.target.files?.[0])}
               />
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100/70 text-blue-400 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#004ac6] group-hover:text-white shadow-md shadow-blue-500/10">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#004ac6] group-hover:text-white shadow-md shadow-blue-500/10">
                 <UploadCloud className="h-8 w-8" />
               </div>
-              <p className="text-base font-bold text-white">
-                Drag resume here, or <span className="text-blue-400 underline underline-offset-4 decoration-[#004ac6]/40 font-black hover:decoration-[#004ac6]">browse file</span>
+              <p className="text-base font-bold text-slate-900">
+                Drag resume here, or <span className="text-blue-600 underline underline-offset-4 font-bold">browse file</span>
               </p>
-              <p className="mt-1.5 text-xs font-semibold text-slate-400">
+              <p className="mt-1.5 text-xs font-medium text-slate-500">
                 Supports PDF, DOC, DOCX up to 10MB
               </p>
 
               {/* Format badges */}
               <div className="flex gap-2 mt-4">
-                <span className="text-[10px] font-black uppercase text-blue-700 bg-blue-500/10 px-2.5 py-0.5 rounded-md border border-blue-200/60 shadow-lg shadow-black/20">PDF</span>
-                <span className="text-[10px] font-black uppercase text-indigo-700 bg-indigo-500/10 px-2.5 py-0.5 rounded-md border border-indigo-200/60 shadow-lg shadow-black/20">DOC</span>
-                <span className="text-[10px] font-black uppercase text-purple-700 bg-purple-500/10 px-2.5 py-0.5 rounded-md border border-purple-200/60 shadow-lg shadow-black/20">DOCX</span>
+                <span className="text-[10px] font-black uppercase text-blue-700 bg-blue-500/10 px-2.5 py-0.5 rounded-md border border-blue-200/60 shadow-xs">PDF</span>
+                <span className="text-[10px] font-black uppercase text-indigo-700 bg-indigo-500/10 px-2.5 py-0.5 rounded-md border border-indigo-200/60 shadow-xs">DOC</span>
+                <span className="text-[10px] font-black uppercase text-purple-700 bg-purple-500/10 px-2.5 py-0.5 rounded-md border border-purple-200/60 shadow-xs">DOCX</span>
               </div>
             </div>
 
             {/* Selected File Card */}
             {file && (
-              <div className="flex items-center justify-between rounded-2xl border border-blue-200/90 bg-blue-500/10/70 backdrop-blur-md p-4 shadow-sm hover:shadow-md transition-all duration-200 animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center justify-between rounded-2xl border border-blue-200 bg-blue-50 p-4 rounded-2xl shadow-xs animate-in fade-in">
                 <div className="flex items-center gap-3.5 overflow-hidden">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#004ac6] to-blue-700 text-white shadow-md shadow-blue-500/20">
                     <FileText className="h-6 w-6" />
                   </div>
                   <div className="truncate">
-                    <p className="truncate text-sm font-bold text-white">{file.name}</p>
-                    <p className="text-xs font-semibold text-slate-400">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    <p className="truncate text-sm font-bold text-slate-900">{file.name}</p>
+                    <p className="text-xs font-medium text-slate-500">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
                   </div>
                 </div>
                 <button
@@ -392,7 +391,7 @@ export default function ResumeAnalyzer() {
                     setFile(null);
                     setResult(null);
                   }}
-                  className="rounded-xl p-2 text-slate-400 transition hover:bg-rose-500/10 hover:text-rose-600 cursor-pointer"
+                  className="rounded-xl p-2 text-slate-600 transition hover:bg-rose-500/10 hover:text-rose-600 cursor-pointer"
                   aria-label="Remove file"
                 >
                   <X className="h-5 w-5" />
@@ -427,7 +426,7 @@ export default function ResumeAnalyzer() {
               )}
             </button>
 
-            <div className="flex items-center justify-center gap-6 pt-1 text-xs font-bold text-slate-400">
+            <div className="flex items-center justify-center gap-6 pt-1 text-xs font-bold text-slate-600">
               <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-500" /> Secure Encryption</span>
               <span className="flex items-center gap-1.5"><Zap className="h-4 w-4 text-amber-500" /> Instant AI Insights</span>
             </div>
@@ -435,7 +434,7 @@ export default function ResumeAnalyzer() {
 
           {/* Analysis Results Display Panel (7 Columns) */}
           <div className="lg:col-span-7">
-            <div className="min-h-[480px] rounded-3xl border border-white/80 bg-slate-900/60 backdrop-blur-xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 ring-1 ring-white/[0.06]">
+            <div className="min-h-[480px] rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300">
               
               {/* Empty State */}
               {!result && !analyzing && (
@@ -443,8 +442,8 @@ export default function ResumeAnalyzer() {
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/10/80 text-blue-400 shadow-inner border border-blue-100">
                     <FileText className="h-8 w-8" />
                   </div>
-                  <h3 className="text-xl font-extrabold text-white">No Analysis Yet</h3>
-                  <p className="mt-2 max-w-sm text-sm font-medium text-slate-400 leading-relaxed">
+                  <h3 className="text-xl font-bold text-slate-900">No Analysis Yet</h3>
+                  <p className="mt-2 max-w-sm text-sm font-medium text-slate-600 leading-relaxed">
                     Upload your resume on the left to generate an ATS compatibility score and key recommendations for <strong className="text-blue-400">{targetRole}</strong>.
                   </p>
                 </div>
@@ -457,8 +456,8 @@ export default function ResumeAnalyzer() {
                     <div className="absolute inset-0 rounded-full border-4 border-blue-100 border-t-[#004ac6] animate-spin" />
                     <Sparkles className="h-8 w-8 text-blue-400 animate-pulse" />
                   </div>
-                  <h3 className="text-xl font-extrabold text-white">Evaluating Profile</h3>
-                  <p className="mt-2 max-w-sm text-sm font-medium text-slate-400 leading-relaxed">
+                  <h3 className="text-xl font-bold text-slate-900">Evaluating Profile</h3>
+                  <p className="mt-2 max-w-sm text-sm font-medium text-slate-600 leading-relaxed">
                     Scanning your resume text against benchmark requirements for <span className="font-bold text-blue-400">{targetRole}</span>...
                   </p>
                 </div>
@@ -477,11 +476,11 @@ export default function ResumeAnalyzer() {
                   )}
 
                   {/* Score & Summary Header */}
-                  <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start border-b border-white/[0.06]/90 pb-7">
+                  <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start border-b border-slate-100 pb-7">
                     <ScoreRing score={result.atsScore ?? 0} />
                     <div className="flex-1 text-center sm:text-left space-y-2.5">
                       <div className="flex items-center justify-center sm:justify-between gap-2 flex-wrap">
-                        <h3 className="text-xl font-black text-white">Analysis Summary</h3>
+                        <h3 className="text-xl font-bold text-slate-900">Analysis Summary</h3>
                         <div className="flex items-center gap-2">
                           {result.rawText && (
                             <button
@@ -489,17 +488,17 @@ export default function ResumeAnalyzer() {
                                 setViewModalResume(result);
                                 setViewModalOpen(true);
                               }}
-                              className="flex items-center gap-1.5 text-xs font-bold text-blue-400 bg-blue-500/10/80 hover:bg-blue-500/20 px-3 py-1.5 rounded-xl border border-blue-200/80 shadow-lg shadow-black/20 transition cursor-pointer"
+                              className="flex items-center gap-1.5 text-xs font-bold text-blue-400 bg-blue-500/10/80 hover:bg-blue-500/20 px-3 py-1.5 rounded-xl border border-blue-200/80 shadow-xs transition cursor-pointer"
                             >
                               <Eye className="h-3.5 w-3.5" /> View Resume Document
                             </button>
                           )}
-                          <span className="text-xs font-extrabold bg-blue-500/10 text-blue-400 px-3.5 py-1.5 rounded-full border border-blue-100 shadow-lg shadow-black/20">
+                          <span className="text-xs font-extrabold bg-blue-500/10 text-blue-400 px-3.5 py-1.5 rounded-full border border-blue-100 shadow-xs">
                             {result.targetRole || targetRole}
                           </span>
                         </div>
                       </div>
-                      <p className="text-sm sm:text-base leading-relaxed font-normal text-slate-600">
+                      <p className="text-sm sm:text-base leading-relaxed font-medium text-slate-700">
                         {result.summary || `Your profile has been benchmarked against ${result.targetRole || targetRole} industry expectations.`}
                       </p>
                     </div>
@@ -508,14 +507,14 @@ export default function ResumeAnalyzer() {
                   {/* Extracted Skills */}
                   {result.extractedSkills?.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-white">
+                      <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800">
                         <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Extracted Skills & Strengths ({result.extractedSkills.length})
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {result.extractedSkills.map((skill, idx) => (
                           <span
                             key={idx}
-                            className="inline-flex items-center gap-1 rounded-xl bg-emerald-500/10/90 backdrop-blur-xs px-3.5 py-2 text-xs font-bold text-emerald-800 ring-1 ring-inset ring-emerald-600/20 hover:bg-emerald-500/20/90 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 cursor-default"
+                            className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-800 border border-emerald-200 hover:bg-emerald-100 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 cursor-default"
                           >
                             ✓ {skill}
                           </span>
@@ -527,12 +526,12 @@ export default function ResumeAnalyzer() {
                   {/* Actionable Suggestions */}
                   {result.suggestions?.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-white">
+                      <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800">
                         <AlertTriangle className="h-4 w-4 text-amber-500" /> Suggested Improvements ({result.suggestions.length})
                       </h4>
                       <ul className="space-y-2.5">
                         {result.suggestions.map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-3 text-sm font-medium text-white bg-amber-500/10/70 p-4 rounded-2xl border border-amber-200/80 leading-relaxed hover:bg-amber-500/10 hover:shadow-xs transition-all duration-200">
+                          <li key={idx} className="flex items-start gap-3 text-sm font-medium text-amber-900 bg-amber-50 p-4 rounded-2xl border border-amber-200 leading-relaxed hover:bg-amber-100/70 hover:shadow-xs transition-all duration-200">
                             <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-500/100" />
                             <span>{item}</span>
                           </li>
@@ -545,12 +544,12 @@ export default function ResumeAnalyzer() {
                   {result.missingSkills?.length > 0 && (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-xs font-extrabold uppercase tracking-wider text-white">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
                           Missing Target Role Keywords ({result.missingSkills.length})
                         </h4>
                         <button
                           onClick={copyMissingKeywords}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-800 transition cursor-pointer bg-blue-500/10/80 px-3 py-1 rounded-lg border border-blue-100"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-800 transition cursor-pointer bg-blue-50 px-3 py-1 rounded-lg border border-blue-200"
                         >
                           {copied ? (
                             <>
@@ -567,7 +566,7 @@ export default function ResumeAnalyzer() {
                         {result.missingSkills.map((kw, idx) => (
                           <span
                             key={idx}
-                            className="rounded-xl bg-slate-700/50/90 backdrop-blur-xs px-3.5 py-2 text-xs font-bold text-slate-300 border border-white/[0.08]/80 hover:border-slate-300 hover:bg-slate-200/60 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
+                            className="rounded-xl bg-slate-100 px-3.5 py-2 text-xs font-bold text-slate-700 border border-slate-200 hover:bg-slate-200 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
                           >
                             + {kw}
                           </span>
@@ -584,32 +583,32 @@ export default function ResumeAnalyzer() {
         </div>
 
         {/* Saved Resumes & History Section */}
-        <section className="space-y-4 pt-6 border-t border-white/[0.08]/70">
+        <section className="space-y-4 pt-6 border-t border-slate-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <FolderCheck className="h-5 w-5 text-blue-400" />
-              <h3 className="text-lg font-extrabold text-white">Your Saved Resumes & Analyses</h3>
+              <h3 className="text-lg font-bold text-slate-900">Your Saved Resumes & Analyses</h3>
               <span className="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-100">
                 {history.length} Saved
               </span>
             </div>
             {history.length > 0 && (
-              <span className="text-xs font-semibold text-slate-400">
+              <span className="text-xs font-medium text-slate-500">
                 Click any resume card to view full ATS insights
               </span>
             )}
           </div>
 
           {loadingHistory ? (
-            <div className="flex items-center justify-center p-8 bg-slate-900/60 rounded-3xl border border-white/[0.08]/80">
+            <div className="flex items-center justify-center p-8 bg-white rounded-3xl border border-slate-200">
               <Loader2 className="h-6 w-6 text-blue-400 animate-spin" />
-              <span className="ml-2 text-sm font-semibold text-slate-400">Loading your saved resumes...</span>
+              <span className="ml-2 text-sm font-semibold text-slate-600">Loading your saved resumes...</span>
             </div>
           ) : history.length === 0 ? (
-            <div className="bg-slate-900/60 backdrop-blur-xl border border-white/[0.08]/80 rounded-3xl p-8 text-center space-y-2">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-8 text-center space-y-2">
               <Clock className="h-8 w-8 text-slate-300 mx-auto" />
               <p className="text-sm font-bold text-white">No Saved Resumes Yet</p>
-              <p className="text-xs text-slate-400 max-w-md mx-auto">
+              <p className="text-xs text-slate-600 max-w-md mx-auto">
                 Resumes you upload above will automatically be saved to your account history so you can review their ATS scores anytime.
               </p>
             </div>
@@ -632,7 +631,7 @@ export default function ResumeAnalyzer() {
                       setResult(item);
                       setSelectedResumeId(item._id);
                     }}
-                    className={`group relative bg-slate-950/60 backdrop-blur-md border rounded-2xl p-4 transition-all duration-300 cursor-pointer flex flex-col justify-between gap-3.5 ${
+                    className={`group relative bg-white border border-slate-200 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col justify-between gap-3.5 ${
                       isSelected
                         ? 'border-[#004ac6] ring-2 ring-[#004ac6]/25 shadow-md bg-blue-500/10/20 translate-y-[-1px]'
                         : 'border-white/[0.08]/80 hover:border-blue-300 hover:shadow-md hover:-translate-y-0.5'
@@ -644,8 +643,8 @@ export default function ResumeAnalyzer() {
                           <FileCheck className="h-5 w-5" />
                         </div>
                         <div className="truncate">
-                          <h4 className="text-sm font-extrabold text-white truncate">{item.fileName || 'Uploaded Resume'}</h4>
-                          <p className="text-xs text-slate-400 font-medium flex items-center gap-1">
+                          <h4 className="text-sm font-bold text-slate-900 truncate">{item.fileName || 'Uploaded Resume'}</h4>
+                          <p className="text-xs text-slate-600 font-medium flex items-center gap-1">
                             <Briefcase className="h-3 w-3" />
                             {item.targetRole || 'Software Engineer'}
                           </p>
@@ -657,9 +656,9 @@ export default function ResumeAnalyzer() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-slate-400 pt-2.5 border-t border-white/[0.06]">
+                    <div className="flex items-center justify-between text-xs text-slate-600 pt-2.5 border-t border-white/[0.06]">
                       <span className="flex items-center gap-1 font-medium">
-                        <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                        <Calendar className="h-3.5 w-3.5 text-slate-600" />
                         {new Date(item.analyzedAt || Date.now()).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
 
@@ -677,7 +676,7 @@ export default function ResumeAnalyzer() {
                         </button>
                         <button
                           onClick={(e) => handleDeleteResume(item._id, e)}
-                          className="p-1 rounded-lg text-slate-400 hover:bg-rose-500/10 hover:text-rose-600 transition cursor-pointer"
+                          className="p-1 rounded-lg text-slate-600 hover:bg-rose-500/10 hover:text-rose-600 transition cursor-pointer"
                           title="Delete saved resume"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -696,7 +695,7 @@ export default function ResumeAnalyzer() {
       {/* Resume Document Content Preview Modal */}
       {viewModalOpen && viewModalResume && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-slate-900/60 border border-white/[0.08] rounded-3xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-white border border-slate-200 rounded-3xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 md:p-6 border-b border-white/[0.06] bg-slate-800/50/80">
@@ -706,7 +705,7 @@ export default function ResumeAnalyzer() {
                 </div>
                 <div>
                   <h3 className="text-base font-extrabold text-white">{viewModalResume.fileName || 'Uploaded Resume'}</h3>
-                  <p className="text-xs text-slate-400 font-medium flex items-center gap-2 mt-0.5">
+                  <p className="text-xs text-slate-600 font-medium flex items-center gap-2 mt-0.5">
                     <span>Role: <strong className="text-slate-300">{viewModalResume.targetRole || targetRole}</strong></span>
                     <span>•</span>
                     <span className="font-bold text-emerald-600">{viewModalResume.atsScore ?? 0}% ATS Match</span>
@@ -733,7 +732,7 @@ export default function ResumeAnalyzer() {
                     setViewModalOpen(false);
                     setViewModalResume(null);
                   }}
-                  className="p-2 text-slate-400 hover:text-slate-300 hover:bg-white/[0.06] rounded-xl transition cursor-pointer"
+                  className="p-2 text-slate-600 hover:text-slate-300 hover:bg-white/[0.06] rounded-xl transition cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -741,13 +740,13 @@ export default function ResumeAnalyzer() {
             </div>
 
             {/* Modal Body - Paper Document View */}
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#f8fafc]">
-              <div className="max-w-2xl mx-auto bg-slate-900/60 border border-white/[0.08]/80 rounded-2xl p-6 md:p-8 shadow-xs font-mono text-xs sm:text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-[#f4f7ff]">
+              <div className="max-w-2xl mx-auto bg-white border border-slate-200/80 rounded-2xl p-6 md:p-8 shadow-xs font-mono text-xs sm:text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
                 {viewModalResume.rawText ? (
                   viewModalResume.rawText
                 ) : (
-                  <div className="text-center py-12 text-slate-400 font-sans space-y-2">
-                    <FileText className="h-10 w-10 mx-auto opacity-40 text-slate-400" />
+                  <div className="text-center py-12 text-slate-600 font-sans space-y-2">
+                    <FileText className="h-10 w-10 mx-auto opacity-40 text-slate-600" />
                     <p className="font-bold text-slate-600">No Raw Text Stored</p>
                     <p className="text-xs">The text content for this document could not be previewed.</p>
                   </div>
@@ -756,7 +755,7 @@ export default function ResumeAnalyzer() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-white/[0.06] bg-slate-800/50 flex items-center justify-between text-xs text-slate-400">
+            <div className="p-4 border-t border-white/[0.06] bg-slate-800/50 flex items-center justify-between text-xs text-slate-600">
               <span className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5" />
                 Uploaded on {new Date(viewModalResume.analyzedAt || Date.now()).toLocaleString()}
@@ -766,7 +765,7 @@ export default function ResumeAnalyzer() {
                   setViewModalOpen(false);
                   setViewModalResume(null);
                 }}
-                className="px-4 py-2 font-bold text-slate-300 bg-slate-900/60 border border-white/[0.08] rounded-xl hover:bg-white/[0.06] transition cursor-pointer"
+                className="px-4 py-2 font-bold text-slate-300 bg-white border border-slate-200 rounded-xl hover:bg-white/[0.06] transition cursor-pointer"
               >
                 Close Preview
               </button>

@@ -81,7 +81,7 @@ export default function PracticePage() {
 
   if (loading) {
     return (
-      <div className=" text-white min-h-screen font-sans flex" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+      <div className=" text-slate-900 min-h-screen font-sans flex" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
         <Sidebar />
         <main className="lg:ml-[260px] flex-1 flex items-center justify-center min-h-screen">
           <div className="flex flex-col items-center gap-3 text-slate-400">
@@ -95,7 +95,7 @@ export default function PracticePage() {
 
   if (error) {
     return (
-      <div className=" text-white min-h-screen font-sans flex" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+      <div className=" text-slate-900 min-h-screen font-sans flex" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
         <Sidebar />
         <main className="lg:ml-[260px] flex-1 flex items-center justify-center min-h-screen p-6">
           <div className="bg-red-50 border border-red-200 rounded-3xl p-8 text-center space-y-4 max-w-lg">
@@ -107,13 +107,13 @@ export default function PracticePage() {
             <div className="flex justify-center gap-3">
               <button 
                 onClick={loadPracticeData}
-                className="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md transition cursor-pointer"
+                className="bg-red-600 hover:bg-red-700 text-slate-900 text-xs font-bold px-5 py-2.5 rounded-xl shadow-md transition cursor-pointer"
               >
                 Retry
               </button>
               <Link 
                 to="/coding-practice"
-                className="bg-slate-900/60 border border-white/[0.08] hover:bg-slate-800/50 text-slate-300 text-xs font-bold px-5 py-2.5 rounded-xl transition"
+                className="bg-white border border-slate-200 hover:bg-slate-800/50 text-slate-300 text-xs font-bold px-5 py-2.5 rounded-xl transition"
               >
                 Back to Dashboard
               </Link>
@@ -125,7 +125,7 @@ export default function PracticePage() {
   }
 
   return (
-    <div className=" text-white min-h-screen font-sans flex flex-col" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
+    <div className=" text-slate-900 min-h-screen font-sans flex flex-col" style={{ background: "linear-gradient(135deg, #070f1e 0%, #0d1b2e 50%, #070f1e 100%)" }}>
       {/* Sidebar navigation */}
       <Sidebar />
 
@@ -155,7 +155,7 @@ export default function PracticePage() {
             <Sparkles className="h-4 w-4 text-blue-600 animate-pulse" />
             Practice Sandbox
           </div>
-          <h2 className="text-3xl font-black text-white tracking-tight leading-tight">
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">
             {module ? `Practice: ${module.name}` : "Practice Problems"}
           </h2>
           <p className="text-sm text-slate-400 font-normal leading-relaxed">
@@ -174,14 +174,14 @@ export default function PracticePage() {
                 return (
                   <div 
                     key={problem._id} 
-                    className="bg-slate-900/60 border border-[#c3c6d7]/30 rounded-3xl p-5 md:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-4"
+                    className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-4"
                   >
                     
                     {/* Upper row: Title, Difficulty badge, Solve Actions */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2.5">
-                          <h4 className="text-base font-extrabold text-white leading-tight">
+                          <h4 className="text-base font-extrabold text-slate-900 leading-tight">
                             {problem.name}
                           </h4>
                           {isSolved && (
@@ -230,7 +230,7 @@ export default function PracticePage() {
                         {/* Solve Button */}
                         <button
                           onClick={() => handleSolve(problem)}
-                          className="flex items-center gap-1.5 px-5 py-2 bg-[#004ac6] hover:bg-[#2563eb] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
+                          className="flex items-center gap-1.5 px-5 py-2 bg-[#004ac6] hover:bg-[#2563eb] text-slate-900 rounded-xl text-xs font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
                         >
                           <Code className="h-3.5 w-3.5" />
                           Solve
@@ -255,7 +255,7 @@ export default function PracticePage() {
 
                       <div className="flex items-center gap-1">
                         <span>Success Rate:</span>
-                        <span className="text-white">{problem.successRate}</span>
+                        <span className="text-slate-900">{problem.successRate}</span>
                       </div>
 
                       <div className="flex items-center gap-1">
@@ -272,7 +272,7 @@ export default function PracticePage() {
                         {problem.companies.map((company, index) => (
                           <span 
                             key={index}
-                            className="bg-slate-700/50/70 border border-white/[0.08]/50 text-white px-2.5 py-0.5 rounded-md text-[10px]"
+                            className="bg-slate-700/50/70 border border-white/[0.08]/50 text-slate-900 px-2.5 py-0.5 rounded-md text-[10px]"
                           >
                             {company}
                           </span>
@@ -316,11 +316,11 @@ export default function PracticePage() {
               })}
             </div>
           ) : (
-            <div className="bg-slate-900/60 p-12 rounded-3xl border border-[#c3c6d7]/30 text-center space-y-3">
+            <div className="bg-white p-12 rounded-3xl border border-[#c3c6d7]/30 text-center space-y-3">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-800/50 text-slate-400">
                 <Code className="h-6 w-6" />
               </div>
-              <h4 className="font-extrabold text-white">No Problems Found</h4>
+              <h4 className="font-extrabold text-slate-900">No Problems Found</h4>
               <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
                 There are no practice problems registered for this module yet. We are dynamically preparing sandbox scenarios.
               </p>

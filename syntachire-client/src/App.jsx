@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import ResumeAnalyzer from './pages/ResumeAnalyzer';
 import CodingPractice from './pages/CodingPractice';
@@ -15,6 +16,8 @@ import MockInterview from './pages/MockInterview';
 import InterviewSession from './pages/InterviewSession';
 import InterviewHistory from './pages/InterviewHistory';
 import Settings from './pages/Settings';
+import RoleRoadmap from './pages/RoleRoadmap';
+import PremiumPlan from './pages/PremiumPlan';
 
 // Protected Route Guard
 const isValidToken = (token) => {
@@ -43,6 +46,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* App routes protected by auth */}
         <Route
@@ -58,6 +62,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CodingEditor />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/roadmap"
+          element={
+            <ProtectedRoute>
+              <RoleRoadmap />
             </ProtectedRoute>
           }
         />
@@ -130,6 +142,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/premium"
+          element={
+            <ProtectedRoute>
+              <PremiumPlan />
             </ProtectedRoute>
           }
         />
