@@ -1319,7 +1319,7 @@ function buildFlashcardsForModule(mod) {
         front: ic.concept,
         back: ic.explanation,
         category: "Core Concept",
-        tagColor: "bg-purple-500/10 text-purple-300 border-purple-500/30"
+        tagColor: "bg-purple-50 text-purple-800 border-purple-200"
       });
     });
   }
@@ -1332,7 +1332,7 @@ function buildFlashcardsForModule(mod) {
         front: iq.question,
         back: iq.idealAnswer,
         category: "Interview Question",
-        tagColor: "bg-blue-500/10 text-blue-300 border-blue-500/30"
+        tagColor: "bg-blue-50 text-blue-800 border-blue-200"
       });
     });
   }
@@ -1345,7 +1345,7 @@ function buildFlashcardsForModule(mod) {
         front: `Best Practice: ${mod.name}`,
         back: bp,
         category: "Best Practice",
-        tagColor: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+        tagColor: "bg-emerald-50 text-emerald-800 border-emerald-200"
       });
     });
   }
@@ -1358,7 +1358,7 @@ function buildFlashcardsForModule(mod) {
         front: `Common Pitfall: ${cm.mistake}`,
         back: `Recommended Fix: ${cm.solution}`,
         category: "Common Pitfall",
-        tagColor: "bg-rose-500/10 text-rose-300 border-rose-500/30"
+        tagColor: "bg-rose-50 text-rose-800 border-rose-200"
       });
     });
   }
@@ -1370,7 +1370,7 @@ function buildFlashcardsForModule(mod) {
       front: `Key Tools & Technologies for ${mod.name}`,
       back: `Essential stack: ${mod.toolsAndTech.join(", ")}.`,
       category: "Tools & Tech",
-      tagColor: "bg-cyan-500/10 text-cyan-300 border-cyan-500/30"
+      tagColor: "bg-cyan-50 text-cyan-800 border-cyan-200"
     });
   }
 

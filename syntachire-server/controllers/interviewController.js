@@ -255,7 +255,7 @@ const generateQuestionsForRole = (type, difficulty, targetRole, count = 5) => {
  * Helper to fetch candidate profile, resume skills, project details,
  * multi-interview performance memory, topic mastery priority decay, and all historical questions.
  */
-const getCandidateProfileContext = async (userId) => {
+const getCandidateProfileContext = async (userId, targetRole = '') => {
   let candidateSkills = [];
   let candidateWeakAreas = [];
   let masteredTopics = [];
@@ -285,9 +285,15 @@ const getCandidateProfileContext = async (userId) => {
       candidateProjects = latestResume.rawText || latestResume.summary || '';
     }
 
-    // 2. Fetch ALL past completed interview sessions in chronological order (oldest to newest)
-    const pastInterviews = await Interview.find({ userId, status: 'completed' })
-      .sort({ completedAt: 1 });
+    // 2. Fetch past completed interview sessions for user, prioritizing same target role
+    const pastQuery = { userId, status: 'completed' };
+    if (targetRole) {
+      pastQuery.targetRole = targetRole;
+    }
+    let pastInterviews = await Interview.find(pastQuery).sort({ completedAt: 1 });
+    if (pastInterviews.length === 0) {
+      pastInterviews = await Interview.find({ userId, status: 'completed' }).sort({ completedAt: 1 });
+    }
 
     const topicMemoryMap = {}; // topic -> { priority: number, recentScores: number[], isMastered: boolean }
 
@@ -430,6 +436,9 @@ exports.startInterview = async (req, res) => {
       type = 'mixed',
       difficulty = 'Medium',
       targetRole = 'Full Stack Software Developer',
+      seniorityLevel = 'Mid-Level',
+      industryFocus = 'Technology & SaaS',
+      jobDescription = '',
       responseMode = 'text',
       questionCount = 5,
       durationMinutes = 30,
@@ -443,13 +452,16 @@ exports.startInterview = async (req, res) => {
       candidateProjects,
       historicalQuestions,
       performanceTrajectory,
-    } = await getCandidateProfileContext(req.user?.id);
+    } = await getCandidateProfileContext(req.user?.id, targetRole);
 
     // Generate Question #1 dynamically via AI service with zero cross-session repetition
     const firstQuestionObj = await generateSingleQuestionWithGemini({
       targetRole,
       difficulty,
       type,
+      seniorityLevel,
+      industryFocus,
+      jobDescription,
       candidateSkills,
       candidateWeakAreas,
       masteredTopics,
@@ -463,6 +475,9 @@ exports.startInterview = async (req, res) => {
       type,
       difficulty,
       targetRole,
+      seniorityLevel,
+      industryFocus,
+      jobDescription,
       responseMode,
       durationMinutes: Number(durationMinutes) || 30,
       questionCount: Number(questionCount) || 5,
@@ -670,6 +685,7 @@ exports.submitAnswer = async (req, res) => {
     currentQuestion.weaknesses = Array.isArray(geminiFeedback.weaknesses) ? geminiFeedback.weaknesses : [];
     currentQuestion.missingPoints = Array.isArray(geminiFeedback.missingConcepts) ? geminiFeedback.missingConcepts : [];
     currentQuestion.improvements = geminiFeedback.improvementFeedback || '';
+    currentQuestion.idealAnswer = geminiFeedback.idealAnswer || '';
 
     // Compute dynamic adaptive difficulty based on performance trend
     const newAdaptiveDifficulty = calculateAdaptiveDifficulty(interview);
@@ -698,7 +714,7 @@ exports.submitAnswer = async (req, res) => {
         candidateProjects,
         historicalQuestions,
         performanceTrajectory,
-      } = await getCandidateProfileContext(interview.userId);
+      } = await getCandidateProfileContext(interview.userId, interview.targetRole);
 
       const sessionPreviousQuestions = interview.questions.map((q) => q.question);
       const combinedPreviousQuestions = [...new Set([...historicalQuestions, ...sessionPreviousQuestions])];
@@ -707,6 +723,9 @@ exports.submitAnswer = async (req, res) => {
         targetRole: interview.targetRole,
         difficulty: newAdaptiveDifficulty,
         type: interview.type,
+        seniorityLevel: interview.seniorityLevel || 'Mid-Level',
+        industryFocus: interview.industryFocus || 'Technology & SaaS',
+        jobDescription: interview.jobDescription || '',
         candidateSkills,
         candidateWeakAreas,
         masteredTopics,
@@ -738,6 +757,7 @@ exports.submitAnswer = async (req, res) => {
       questionIndex: targetIndex,
       nextQuestion: nextQuestionObj,
       nextDifficulty: newAdaptiveDifficulty,
+      evaluation: geminiFeedback,
       difficultyChanged,
       interviewId: interview._id,
       feedback: {

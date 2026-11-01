@@ -1,5 +1,21 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Mic, MicOff, Pause, Play, StopCircle, RotateCcw, AlertTriangle, Volume2, User, Sparkles, CheckCircle2, Loader2 } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import {
+  Mic,
+  MicOff,
+  Pause,
+  Play,
+  StopCircle,
+  RotateCcw,
+  AlertTriangle,
+  Volume2,
+  Sparkles,
+  CheckCircle2,
+  Loader2,
+  Edit3,
+  Check,
+  Zap,
+  Activity,
+} from 'lucide-react';
 
 const SUPPORTED_AUDIO_TYPES = [
   'audio/webm;codecs=opus',
@@ -7,6 +23,8 @@ const SUPPORTED_AUDIO_TYPES = [
   'audio/ogg;codecs=opus',
   'audio/ogg',
 ];
+
+const FILLER_WORDS = ['um', 'uh', 'like', 'actually', 'basically', 'you know', 'sort of', 'kind of', 'literally'];
 
 const formatDuration = (durationMs) => {
   const seconds = Math.max(0, Math.floor(durationMs / 1000));
@@ -28,6 +46,7 @@ export default function InterviewRecorder({
   const [error, setError] = useState('');
   const [supportedMime, setSupportedMime] = useState('');
   const [transcript, setTranscript] = useState('');
+  const [isEditingTranscript, setIsEditingTranscript] = useState(false);
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
 
   const mediaRecorderRef = useRef(null);
@@ -40,6 +59,31 @@ export default function InterviewRecorder({
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  // Compute Filler Words Count & Detected List
+  const fillerAnalysis = useMemo(() => {
+    if (!transcript) return { count: 0, detected: [] };
+    const lower = transcript.toLowerCase();
+    const detected = [];
+    let count = 0;
+    FILLER_WORDS.forEach((fw) => {
+      const regex = new RegExp(`\\b${fw}\\b`, 'gi');
+      const matches = lower.match(regex);
+      if (matches && matches.length > 0) {
+        count += matches.length;
+        detected.push({ word: fw, count: matches.length });
+      }
+    });
+    return { count, detected };
+  }, [transcript]);
+
+  // Compute WPM (Words Per Minute)
+  const wordsPerMinute = useMemo(() => {
+    if (!transcript || durationMs < 3000) return 0;
+    const words = transcript.trim().split(/\s+/).filter(Boolean).length;
+    const minutes = durationMs / 60000;
+    return Math.round(words / minutes);
+  }, [transcript, durationMs]);
 
   useEffect(() => {
     const supported = SUPPORTED_AUDIO_TYPES.find((type) =>
@@ -135,8 +179,6 @@ export default function InterviewRecorder({
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
-
-      let accumulatedText = '';
 
       recognition.onresult = (event) => {
         let currentTranscript = '';
@@ -320,7 +362,7 @@ export default function InterviewRecorder({
   }, [cleanupMedia, onStatusChange, recordedUrl]);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5">
+    <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm shadow-slate-900/5 space-y-5">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
         <div>
@@ -329,16 +371,28 @@ export default function InterviewRecorder({
               {label}
             </span>
             {isSpeechSupported && (
-              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                Speech-to-Text Active
+              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Speech-to-Text Live
               </span>
             )}
           </div>
-          <h3 className="mt-1.5 text-base font-extrabold text-slate-900">Voice Response Mode</h3>
+          <h3 className="mt-1.5 text-base font-extrabold text-slate-900">Voice Response &amp; Real-Time Capture</h3>
         </div>
-        
-        {/* Status Pill */}
-        <div className="flex items-center gap-2">
+
+        {/* Live Metrics: Timer + WPM + Filler Words */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {wordsPerMinute > 0 && (
+            <div className="px-2.5 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-black text-blue-700 flex items-center gap-1 shadow-2xs">
+              <Zap className="h-3 w-3 text-blue-600" /> {wordsPerMinute} WPM
+            </div>
+          )}
+
+          {fillerAnalysis.count > 0 && (
+            <div className="px-2.5 py-1 rounded-full border border-amber-200 bg-amber-50 text-[11px] font-black text-amber-800 flex items-center gap-1 shadow-2xs">
+              <span>{fillerAnalysis.count} Fillers</span>
+            </div>
+          )}
+
           <div className="px-3.5 py-1 rounded-full border border-slate-200 text-xs font-black flex items-center gap-2 bg-slate-50 shadow-2xs">
             {status === 'recording' ? (
               <span className="text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5 animate-pulse">
@@ -361,7 +415,7 @@ export default function InterviewRecorder({
                 Ready to Record
               </span>
             )}
-            <span className="font-mono text-xs text-slate-700 font-black">{formatDuration(durationMs)}</span>
+            <span className="font-mono text-xs text-slate-800 font-black">{formatDuration(durationMs)}</span>
           </div>
         </div>
       </div>
@@ -372,23 +426,23 @@ export default function InterviewRecorder({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
               <Mic className={`h-4 w-4 ${status === 'recording' ? 'text-emerald-600 animate-pulse' : 'text-blue-600'}`} />
-              <span>Microphone Input Level</span>
+              <span>Voice Frequency &amp; Amplitude Waveform</span>
             </div>
             <span className="text-xs font-mono font-bold text-blue-600">{formatDuration(durationMs)}</span>
           </div>
 
           {/* Equalizer Visualizer Bars */}
-          <div className="flex items-end justify-center gap-2 h-16 my-2 bg-white rounded-xl p-3 border border-slate-200/60 shadow-inner">
-            {[...Array(9)].map((_, idx) => {
-              const threshold = (idx + 1) / 9;
-              const active = micLevel >= threshold * 0.35;
+          <div className="flex items-end justify-center gap-2 h-20 my-1 bg-white rounded-2xl p-3 border border-slate-200/60 shadow-inner">
+            {[...Array(12)].map((_, idx) => {
+              const threshold = (idx + 1) / 12;
+              const active = micLevel >= threshold * 0.3;
               const barHeight = status === 'recording'
-                ? Math.max(10, Math.min(48, micLevel * 55 * (1 + (idx % 3) * 0.25)))
+                ? Math.max(10, Math.min(56, micLevel * 60 * (1 + (idx % 4) * 0.25)))
                 : 8;
               return (
                 <div
                   key={idx}
-                  className={`w-3.5 rounded-full transition-all duration-100 ${
+                  className={`w-3 rounded-full transition-all duration-100 ${
                     status === 'recording'
                       ? active
                         ? 'bg-gradient-to-t from-blue-600 to-indigo-500 shadow-xs'
@@ -401,28 +455,50 @@ export default function InterviewRecorder({
             })}
           </div>
 
-          {/* Speech-to-Text Live Preview */}
-          <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-1.5 shadow-2xs">
+          {/* Speech-to-Text Live Preview / Editable Box */}
+          <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2 shadow-2xs">
             <div className="flex items-center justify-between text-[10px] font-black uppercase text-slate-500">
               <span className="flex items-center gap-1.5 text-blue-600">
-                <Sparkles className="h-3 w-3" /> Live Transcribed Answer
+                <Sparkles className="h-3 w-3" /> Transcribed Response
               </span>
-              <span>{isSpeechSupported ? 'Web Speech Engine' : 'Syncing'}</span>
+              <button
+                type="button"
+                onClick={() => setIsEditingTranscript(!isEditingTranscript)}
+                className="text-blue-600 hover:text-blue-800 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer"
+              >
+                <Edit3 className="h-3 w-3" /> {isEditingTranscript ? 'Done Editing' : 'Edit Text'}
+              </button>
             </div>
-            <p className="text-xs text-slate-800 font-medium italic min-h-[36px] max-h-[72px] overflow-y-auto leading-relaxed">
-              {transcript
-                ? `"${transcript}"`
-                : status === 'recording'
-                  ? 'Listening... Speak your answer now.'
-                  : 'Start recording to automatically transcribe your spoken answer into text.'}
-            </p>
+
+            {isEditingTranscript ? (
+              <textarea
+                value={transcript}
+                onChange={(e) => {
+                  setTranscript(e.target.value);
+                  if (onTranscriptUpdate) onTranscriptUpdate(e.target.value);
+                }}
+                rows={3}
+                className="w-full text-xs text-slate-800 font-medium p-2.5 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-slate-50 resize-y"
+                placeholder="Edit your transcribed answer..."
+              />
+            ) : (
+              <p className="text-xs text-slate-800 font-medium min-h-[44px] max-h-[80px] overflow-y-auto leading-relaxed">
+                {transcript ? (
+                  transcript
+                ) : status === 'recording' ? (
+                  <span className="text-slate-400 italic">Listening... Speak your answer clearly into the microphone.</span>
+                ) : (
+                  <span className="text-slate-400 italic">Start recording to automatically transcribe your spoken words.</span>
+                )}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Controls & Playback (5 cols) */}
         <div className="lg:col-span-5 bg-slate-50 border border-slate-200/80 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Audio Controls</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Recording Controls</span>
 
             <div className="grid grid-cols-2 gap-2.5">
               <button
@@ -453,7 +529,7 @@ export default function InterviewRecorder({
                 disabled={status !== 'recording' && status !== 'paused'}
                 className="flex items-center justify-center gap-2 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-black py-3 px-3 transition-all disabled:opacity-40 cursor-pointer shadow-2xs"
               >
-                <StopCircle className="h-3.5 w-3.5" /> Stop &amp; Save
+                <StopCircle className="h-3.5 w-3.5" /> Stop &amp; Review
               </button>
 
               <button

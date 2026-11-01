@@ -1,0 +1,449 @@
+' SyntacHire AI sequence diagrams
+' Render each @startuml ... @enduml block as an individual diagram.
+
+@startuml SH01_Authentication
+title SyntacHire AI - Registration, Login, and Password Recovery
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Express API" as API
+database MongoDB as DB
+participant "Email Service" as Email
+participant "JWT Service" as JWT
+
+== Email-verified registration ==
+Candidate -> Client: Enter name, email, password, target role
+Client -> API: POST /api/auth/send-signup-otp
+API -> DB: Check existing account; store hashed signup payload and OTP
+DB --> API: Account availability and OTP record
+API -> Email: Send signup verification code
+Email --> Candidate: Verification code email
+API --> Client: OTP sent
+Candidate -> Client: Enter verification code
+Client -> API: POST /api/auth/verify-signup-otp
+API -> DB: Find matching unexpired signup OTP
+DB --> API: Pending signup payload
+alt OTP valid
+  API -> DB: Create verified user; delete used OTP
+  DB --> API: User created
+  API -> JWT: Sign 7-day access token
+  JWT --> API: Token
+  API --> Client: Token and user profile
+  Client --> Candidate: Open authenticated application
+else OTP invalid or expired
+  API --> Client: Verification error
+  Client --> Candidate: Show error and allow resend
+end
+
+== Login ==
+Candidate -> Client: Enter email and password
+Client -> API: POST /api/auth/login
+API -> DB: Find user by email
+DB --> API: User record and password hash
+alt Account exists and password matches
+  API -> DB: Update login streak and last login
+  DB --> API: Updated user
+  API -> JWT: Sign 7-day access token
+  JWT --> API: Token
+  API --> Client: Token and user profile
+  Client --> Candidate: Open authenticated application
+else Unknown account or incorrect password
+  API --> Client: Invalid-credentials response
+  Client --> Candidate: Show login error
+end
+
+== Password recovery ==
+Candidate -> Client: Request reset using email
+Client -> API: POST /api/auth/forgot-password
+API -> DB: Find account; store reset OTP
+DB --> API: Account and OTP record
+API -> Email: Send reset code
+Email --> Candidate: Password reset code email
+API --> Client: Reset code sent
+Candidate -> Client: Submit code and new password
+Client -> API: POST /api/auth/reset-password
+API -> DB: Find matching reset OTP and account
+DB --> API: OTP and account result
+alt OTP valid and new password accepted
+  API -> DB: Hash and save new password; delete used OTP
+  DB --> API: Password updated
+  API --> Client: Password reset success
+  Client --> Candidate: Return to login
+else Invalid or expired OTP / invalid input
+  API --> Client: Validation error
+  Client --> Candidate: Show recovery error
+end
+@enduml
+
+@startuml SH02_Account_Settings
+title SyntacHire AI - Profile and Account Settings
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Express API" as API
+participant "Auth Middleware" as Auth
+database MongoDB as DB
+participant "Google Gemini AI" as Gemini
+
+== Update profile ==
+Candidate -> Client: Edit profile and target role
+Client -> API: PUT /api/auth/profile + Bearer token
+API -> Auth: Verify JWT
+Auth --> API: Authenticated user ID
+API -> DB: Update profile fields
+DB --> API: Updated profile
+API --> Client: Updated profile data
+Client --> Candidate: Show saved profile
+
+== Change password ==
+Candidate -> Client: Submit current and new passwords
+Client -> API: PUT /api/auth/change-password + Bearer token
+API -> Auth: Verify JWT
+Auth --> API: Authenticated user ID
+API -> DB: Load account and password hash
+DB --> API: Account record
+alt Current password matches
+  API -> DB: Save hash of new password
+  DB --> API: Password updated
+  API --> Client: Success response
+else Current password does not match
+  API --> Client: Password validation error
+end
+
+== Change target role and reanalyze latest resume ==
+Candidate -> Client: Select target role
+Client -> API: POST /api/resume/reanalyze-for-role + Bearer token
+API -> Auth: Verify JWT
+Auth --> API: Authenticated user ID
+API -> DB: Update target role and load latest resume text
+DB --> API: Latest resume or no resume
+alt Resume text exists
+  API -> Gemini: Analyze resume for selected target role
+  Gemini --> API: ATS score, skills, gaps, suggestions, summary
+  API -> DB: Create new resume analysis record
+  DB --> API: Saved analysis
+  API --> Client: New role-specific analysis
+else No resume on file
+  API --> Client: Role updated; resume analysis not run
+end
+
+== Delete account ==
+Candidate -> Client: Confirm account deletion with password
+Client -> API: DELETE /api/auth/delete-account + Bearer token
+API -> Auth: Verify JWT
+Auth --> API: Authenticated user ID
+API -> DB: Load account and verify password
+DB --> API: Account record
+alt Password matches
+  API -> DB: Delete resumes, interviews, DSA progress, and user
+  DB --> API: Account data deleted
+  API --> Client: Deletion success
+  Client --> Candidate: Clear token and return to public screen
+else Password does not match
+  API --> Client: Deletion rejected
+end
+@enduml
+
+@startuml SH03_Roadmap_Learning
+title SyntacHire AI - Career Roadmap and Learning Modules
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Express API" as API
+participant "Roadmap Service" as Roadmap
+participant "Module Controller" as Modules
+participant "Problem Controller" as Problems
+database MongoDB as DB
+
+Candidate -> Client: Open career roadmap
+Client -> API: GET /api/roadmap/roles
+API -> Roadmap: List supported career roles
+Roadmap --> API: Role catalog
+API --> Client: Supported roles
+Candidate -> Client: Choose target role
+Client -> API: GET /api/roadmap/:role
+API -> Roadmap: Build role roadmap
+Roadmap --> API: Recommended skills and learning stages
+API --> Client: Role-specific roadmap
+Client --> Candidate: Display roadmap
+
+Candidate -> Client: Open coding modules
+Client -> API: GET /api/modules (Bearer token when available)
+API -> Modules: Fetch modules and candidate progress
+Modules -> DB: Read modules and UserDSAProgress
+DB --> Modules: Module list and saved progress
+Modules --> API: Modules with progress
+API --> Client: Module catalog
+Client --> Candidate: Display modules and completion state
+
+Candidate -> Client: Open module theory
+Client -> API: GET /api/modules/:id/theory
+API -> Modules: Fetch module, adjacent modules, and progress
+Modules -> DB: Read module and UserDSAProgress
+DB --> Modules: Theory content and progress
+Modules --> API: Theory details
+API --> Client: Theory and navigation data
+Client --> Candidate: Display theory
+
+opt Candidate marks theory complete
+  Candidate -> Client: Mark reading complete
+  Client -> API: POST /api/modules/:id/complete-reading + Bearer token
+  API -> Modules: Record completion
+  Modules -> DB: Upsert UserDSAProgress.completedReadings
+  DB --> Modules: Updated progress
+  Modules --> API: Completion confirmed
+  API --> Client: Success response
+  Client --> Candidate: Update module progress
+end
+
+Candidate -> Client: Open problems in a module
+Client -> API: GET /api/problems/module/:id
+API -> Problems: Fetch module problems and solved state
+Problems -> DB: Read problems and UserDSAProgress
+DB --> Problems: Problem list and progress
+Problems --> API: Problems with solved status
+API --> Client: Problem list
+Client --> Candidate: Display coding practice list
+@enduml
+
+@startuml SH04_Coding_Practice
+title SyntacHire AI - Coding Problem Execution and Submission
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Express API" as API
+participant "Problem Controller" as Problems
+participant "Judge0 RapidAPI" as RapidAPI
+participant "Public Judge0 CE" as PublicJudge0
+database MongoDB as DB
+
+Candidate -> Client: Open a coding problem
+Client -> API: GET /api/problems/:id
+API -> Problems: Load problem and candidate solved state
+Problems -> DB: Read Problem and UserDSAProgress
+DB --> Problems: Problem and saved status
+Problems --> API: Problem details
+API --> Client: Problem data
+Client --> Candidate: Show problem, editor, and examples
+
+== Run code with custom or sample input ==
+Candidate -> Client: Click Run
+Client -> RapidAPI: POST /submissions?wait=true (source, language, input)
+alt RapidAPI execution succeeds
+  RapidAPI --> Client: stdout, stderr, status, runtime
+else RapidAPI fails or unavailable
+  Client -> PublicJudge0: POST /submissions?wait=true (source, language, input)
+  PublicJudge0 --> Client: stdout, stderr, status, runtime
+end
+Client --> Candidate: Display execution result
+
+== Submit against all example test cases ==
+Candidate -> Client: Click Submit
+loop For each example test case
+  Client -> RapidAPI: Execute wrapped solution with test input
+  alt RapidAPI execution succeeds
+    RapidAPI --> Client: Test output and status
+  else RapidAPI fails or unavailable
+    Client -> PublicJudge0: Execute wrapped solution with test input
+    PublicJudge0 --> Client: Test output and status
+  end
+  Client -> Client: Compare output with expected result
+end
+alt All test cases pass
+  Client -> API: PATCH /api/problems/:id { status: solved }
+  API -> Problems: Save solved status for authenticated user
+  Problems -> DB: Upsert UserDSAProgress.solvedProblems
+  DB --> Problems: Progress saved
+  Problems --> API: Updated problem status
+  API --> Client: Solved status
+  Client --> Candidate: Show Accepted and update progress
+else One or more test cases fail
+  Client --> Candidate: Show wrong answer or runtime/compile error
+end
+
+opt Candidate toggles a problem bookmark
+  Candidate -> Client: Toggle bookmark
+  Client -> API: PATCH /api/problems/:id/bookmark
+  API -> Problems: Toggle problem bookmark
+  Problems -> DB: Save Problem.isBookmarked
+  DB --> Problems: Updated problem
+  Problems --> API: Bookmark state
+  API --> Client: Updated bookmark
+  Client --> Candidate: Display bookmark state
+end
+@enduml
+
+@startuml SH05_Resume_Analysis
+title SyntacHire AI - Resume Analysis and History
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Express API" as API
+participant "Auth Middleware" as Auth
+participant "Resume Controller" as Resume
+participant "PDF Parser" as PDF
+participant "Google Gemini AI" as Gemini
+database MongoDB as DB
+
+Candidate -> Client: Upload PDF and choose target role
+Client -> API: POST /api/resume/analyze (multipart PDF, Bearer token)
+API -> Auth: Verify JWT
+Auth --> API: Authenticated user ID
+API -> Resume: Validate PDF and analyze request
+Resume -> PDF: Extract text from PDF
+PDF --> Resume: Resume text
+alt PDF valid and text extracted
+  Resume -> Gemini: Analyze resume against target role
+  Gemini --> Resume: ATS score, skills, gaps, suggestions, summary
+  Resume -> DB: Save resume text and analysis
+  DB --> Resume: Saved analysis record
+  Resume --> API: Analysis result
+  API --> Client: Resume analysis
+  Client --> Candidate: Display ATS score and recommendations
+else Invalid PDF or no readable text
+  Resume --> API: PDF validation error
+  API --> Client: Upload/parse error
+  Client --> Candidate: Show error
+end
+
+== Browse resume history ==
+Candidate -> Client: Open resume history
+Client -> API: GET /api/resume/history + Bearer token
+API -> Auth: Verify JWT
+Auth --> API: Authenticated user ID
+API -> DB: Find resume analyses for user, newest first
+DB --> API: Resume analysis records
+API --> Client: Resume history
+Client --> Candidate: Display analysis history
+
+opt Candidate deletes an analysis record
+  Candidate -> Client: Delete selected record
+  Client -> API: DELETE /api/resume/:id + Bearer token
+  API -> Auth: Verify JWT
+  Auth --> API: Authenticated user ID
+  API -> DB: Delete record belonging to this user
+  DB --> API: Deletion result
+  API --> Client: Success or not found
+  Client --> Candidate: Refresh history
+end
+@enduml
+
+@startuml SH06_Mock_Interview
+title SyntacHire AI - Adaptive Mock Interview Session
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Express API" as API
+participant "Interview Controller" as Interview
+participant "Question Generator" as QuestionGen
+participant "Gemini Evaluation Service" as Evaluation
+participant "Google Gemini AI" as Gemini
+participant "Audio Upload Storage" as Audio
+database MongoDB as DB
+
+Candidate -> Client: Configure role, interview type, and response mode
+Client -> API: POST /api/interview/start
+API -> Interview: Start session (optional JWT)
+Interview -> DB: Load resume skills and interview history
+DB --> Interview: Candidate context and prior performance
+Interview -> QuestionGen: Generate first question for role and difficulty
+QuestionGen -> Gemini: Request personalized interview question
+Gemini --> QuestionGen: First question
+QuestionGen --> Interview: Question data
+Interview -> DB: Create in-progress Interview record
+DB --> Interview: Interview ID and saved session
+Interview --> API: Interview ID and first question
+API --> Client: Session started
+Client --> Candidate: Display first question
+
+loop For each submitted interview answer
+  Candidate -> Client: Submit text answer and/or audio recording
+  Client -> API: POST /api/interview/:id/submit (multipart form)
+  opt Audio recording supplied
+    API -> Audio: Save recording file
+    Audio --> API: Recording URL
+  end
+  API -> Interview: Validate session and question index
+  Interview -> Gemini: Evaluate answer for role and question
+  Gemini --> Interview: Scores, strengths, gaps, and feedback
+  Interview -> Interview: Adapt difficulty; decide whether to probe
+  opt Another question or follow-up is required
+    Interview -> DB: Load candidate context and session questions
+    DB --> Interview: Prior questions and performance
+    Interview -> QuestionGen: Generate next or follow-up question
+    QuestionGen -> Gemini: Request adaptive question
+    Gemini --> QuestionGen: Next question
+    QuestionGen --> Interview: Question data
+  end
+  Interview -> DB: Save answer, audio URL, evaluation, and next question
+  DB --> Interview: Updated session
+  Interview --> API: Evaluation, feedback, and optional next question
+  API --> Client: Feedback and adaptive difficulty
+  Client --> Candidate: Display scorecard and next question
+end
+
+Candidate -> Client: Finish interview
+Client -> API: PATCH /api/interview/:id/finish
+API -> Interview: Aggregate session scores and topics
+Interview -> Gemini: Generate final performance report
+Gemini --> Interview: Summary, feedback, and recommended topics
+Interview -> DB: Mark completed and save final report
+DB --> Interview: Completed interview
+Interview --> API: Final report
+API --> Client: Interview result
+Client --> Candidate: Display completed scorecard
+
+== Review interview history ==
+Candidate -> Client: Open interview history
+Client -> API: GET /api/interview/history
+API -> Interview: Fetch interview sessions (optional JWT)
+Interview -> DB: Query sessions for authenticated user
+DB --> Interview: Interview history
+Interview --> API: History records
+API --> Client: Interview history
+Client --> Candidate: Display past sessions and reports
+@enduml
+
+@startuml SH07_Dashboard_Progress
+title SyntacHire AI - Dashboard and Progress Statistics
+autonumber
+actor Candidate
+participant "React Client" as Client
+participant "Dashboard Page" as Dashboard
+participant "Stats Hook" as Stats
+participant "Express API" as API
+participant "User Stats Controller" as UserController
+participant "Interview Controller" as Interview
+participant "Resume Controller" as Resume
+database MongoDB as DB
+
+Candidate -> Client: Open dashboard
+Client -> Dashboard: Load dashboard widgets
+Dashboard -> Stats: Request user statistics
+Stats -> API: GET /api/user/stats + Bearer token
+API -> UserController: Calculate user metrics
+UserController -> DB: Read user, DSA progress, problems, and interviews
+DB --> UserController: User and progress records
+UserController --> API: Streak, XP, solved count, completion, interview metrics
+API --> Stats: Statistics payload
+Stats --> Dashboard: Statistics data
+
+par Load latest resume summary
+  Dashboard -> API: GET /api/resume/latest + Bearer token
+  API -> Resume: Fetch latest resume analysis
+  Resume -> DB: Find latest user's resume
+  DB --> Resume: Resume analysis or none
+  Resume --> API: Latest resume result
+  API --> Dashboard: Latest resume data
+and Load recent interviews
+  Dashboard -> API: GET /api/interview/history
+  API -> Interview: Fetch interview history
+  Interview -> DB: Query interview records
+  DB --> Interview: Interview list
+  Interview --> API: History records
+  API --> Dashboard: Interview data
+end
+
+Dashboard --> Client: Render dashboard and progress summaries
+Client --> Candidate: Show readiness, learning progress, and recent activity
+@enduml

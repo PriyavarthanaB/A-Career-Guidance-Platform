@@ -256,7 +256,7 @@ export default function Dashboard() {
                 <span className="text-[10px] font-black text-white uppercase tracking-widest">Active Career Acceleration</span>
               </div>
               
-              <h1 className="text-3xl md:text-4xl font-black text-slate-900 leading-snug tracking-tight">
+              <h1 className="text-3xl md:text-4xl font-black text-white leading-snug tracking-tight">
                 Welcome back, <span className="text-yellow-300 drop-shadow-sm">{firstName}!</span> 🚀
               </h1>
               
@@ -679,31 +679,31 @@ export default function Dashboard() {
             <div className="space-y-3">
               {interviewHistory.slice(0, 5).map((session) => {
                 const isExpanded = expandedInterviewId === session._id;
-                const scoreColor = session.overallScore >= 80 ? 'text-emerald-400' : session.overallScore >= 60 ? 'text-amber-400' : 'text-rose-400';
+                const scoreColor = session.overallScore >= 80 ? 'text-emerald-700' : session.overallScore >= 60 ? 'text-amber-700' : 'text-rose-700';
                 return (
                   <div
                     key={session._id}
-                    className="rounded-3xl border border-white/[0.08] bg-white/[0.04] overflow-hidden transition-all duration-200"
+                    className="rounded-3xl border border-slate-200/90 bg-slate-50/70 hover:border-blue-300 overflow-hidden transition-all duration-200 shadow-2xs"
                   >
                     {/* Row Header */}
                     <button
                       type="button"
                       onClick={() => setExpandedInterviewId(isExpanded ? null : session._id)}
-                      className="w-full text-left p-5 hover:bg-white/[0.03] transition flex items-start justify-between gap-4"
+                      className="w-full text-left p-5 hover:bg-slate-100/60 transition flex items-start justify-between gap-4 cursor-pointer"
                     >
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/25">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                             {session.type?.toUpperCase() || 'MIXED'}
                           </span>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 bg-white/[0.06] px-2.5 py-0.5 rounded-full border border-white/[0.08]">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
                             {session.difficulty}
                           </span>
                         </div>
                         <h3 className="text-base font-extrabold text-slate-900">{session.targetRole}</h3>
                         <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold">
                           <span className="flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5" /> {formatInterviewDate(session.completedAt)}
+                            <Clock className="h-3.5 w-3.5 text-slate-400" /> {formatInterviewDate(session.completedAt)}
                           </span>
                           <span>{session.questionCount} questions</span>
                           <span>{formatDurationMs(session.totalDurationMs)}</span>
@@ -720,24 +720,24 @@ export default function Dashboard() {
 
                     {/* Expanded Detail Panel */}
                     {isExpanded && (
-                      <div className="border-t border-white/[0.06] p-5 space-y-5 bg-slate-900/40">
+                      <div className="border-t border-slate-200 p-5 space-y-4 bg-white">
                         {/* Category Score Bars */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                           {[
-                            { label: 'Technical', score: session.overallTechnicalScore, color: 'blue' },
-                            { label: 'Problem Solving', score: session.overallProblemSolvingScore, color: 'purple' },
-                            { label: 'Communication', score: session.overallCommunicationScore, color: 'emerald' },
-                            { label: 'Relevance', score: session.overallRelevanceScore, color: 'amber' },
-                            { label: 'Confidence', score: session.overallConfidenceScore, color: 'rose' },
-                            { label: 'Time Mgmt', score: session.overallTimeManagementScore, color: 'blue' },
+                            { label: 'Technical', score: session.overallTechnicalScore, text: 'text-blue-700', fill: 'bg-blue-600' },
+                            { label: 'Problem Solving', score: session.overallProblemSolvingScore, text: 'text-purple-700', fill: 'bg-purple-600' },
+                            { label: 'Communication', score: session.overallCommunicationScore, text: 'text-emerald-700', fill: 'bg-emerald-600' },
+                            { label: 'Relevance', score: session.overallRelevanceScore, text: 'text-amber-700', fill: 'bg-amber-600' },
+                            { label: 'Confidence', score: session.overallConfidenceScore, text: 'text-rose-700', fill: 'bg-rose-600' },
+                            { label: 'Time Mgmt', score: session.overallTimeManagementScore, text: 'text-indigo-700', fill: 'bg-indigo-600' },
                           ].map((cat) => (
-                            <div key={cat.label} className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-3 space-y-1">
-                              <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider">
-                                <span className="text-slate-500">{cat.label}</span>
-                                <span className={`text-${cat.color}-400`}>{cat.score ?? 0}%</span>
+                            <div key={cat.label} className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3.5 space-y-1.5 shadow-2xs">
+                              <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider">
+                                <span className="text-slate-700">{cat.label}</span>
+                                <span className={`${cat.text} font-black`}>{cat.score ?? 0}%</span>
                               </div>
-                              <div className="h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
-                                <div className={`h-full bg-${cat.color}-500 rounded-full transition-all duration-500`} style={{ width: `${Math.min(cat.score ?? 0, 100)}%` }} />
+                              <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div className={`h-full ${cat.fill} rounded-full transition-all duration-500`} style={{ width: `${Math.min(cat.score ?? 0, 100)}%` }} />
                               </div>
                             </div>
                           ))}
@@ -747,25 +747,25 @@ export default function Dashboard() {
                         {(session.strongestTopics?.length > 0 || session.weakestTopics?.length > 0) && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {session.strongestTopics?.length > 0 && (
-                              <div className="bg-emerald-500/10 border border-emerald-500/20 p-3.5 rounded-xl space-y-2">
-                                <p className="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                                  <CheckCircle2 className="h-3.5 w-3.5" /> Strongest
+                              <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-2">
+                                <p className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                                  <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Strongest
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                   {session.strongestTopics.slice(0, 3).map((t, i) => (
-                                    <span key={i} className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 text-[10px] font-bold">{t}</span>
+                                    <span key={i} className="px-3 py-1 rounded-xl bg-white text-emerald-800 border border-emerald-300 text-xs font-bold shadow-2xs">{t}</span>
                                   ))}
                                 </div>
                               </div>
                             )}
                             {session.weakestTopics?.length > 0 && (
-                              <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl space-y-2">
-                                <p className="text-[10px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                                  <AlertTriangle className="h-3.5 w-3.5" /> Needs Work
+                              <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl space-y-2">
+                                <p className="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                                  <AlertTriangle className="h-4 w-4 text-amber-600" /> Needs Work
                                 </p>
                                 <div className="flex flex-wrap gap-1.5">
                                   {session.weakestTopics.slice(0, 3).map((t, i) => (
-                                    <span key={i} className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25 text-[10px] font-bold">{t}</span>
+                                    <span key={i} className="px-3 py-1 rounded-xl bg-white text-amber-800 border border-amber-300 text-xs font-bold shadow-2xs">{t}</span>
                                   ))}
                                 </div>
                               </div>
@@ -776,7 +776,7 @@ export default function Dashboard() {
                         {/* View Full Report Button */}
                         <button
                           onClick={() => handleOpenInterview(session._id)}
-                          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs py-3 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                         >
                           View Full Interview Report <ArrowRight className="h-4 w-4" />
                         </button>
@@ -789,7 +789,7 @@ export default function Dashboard() {
               {interviewHistory.length > 5 && (
                 <button
                   onClick={() => navigate('/interview-history')}
-                  className="w-full text-center text-xs font-black text-blue-400 hover:text-blue-300 py-3 transition-colors cursor-pointer"
+                  className="w-full text-center text-xs font-black text-blue-600 hover:text-blue-700 py-3 transition-colors cursor-pointer"
                 >
                   View all {interviewHistory.length} sessions →
                 </button>
@@ -801,16 +801,16 @@ export default function Dashboard() {
         {/* Interview Detail Modal */}
         {showInterviewModal && (
           <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-            <div className="bg-slate-900/95 border border-white/[0.10] rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-6 p-6 sm:p-8 relative animate-in zoom-in-95 duration-200">
+            <div className="bg-white border border-slate-200 rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-6 p-6 sm:p-8 relative animate-in zoom-in-95 duration-200 text-slate-900">
 
               {/* Modal Header */}
-              <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-md">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
                     <Award className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-slate-900">AI Interview Report</h3>
+                    <h3 className="text-xl font-black text-slate-900">AI Interview Report</h3>
                     {selectedInterview && (
                       <p className="text-xs text-slate-500 font-semibold">
                         {selectedInterview.type?.toUpperCase()} &bull; {selectedInterview.targetRole} &bull; {formatInterviewDate(selectedInterview.completedAt)}
@@ -820,7 +820,7 @@ export default function Dashboard() {
                 </div>
                 <button
                   onClick={() => { setShowInterviewModal(false); setSelectedInterview(null); }}
-                  className="w-9 h-9 rounded-full bg-white/[0.08] hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -828,62 +828,62 @@ export default function Dashboard() {
 
               {interviewDetailLoading ? (
                 <div className="flex items-center justify-center gap-3 py-16 text-slate-500">
-                  <Loader2 className="h-6 w-6 animate-spin text-amber-500" />
+                  <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
                   <span className="text-sm font-semibold">Loading interview details…</span>
                 </div>
               ) : selectedInterview ? (
-                <div className="space-y-6 text-slate-300">
+                <div className="space-y-6">
 
                   {/* Score Overview */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 rounded-2xl text-white text-center shadow-lg">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-100">Overall Score</span>
+                    <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-4 rounded-2xl text-white text-center shadow-md">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-blue-100">Overall Score</span>
                       <p className="text-3xl font-black mt-1">{selectedInterview.overallScore}%</p>
                     </div>
                     {[
-                      { label: 'Technical', score: selectedInterview.overallTechnicalScore },
-                      { label: 'Communication', score: selectedInterview.overallCommunicationScore },
-                      { label: 'Problem Solving', score: selectedInterview.overallProblemSolvingScore },
+                      { label: 'Technical', score: selectedInterview.overallTechnicalScore, color: 'text-blue-700' },
+                      { label: 'Communication', score: selectedInterview.overallCommunicationScore, color: 'text-emerald-700' },
+                      { label: 'Problem Solving', score: selectedInterview.overallProblemSolvingScore, color: 'text-purple-700' },
                     ].map((d) => (
                       <div key={d.label} className="bg-slate-50 border border-slate-200 p-4 rounded-2xl text-center">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">{d.label}</span>
-                        <p className="text-2xl font-black text-blue-400 mt-1">{d.score ?? 0}%</p>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-600">{d.label}</span>
+                        <p className={`text-2xl font-black ${d.color} mt-1`}>{d.score ?? 0}%</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Personalized Feedback */}
                   {selectedInterview.personalizedFeedback && (
-                    <div className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-2xl space-y-2">
-                      <p className="text-xs font-black uppercase tracking-wider text-blue-400 flex items-center gap-2">
-                        <Sparkles className="h-4 w-4" /> Personalized AI Feedback
+                    <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl space-y-2">
+                      <p className="text-xs font-black uppercase tracking-wider text-blue-800 flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-blue-600" /> Personalized AI Feedback
                       </p>
-                      <p className="text-sm text-slate-200 leading-relaxed">{selectedInterview.personalizedFeedback}</p>
+                      <p className="text-sm text-slate-800 leading-relaxed font-medium">{selectedInterview.personalizedFeedback}</p>
                     </div>
                   )}
 
                   {/* Strongest & Weakest Topics */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {selectedInterview.strongestTopics?.length > 0 && (
-                      <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl space-y-2">
-                        <p className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-2">
-                          <CheckCircle2 className="h-4 w-4" /> Strongest Topics
+                      <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-2">
+                        <p className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Strongest Topics
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {selectedInterview.strongestTopics.map((t, i) => (
-                            <span key={i} className="px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 text-xs font-bold">{t}</span>
+                            <span key={i} className="px-3 py-1 rounded-xl bg-white text-emerald-800 border border-emerald-300 text-xs font-bold shadow-2xs">{t}</span>
                           ))}
                         </div>
                       </div>
                     )}
                     {selectedInterview.weakestTopics?.length > 0 && (
-                      <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl space-y-2">
-                        <p className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4" /> Weakest Topics
+                      <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl space-y-2">
+                        <p className="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-amber-600" /> Weakest Topics
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {selectedInterview.weakestTopics.map((t, i) => (
-                            <span key={i} className="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25 text-xs font-bold">{t}</span>
+                            <span key={i} className="px-3 py-1 rounded-xl bg-white text-amber-800 border border-amber-300 text-xs font-bold shadow-2xs">{t}</span>
                           ))}
                         </div>
                       </div>
@@ -893,12 +893,12 @@ export default function Dashboard() {
                   {/* Recommended Topics */}
                   {selectedInterview.recommendedTopics?.length > 0 && (
                     <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2">
-                      <p className="text-xs font-black uppercase tracking-wider text-blue-400 flex items-center gap-2">
-                        <Target className="h-4 w-4" /> Recommended Topics for Improvement
+                      <p className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                        <Target className="h-4 w-4 text-blue-600" /> Recommended Topics for Improvement
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedInterview.recommendedTopics.map((rec, i) => (
-                          <span key={i} className="px-3 py-1 rounded-lg bg-blue-500/10 text-blue-300 border border-blue-500/25 text-xs font-extrabold">{rec}</span>
+                          <span key={i} className="px-3 py-1 rounded-xl bg-white text-blue-800 border border-blue-200 text-xs font-bold shadow-2xs">{rec}</span>
                         ))}
                       </div>
                     </div>
@@ -906,18 +906,18 @@ export default function Dashboard() {
 
                   {/* Question-by-Question Breakdown */}
                   {selectedInterview.questions?.length > 0 && (
-                    <div className="space-y-4 border-t border-white/[0.06] pt-5">
+                    <div className="space-y-4 border-t border-slate-100 pt-5">
                       <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                        <Brain className="h-5 w-5 text-blue-400" /> Question-by-Question Breakdown
+                        <Brain className="h-5 w-5 text-blue-600" /> Question-by-Question Breakdown
                       </h4>
                       {selectedInterview.questions.map((q, idx) => (
-                        <div key={idx} className="bg-slate-800/40 border border-white/[0.08] rounded-2xl p-5 space-y-3">
-                          <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] pb-2">
+                        <div key={idx} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
+                          <div className="flex items-start justify-between gap-3 border-b border-slate-200 pb-2">
                             <div>
-                              <span className="text-[10px] font-black uppercase text-blue-400 tracking-wider">Q{idx + 1} &bull; {q.category || 'General'}</span>
-                              <p className="text-sm font-bold text-white mt-0.5">"{q.question}"</p>
+                              <span className="text-[10px] font-black uppercase text-blue-600 tracking-wider">Q{idx + 1} &bull; {q.category || 'General'}</span>
+                              <p className="text-sm font-bold text-slate-900 mt-0.5">"{q.question}"</p>
                             </div>
-                            <span className={`text-xs font-black px-2.5 py-1 rounded-full shrink-0 ${q.score >= 75 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' : q.score >= 50 ? 'bg-amber-500/15 text-amber-400 border border-amber-500/25' : 'bg-rose-500/15 text-rose-400 border border-rose-500/25'}`}>
+                            <span className={`text-xs font-black px-2.5 py-1 rounded-full shrink-0 ${q.score >= 75 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : q.score >= 50 ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-rose-100 text-rose-800 border border-rose-200'}`}>
                               {q.score}%
                             </span>
                           </div>
@@ -925,27 +925,27 @@ export default function Dashboard() {
                           {q.userAnswer && (
                             <div className="space-y-1">
                               <p className="text-[10px] font-black uppercase text-slate-500">Candidate Answer:</p>
-                              <p className="text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl border border-white/[0.06] italic">"{q.userAnswer}"</p>
+                              <p className="text-xs text-slate-800 bg-white p-3 rounded-xl border border-slate-200 leading-relaxed font-medium italic">"{q.userAnswer}"</p>
                             </div>
                           )}
 
                           {q.strengths?.length > 0 && (
                             <div className="flex flex-wrap gap-1.5">
                               {q.strengths.map((s, si) => (
-                                <span key={si} className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">✓ {s}</span>
+                                <span key={si} className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">✓ {s}</span>
                               ))}
                             </div>
                           )}
                           {q.weaknesses?.length > 0 && (
                             <div className="flex flex-wrap gap-1.5">
                               {q.weaknesses.map((w, wi) => (
-                                <span key={wi} className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/20">! {w}</span>
+                                <span key={wi} className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-100 text-rose-800 border border-rose-200">! {w}</span>
                               ))}
                             </div>
                           )}
                           {q.aiFeedback && (
-                            <p className="text-xs text-slate-500 bg-blue-500/5 border border-blue-500/15 p-3 rounded-xl leading-relaxed">
-                              <strong className="text-blue-400">Feedback:</strong> {q.aiFeedback}
+                            <p className="text-xs text-slate-700 bg-blue-50/70 border border-blue-200/80 p-3 rounded-xl leading-relaxed font-medium">
+                              <strong className="text-blue-700">Feedback:</strong> {q.aiFeedback}
                             </p>
                           )}
                         </div>
@@ -978,109 +978,117 @@ export default function Dashboard() {
         )}
 
         {/* AI Tip Banner */}
-        <section className="bg-gradient-to-r from-indigo-500/10 via-blue-500/10 to-purple-500/10 border border-indigo-500/20 backdrop-blur-md rounded-3xl p-6 flex items-start gap-4 shadow-lg shadow-black/20 hover:shadow-md transition-all duration-300">
-          <div className="w-11 h-11 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
-            <Zap className="h-5 w-5" />
-          </div>
-          <div className="space-y-1 flex-1">
-            <p className="text-xs font-black text-indigo-300 uppercase tracking-wider">AI Career Tip of the Day</p>
-            <p className="text-sm text-slate-200 font-medium leading-relaxed">
-              For <strong className="font-black text-indigo-300">{user.targetRole}</strong> roles, mastering Dynamic Programming and Graph algorithms gives you a significant advantage in top-tier technical interviews. Start with module-based practice today!
-            </p>
+        <section className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border border-blue-200/80 rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm shadow-slate-900/5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-start gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
+              <Zap className="h-5 w-5 text-yellow-300" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-[10px] font-black text-blue-700 uppercase tracking-wider">AI Career Tip of the Day</p>
+              <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+                For <strong className="font-black text-slate-900">{user.targetRole}</strong> roles, mastering Dynamic Programming and Graph algorithms gives you a significant advantage in top-tier technical interviews. Start with module-based practice today!
+              </p>
+            </div>
           </div>
           <button
             onClick={() => navigate('/coding-practice')}
-            className="shrink-0 group flex items-center gap-1.5 text-xs font-black text-indigo-300 hover:text-indigo-200 bg-white/[0.08] hover:bg-white/[0.12] px-4 py-2.5 rounded-2xl border border-indigo-500/25 shadow-lg shadow-black/20 hover:shadow-xs transition-all duration-200 cursor-pointer hover:scale-105"
+            className="self-end sm:self-center shrink-0 group flex items-center gap-1.5 text-xs font-black text-blue-700 hover:text-blue-800 bg-white hover:bg-slate-50 px-4 py-2.5 rounded-2xl border border-blue-200 shadow-2xs hover:shadow-xs transition-all duration-200 cursor-pointer hover:scale-105"
           >
             Start <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
         </section>
 
-        {/* PREDICTIVE REPORT MODAL */}
+        {/* PREDICTIVE REPORT MODAL (FULLY RESPONSIVE MOBILE & DESKTOP) */}
         {showReportModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-            <div className="bg-slate-900/95 border border-white/[0.10] rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-6 p-6 sm:p-8 relative animate-in zoom-in-95 duration-200">
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+            <div className="bg-white border border-slate-200 rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-6 p-4 sm:p-7 relative animate-in zoom-in-95 duration-200">
               
               {/* Modal Top Controls */}
-              <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
-                    <Sparkles className="h-5 w-5" />
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+                    <Sparkles className="h-5 w-5 text-yellow-300" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-slate-900">SyntacHire AI Predictive Report</h3>
-                    <p className="text-xs text-slate-500 font-semibold">Candidate: <strong className="text-slate-200">{user.name}</strong> • Role: <strong className="text-blue-400">{user.targetRole}</strong></p>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
+                      SyntacHire AI Predictive Report
+                    </h3>
+                    <p className="text-[11px] text-slate-500 font-semibold">
+                      Candidate: <strong className="text-slate-800">{user.name}</strong> • Role: <strong className="text-blue-600">{user.targetRole}</strong>
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
                   <button
                     onClick={() => window.print()}
-                    className="flex items-center gap-1.5 bg-white/[0.08] hover:bg-white/[0.12] text-slate-300 px-3.5 py-2 rounded-xl text-xs font-black transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-black transition-colors cursor-pointer border border-slate-200 shadow-2xs"
                   >
                     <Printer className="h-4 w-4" />
                     Print
                   </button>
                   <button
                     onClick={handleDownloadReportFile}
-                    className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-black transition-all shadow-md cursor-pointer"
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-black transition-all shadow-md cursor-pointer"
                   >
                     <Download className="h-4 w-4" />
-                    Download PDF Report
+                    Download PDF
                   </button>
                   <button
                     onClick={() => setShowReportModal(false)}
-                    className="w-9 h-9 rounded-full bg-white/[0.08] hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer border border-slate-200"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
                 </div>
               </div>
 
               {/* Report Body */}
-              <div className="space-y-6 text-slate-300">
+              <div className="space-y-5 text-slate-700">
 
                 {/* Section 1: Executive Summary */}
-                <div className="bg-gradient-to-br from-slate-950 via-[#0b1c30] to-indigo-950 text-white rounded-3xl p-6 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="space-y-2 max-w-lg">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full border border-yellow-400/20">
+                <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 text-white rounded-2xl p-5 sm:p-6 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+                  <div className="space-y-2 text-center sm:text-left">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-300 bg-white/15 px-2.5 py-0.5 rounded-full border border-white/20 inline-block">
                       Predictive Evaluation Result
                     </span>
-                    <h4 className="text-xl font-black text-white">Target Role Placement Competency Index</h4>
-                    <p className="text-xs text-slate-300 font-normal leading-relaxed">
+                    <h4 className="text-lg sm:text-xl font-black text-white leading-tight">
+                      Target Role Placement Competency Index
+                    </h4>
+                    <p className="text-xs text-blue-100 font-normal leading-relaxed">
                       Based on current resume ATS match ({atsScore}%), solved DSA modules ({solvedProblems}/{totalProblems}), and mock interview readiness score ({mockScoreVal}%).
                     </p>
                   </div>
-                  <div className="flex flex-col items-center bg-white/10 border border-white/15 backdrop-blur-md px-8 py-5 rounded-2xl shrink-0">
-                    <span className="text-4xl font-black text-yellow-300">{readinessIndex}%</span>
-                    <span className="text-[10px] font-black uppercase text-white/80 tracking-wider mt-1">Placement Ready</span>
+                  <div className="flex flex-col items-center bg-white/15 border border-white/20 backdrop-blur-md px-6 py-4 rounded-2xl shrink-0 w-full sm:w-auto text-center">
+                    <span className="text-3xl sm:text-4xl font-black text-yellow-300">{readinessIndex}%</span>
+                    <span className="text-[10px] font-black uppercase text-white/90 tracking-wider mt-0.5">Placement Ready</span>
                   </div>
                 </div>
 
                 {/* Section 2: Resume ATS & Skill Gaps */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
-                    <h5 className="text-xs font-black uppercase text-emerald-400 tracking-wider flex items-center gap-2">
-                      <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <h5 className="text-xs font-black uppercase text-emerald-800 tracking-wider flex items-center gap-2">
+                      <ShieldCheck className="h-4 w-4 text-emerald-600" />
                       Verified Resume Competencies ({extractedSkills.length})
                     </h5>
                     <div className="flex flex-wrap gap-1.5">
                       {extractedSkills.map((s, i) => (
-                        <span key={i} className="text-xs font-extrabold bg-emerald-500/15 text-emerald-300 px-2.5 py-1 rounded-lg border border-emerald-500/20 shadow-lg shadow-black/20">
+                        <span key={i} className="text-xs font-extrabold bg-white text-emerald-800 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs">
                           ✓ {s}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-5 space-y-3">
-                    <h5 className="text-xs font-black uppercase text-rose-400 tracking-wider flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 text-rose-400" />
+                  <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <h5 className="text-xs font-black uppercase text-rose-800 tracking-wider flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-rose-600" />
                       Role Skill Gaps to Address ({missingSkills.length})
                     </h5>
                     <div className="flex flex-wrap gap-1.5">
                       {missingSkills.map((s, i) => (
-                        <span key={i} className="text-xs font-extrabold bg-rose-500/15 text-rose-300 px-2.5 py-1 rounded-lg border border-rose-500/20 shadow-lg shadow-black/20">
+                        <span key={i} className="text-xs font-extrabold bg-white text-rose-800 px-2.5 py-1 rounded-lg border border-rose-200 shadow-2xs">
                           ! {s}
                         </span>
                       ))}
@@ -1089,26 +1097,32 @@ export default function Dashboard() {
                 </div>
 
                 {/* Section 3: Predictive Strategic Roadmap */}
-                <div className="bg-blue-500/8 border border-blue-500/15 rounded-3xl p-6 space-y-4">
+                <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-4 sm:p-6 space-y-4">
                   <h5 className="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center gap-2">
-                    <Target className="h-4 w-4 text-blue-400" />
+                    <Target className="h-4 w-4 text-blue-600" />
                     Strategic Placement Action Plan
                   </h5>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-white/[0.05] p-4 rounded-2xl border border-white/[0.06] space-y-1.5 shadow-lg shadow-black/20">
-                      <span className="text-[10px] font-black text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-md">STEP 1</span>
-                      <h6 className="text-xs font-black text-white">Resume Optimization</h6>
-                      <p className="text-[11px] text-slate-500 font-normal">Incorporate projects highlighting <strong className="text-slate-200">{missingSkills.slice(0, 2).join(' & ')}</strong>.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <div className="bg-white p-4 rounded-xl border border-blue-200/60 space-y-1.5 shadow-2xs">
+                      <span className="text-[10px] font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md">STEP 1</span>
+                      <h6 className="text-xs font-black text-slate-900">Resume Optimization</h6>
+                      <p className="text-[11px] text-slate-600 font-normal leading-relaxed">
+                        Incorporate projects highlighting <strong className="text-slate-800">{missingSkills.slice(0, 2).join(' & ')}</strong>.
+                      </p>
                     </div>
-                    <div className="bg-white/[0.05] p-4 rounded-2xl border border-white/[0.06] space-y-1.5 shadow-lg shadow-black/20">
-                      <span className="text-[10px] font-black text-violet-300 bg-violet-500/20 px-2 py-0.5 rounded-md">STEP 2</span>
-                      <h6 className="text-xs font-black text-white">DSA Module Mastery</h6>
-                      <p className="text-[11px] text-slate-500 font-normal">Solve 10 problems in Module 01 (Arrays) and Module 10 (Dynamic Programming).</p>
+                    <div className="bg-white p-4 rounded-xl border border-blue-200/60 space-y-1.5 shadow-2xs">
+                      <span className="text-[10px] font-black text-violet-700 bg-violet-100 px-2 py-0.5 rounded-md">STEP 2</span>
+                      <h6 className="text-xs font-black text-slate-900">DSA Module Mastery</h6>
+                      <p className="text-[11px] text-slate-600 font-normal leading-relaxed">
+                        Solve 10 problems in Module 01 (Arrays) and Module 10 (Dynamic Programming).
+                      </p>
                     </div>
-                    <div className="bg-white/[0.05] p-4 rounded-2xl border border-white/[0.06] space-y-1.5 shadow-lg shadow-black/20">
-                      <span className="text-[10px] font-black text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-md">STEP 3</span>
-                      <h6 className="text-xs font-black text-white">Mock Interview Simulation</h6>
-                      <p className="text-[11px] text-slate-500 font-normal">Complete 2 technical interview sessions to boost communication metrics.</p>
+                    <div className="bg-white p-4 rounded-xl border border-blue-200/60 space-y-1.5 shadow-2xs">
+                      <span className="text-[10px] font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">STEP 3</span>
+                      <h6 className="text-xs font-black text-slate-900">Mock Interview Simulation</h6>
+                      <p className="text-[11px] text-slate-600 font-normal leading-relaxed">
+                        Complete 2 technical interview sessions to boost communication metrics.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1116,11 +1130,11 @@ export default function Dashboard() {
               </div>
 
               {/* Modal Footer */}
-              <div className="flex items-center justify-between pt-4 border-t border-white/[0.06] text-xs text-slate-500 font-semibold">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100 text-xs text-slate-500 font-semibold">
                 <span>SyntacHire AI Automated Career Engine</span>
                 <button
                   onClick={() => setShowReportModal(false)}
-                  className="bg-white/[0.08] hover:bg-white/[0.12] text-white font-black px-5 py-2.5 rounded-xl transition-all cursor-pointer"
+                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-black px-5 py-2.5 rounded-xl transition-all cursor-pointer border border-slate-200"
                 >
                   Close Report
                 </button>

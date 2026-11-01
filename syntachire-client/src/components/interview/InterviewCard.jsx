@@ -93,11 +93,6 @@ export default function InterviewCard({
           {isSelected ? "Selected" : "Click to select"}
         </span>
       </div>
-
-      {/* Selected Accent Glow */}
-      {isSelected && (
-        <div className="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 rounded-t-3xl" />
-      )}
     </div>
   );
 }

@@ -438,14 +438,23 @@ export default function InterviewHistory() {
                               <ScoreBar label="Confidence" score={session.overallConfidenceScore} color="rose" />
                               <ScoreBar label="Time Management" score={session.overallTimeManagementScore} color="blue" />
                             </div>
-                            {session.personalizedFeedback && (
-                              <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl space-y-1">
-                                <p className="text-xs font-black uppercase tracking-wider text-blue-400 flex items-center gap-2">
-                                  <Sparkles className="h-3.5 w-3.5" /> AI Feedback
-                                </p>
-                                <p className="text-xs text-slate-300 leading-relaxed">{session.personalizedFeedback}</p>
-                              </div>
-                            )}
+                            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                              {session.personalizedFeedback && (
+                                <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl space-y-1 flex-1 min-w-[240px]">
+                                  <p className="text-xs font-black uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                                    <Sparkles className="h-3.5 w-3.5" /> AI Feedback
+                                  </p>
+                                  <p className="text-xs text-slate-300 leading-relaxed">{session.personalizedFeedback}</p>
+                                </div>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => generateInterviewReportPDF(session, session.targetRole || "Candidate")}
+                                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-all cursor-pointer hover:scale-105 self-end"
+                              >
+                                <Download className="h-3.5 w-3.5" /> Download PDF
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>

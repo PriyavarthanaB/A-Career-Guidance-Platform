@@ -140,6 +140,9 @@ exports.generateSingleQuestionWithGemini = async ({
   targetRole = 'Full Stack Software Developer',
   difficulty = 'Medium',
   type = 'mixed',
+  seniorityLevel = 'Mid-Level',
+  industryFocus = 'Technology & SaaS',
+  jobDescription = '',
   candidateSkills = [],
   candidateWeakAreas = [],
   masteredTopics = [],
@@ -174,6 +177,10 @@ exports.generateSingleQuestionWithGemini = async ({
     ? candidateProjects.slice(0, 600).replace(/\s+/g, ' ')
     : '';
 
+  const jdSnippet = jobDescription && typeof jobDescription === 'string'
+    ? jobDescription.slice(0, 800).replace(/\s+/g, ' ')
+    : '';
+
   // Format previous questions (current session + all past interview sessions) to prevent duplicates
   const prevQuestionsText = Array.isArray(previousQuestions) && previousQuestions.length > 0
     ? previousQuestions.slice(-30).map((q, idx) => `${idx + 1}. "${q}"`).join('\n')
@@ -181,13 +188,58 @@ exports.generateSingleQuestionWithGemini = async ({
 
   let prompt = '';
 
+  // Define strict domain boundaries for different role families
+  const getRoleDomainGuide = (role) => {
+    const r = (role || '').toLowerCase();
+    if (r.includes('frontend') || r.includes('react') || r.includes('ui') || r.includes('web developer')) {
+      return {
+        coreDomain: 'Frontend Web Engineering & Client-Side Architecture',
+        allowedTopics: 'React, Vue, TypeScript, JavaScript (Event Loop, Closures, Async), DOM & Virtual DOM, CSS/Tailwind, Responsive Design, State Management (Redux, Zustand, Context), Web Performance (Core Web Vitals, Bundle Splitting, Code Splitting, Memoization, Lazy Loading), Accessibility (a11y, WCAG), Browser APIs, Client-Side Routing, Client-Side Caching (IndexedDB, Service Workers, React Query/SWR), Component Lifecycle, Unit Testing (Jest, RTL).',
+        forbiddenTopics: 'Backend database indexing, Redis server caching strategies, SQL migrations, microservice orchestration, server daemons, backend queue workers (RabbitMQ/Kafka).',
+      };
+    }
+    if (r.includes('backend') || r.includes('api') || r.includes('database')) {
+      return {
+        coreDomain: 'Backend Engineering & Distributed Systems',
+        allowedTopics: 'REST/GraphQL/gRPC API design, SQL & NoSQL databases, indexing, transactions, Redis/caching, microservices, authentication (JWT/OAuth), message queues (Kafka/RabbitMQ), concurrency, distributed locking, server performance & scaling.',
+        forbiddenTopics: 'CSS layout issues, DOM manipulation, React hooks details, browser rendering pipeline.',
+      };
+    }
+    if (r.includes('data') || r.includes('machine learning') || r.includes('ai')) {
+      return {
+        coreDomain: 'Data Science & Machine Learning Engineering',
+        allowedTopics: 'Model architectures, feature engineering, loss functions, evaluation metrics (F1, ROC-AUC), data pipelines, pandas, PyTorch/TensorFlow, LLMs, embeddings, RAG architectures, model deployment & drift monitoring.',
+        forbiddenTopics: 'Frontend CSS, client-side React rendering.',
+      };
+    }
+    if (r.includes('devops') || r.includes('cloud') || r.includes('sre')) {
+      return {
+        coreDomain: 'DevOps, SRE & Cloud Infrastructure',
+        allowedTopics: 'CI/CD pipelines, Docker, Kubernetes, Terraform/IaC, AWS/GCP/Azure services, monitoring & observability (Prometheus, Grafana), incident response, high availability, zero-downtime deployments.',
+        forbiddenTopics: 'Frontend UI layout, machine learning model loss optimization.',
+      };
+    }
+    return {
+      coreDomain: 'Software Engineering & Architecture',
+      allowedTopics: 'Software design patterns, clean code, data structures & algorithms, testing, system architecture, engineering trade-offs.',
+      forbiddenTopics: 'Out-of-domain tooling.',
+    };
+  };
+
+  const domainGuide = getRoleDomainGuide(targetRole);
+
   if (isFollowUp && lastAnswerContext && lastAnswerContext.question && lastAnswerContext.answer) {
     const missingStr = Array.isArray(lastAnswerContext.missingConcepts) && lastAnswerContext.missingConcepts.length > 0
       ? lastAnswerContext.missingConcepts.join(', ')
       : 'key technical details and trade-offs';
 
     prompt = `
-    You are an expert technical interviewer conducting a live conversational "${type.toUpperCase()}" interview round for a "${targetRole}" position at "${difficulty}" difficulty level.
+    You are an expert technical interviewer conducting a live conversational "${type.toUpperCase()}" interview round for a "${seniorityLevel} ${targetRole}" position in the "${industryFocus}" industry at "${difficulty}" difficulty level.
+
+    STRICT ROLE DOMAIN BOUNDARY:
+    - Primary Domain: ${domainGuide.coreDomain}
+    - Allowed Focus Topics: ${domainGuide.allowedTopics}
+    - FORBIDDEN TOPICS (DO NOT ASK): ${domainGuide.forbiddenTopics}
 
     The candidate just answered the previous question, but their answer was incomplete or missing key concepts.
 
@@ -201,12 +253,13 @@ exports.generateSingleQuestionWithGemini = async ({
     "${missingStr}"
 
     TASK:
-    Generate a natural, conversational FOLLOW-UP question probing directly into the candidate's answer and omitted concepts before moving to a new topic.
+    Generate a natural, conversational FOLLOW-UP question probing directly into the candidate's answer and omitted concepts within the "${targetRole}" domain.
 
     Conversational & Adaptive Style Instructions:
     1. Start with a natural verbal transition (e.g. "Thanks for explaining that. You mentioned X, but how would you handle...", or "That covers part of the solution. Digging deeper into...").
     2. Directly probe into the candidate's specific answer and missing concepts.
-    3. Do NOT invent information not provided by the candidate.
+    3. Stay strictly within the ${targetRole} domain (${domainGuide.allowedTopics}).
+    4. Calibrate depth to ${seniorityLevel} expectations for ${industryFocus}.
 
     Return ONLY a valid JSON object matching this schema:
     {
@@ -219,37 +272,47 @@ exports.generateSingleQuestionWithGemini = async ({
     `;
   } else {
     prompt = `
-    You are an expert technical interviewer conducting a highly personalized, conversational "${type.toUpperCase()}" interview for a candidate applying for a "${targetRole}" role at "${difficulty}" difficulty level.
+    You are an expert technical interviewer conducting a highly personalized, conversational "${type.toUpperCase()}" interview for a candidate applying for a "${seniorityLevel} ${targetRole}" role in the "${industryFocus}" industry at "${difficulty}" difficulty level.
 
-    CANDIDATE PERSISTENT PERFORMANCE MEMORY & VERIFIED PROFILE:
+    STRICT ROLE DOMAIN BOUNDARY (CRITICAL REQUIREMENT):
     - Target Role: ${targetRole}
-    - Adaptive Difficulty Level: ${difficulty}
+    - Core Domain: ${domainGuide.coreDomain}
+    - ALLOWED TOPICS (MUST CHOOSE FROM THESE): ${domainGuide.allowedTopics}
+    - STRICTLY FORBIDDEN TOPICS (NEVER ASK): ${domainGuide.forbiddenTopics}
+    - Seniority Level: ${seniorityLevel} (Calibrate question complexity and system scale accordingly)
+    - Industry Focus: ${industryFocus}
+    ${jdSnippet ? `- Targeted Job Description / Requirements:\n"${jdSnippet}"` : ''}
+
+    ${questionIndex === 0 ? `SESSION OPENER RULE (Question #1):
+    This is Question #1 of a brand new interview session.
+    DO NOT say "Building on our previous discussion...", "As we discussed earlier...", or reference any prior topics.
+    Start with a fresh, direct, engaging question evaluating ${targetRole} fundamentals or architecture.` : ''}
+
+    CANDIDATE PROFILE & CONTEXT:
     - Verified Skills from Resume: ${formattedSkills}
-    - Active High-Priority Weak Topics (Prioritize Evaluation Here): ${formattedWeakAreas}
-    - Mastered Topics (Candidate Previously Improved - Reduce Priority Gradually): ${formattedMastered}
-    - Performance Trajectory Across Past Interviews: "${performanceTrajectory || 'First session for this candidate.'}"
-    ${projectSnippet ? `- Candidate Projects & Technical Experience Details:\n"${projectSnippet}"` : '- Candidate Projects: No specific project text provided.'}
+    - Active High-Priority Weak Topics: ${formattedWeakAreas}
+    - Mastered Topics: ${formattedMastered}
+    - Performance Trajectory: "${performanceTrajectory || 'First session for this candidate.'}"
+    ${projectSnippet ? `- Candidate Projects & Experience:\n"${projectSnippet}"` : ''}
 
-    PERSONALIZATION, MEMORY & TOPIC MASTERY PRIORITY RULES:
-    1. PERSISTENT INTERVIEW MEMORY: Act as an intelligent technical interviewer who remembers the candidate's past interview performance. Prioritize asking questions on their ACTIVE high-priority weak topics (${formattedWeakAreas}).
-    2. GRADUAL PRIORITY DECAY FOR MASTERED TOPICS: For topics listed as MASTERED (${formattedMastered}), reduce question priority unless testing advanced architectural trade-offs. Acknowledge candidate growth where appropriate.
-    3. CANDIDATE-SPECIFIC QUESTIONS: Avoid generic textbook definitions (do NOT ask "What is React?"). Frame scenario-based questions around their listed technologies, projects, or architecture choices.
-    4. PROJECT DEEP-DIVES: If candidate projects are present above, ask candidate-specific questions about their project's architecture, technology trade-offs, state/data management, scaling, or engineering challenges faced.
-    5. STRICT FACTUAL GROUNDING: Do NOT invent, fabricate, or hallucinate projects, companies, tools, or facts NOT present in the candidate profile above.
-    6. CONVERSATIONAL TONE: Include natural conversational transition openers (e.g., "Looking at your past performance in...", "Building on your background...", "Pivoting to your project architecture...").
-
-    STRICT ZERO-REPETITION REQUIREMENT (Cross-Session History):
-    Do NOT repeat or closely rephrase ANY of the following questions that were already asked in this session or in ANY past interview session for this candidate:
+    PERSONALIZATION, DOMAIN & SENIORITY RULES:
+    1. STRICT ${targetRole.toUpperCase()} FOCUS: The question MUST be 100% relevant to ${targetRole}. For Frontend Developer, ask about React/DOM/CSS/Web Performance/State/Browser APIs; NEVER ask about backend database caching (Redis) or server-side SQL schemas.
+    2. SENIORITY CALIBRATION (${seniorityLevel}):
+       - Junior/Entry: Focus on fundamentals, component lifecycles, clean code, and basic debugging.
+       - Mid-Level: Focus on state management, asynchronous data fetching, web performance, component architecture, and trade-offs.
+       - Senior: Focus on Core Web Vitals, large-scale UI architecture, state persistence, bundle optimization, security (XSS/CSRF), and design systems.
+       - Lead/Staff: Focus on micro-frontends, cross-cutting performance budgets, build pipelines, rendering strategies (SSR/SSG/ISR/RSC), and technical governance.
+    3. ZERO-REPETITION: Do NOT repeat or closely rephrase ANY previously asked question:
     ${prevQuestionsText}
 
     TASK:
-    Generate exactly ONE personalized, candidate-specific interview question for Question #${questionIndex + 1} at "${difficulty}" difficulty level.
+    Generate exactly ONE candidate-specific interview question for Question #${questionIndex + 1} at "${difficulty}" difficulty level.
 
     Return ONLY a valid JSON object matching this schema:
     {
-      "question": "The candidate-specific interview question text with natural conversational transition",
-      "category": "Short topic category (e.g., Project Architecture, React & Node.js Trade-offs, System Design)",
-      "hint": "A clear, candidate-tailored answer hint explaining what concepts or project trade-offs to cover"
+      "question": "The candidate-specific interview question text strictly within ${targetRole} domain",
+      "category": "Short topic category (e.g., React Component Architecture, Core Web Vitals Optimization, State Management)",
+      "hint": "A clear, candidate-tailored answer hint explaining what frontend concepts, APIs, or performance metrics to cover"
     }
 
     Do NOT include markdown code blocks. Return pure JSON text only.

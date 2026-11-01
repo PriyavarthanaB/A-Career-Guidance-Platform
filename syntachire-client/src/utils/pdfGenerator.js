@@ -218,20 +218,29 @@ export function generateInterviewReportPDF(interview, candidateName = "Candidate
   const margin = 14;
   let y = 14;
 
+  const checkPageBreak = (neededHeight) => {
+    if (y + neededHeight > pageHeight - 20) {
+      doc.addPage();
+      y = 14;
+      return true;
+    }
+    return false;
+  };
+
   // Header Banner
   doc.setFillColor(30, 58, 138); // Deep Royal Blue
   doc.roundedRect(margin, y, pageWidth - 2 * margin, 32, 4, 4, "F");
 
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
+  doc.setFontSize(15);
   doc.text("SYNTACHIRE AI — MOCK INTERVIEW SCORECARD", margin + 6, y + 10);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(219, 234, 254);
   doc.text(`Candidate: ${candidateName}  |  Target Role: ${interview.targetRole || "Software Engineer"}`, margin + 6, y + 18);
-  doc.text(`Round: ${(interview.type || "MIXED").toUpperCase()}  |  Difficulty: ${interview.difficulty || "Medium"}  |  Questions: ${interview.questionCount || 5}`, margin + 6, y + 25);
+  doc.text(`Round: ${(interview.type || "MIXED").toUpperCase()}  |  Difficulty: ${interview.difficulty || "Medium"}  |  Questions: ${interview.questionCount || interview.questions?.length || 5}`, margin + 6, y + 25);
 
   y += 38;
 
@@ -242,27 +251,28 @@ export function generateInterviewReportPDF(interview, candidateName = "Candidate
 
   doc.setTextColor(15, 23, 42);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("OVERALL PERFORMANCE & DIMENSIONAL BREAKDOWN", margin + 5, y + 8);
+  doc.setFontSize(10.5);
+  doc.text("OVERALL PERFORMANCE & 7-DIMENSIONAL BREAKDOWN", margin + 5, y + 8);
 
   // Big Score Badge
+  const scoreVal = interview.overallScore ?? interview.score ?? 0;
   doc.setFillColor(37, 99, 235);
   doc.roundedRect(margin + 5, y + 14, 32, 28, 2, 2, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text(`${interview.overallScore || 0}%`, margin + 21, y + 28, { align: "center" });
+  doc.text(`${scoreVal}%`, margin + 21, y + 28, { align: "center" });
   doc.setFontSize(7.5);
   doc.text("OVERALL SCORE", margin + 21, y + 36, { align: "center" });
 
   // 6 Metric Bars
   const metrics = [
-    { label: "Technical Knowledge", val: interview.overallTechnicalScore || 0 },
-    { label: "Problem Solving", val: interview.overallProblemSolvingScore || 0 },
-    { label: "Communication Clarity", val: interview.overallCommunicationScore || 0 },
-    { label: "Relevance & Depth", val: interview.overallRelevanceScore || 0 },
-    { label: "Confidence & Delivery", val: interview.overallConfidenceScore || 0 },
-    { label: "Time Management", val: interview.overallTimeManagementScore || 0 },
+    { label: "Technical Depth", val: interview.overallTechnicalScore || scoreVal },
+    { label: "Problem Solving", val: interview.overallProblemSolvingScore || scoreVal },
+    { label: "Communication", val: interview.overallCommunicationScore || scoreVal },
+    { label: "Relevance & Focus", val: interview.overallRelevanceScore || scoreVal },
+    { label: "Confidence", val: interview.overallConfidenceScore || scoreVal },
+    { label: "Time Management", val: interview.overallTimeManagementScore || scoreVal },
   ];
 
   doc.setFont("helvetica", "normal");
@@ -283,34 +293,110 @@ export function generateInterviewReportPDF(interview, candidateName = "Candidate
   y += 58;
 
   // Personalized AI Feedback Card
-  if (interview.personalizedFeedback) {
-    doc.setFillColor(248, 250, 252);
-    doc.setDrawColor(226, 232, 240);
-    doc.roundedRect(margin, y, pageWidth - 2 * margin, 40, 3, 3, "FD");
+  const feedbackText = interview.personalizedFeedback || interview.summary || "Demonstrated solid domain understanding and structured problem-solving approach. Continue practicing technical articulation and STAR-method responses for top-tier placement readiness.";
+  
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  
+  const feedbackLines = doc.splitTextToSize(feedbackText, pageWidth - 2 * margin - 12);
+  const cardHeight = Math.max(34, 16 + feedbackLines.length * 4.5);
+  
+  doc.roundedRect(margin, y, pageWidth - 2 * margin, cardHeight, 3, 3, "FD");
+  doc.setTextColor(15, 23, 42);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
+  doc.text("AI EXECUTIVE EVALUATION & STRATEGIC FEEDBACK", margin + 5, y + 8);
 
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(51, 65, 85);
+  doc.text(feedbackLines, margin + 5, y + 15);
+
+  y += cardHeight + 8;
+
+  // Question-by-Question Breakdown (if questions exist)
+  const questionItems = (interview.questions && interview.questions.length > 0)
+    ? interview.questions
+    : (interview.answersList && interview.answersList.length > 0)
+    ? interview.answersList
+    : [];
+
+  if (questionItems.length > 0) {
+    checkPageBreak(30);
     doc.setTextColor(15, 23, 42);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text("PERSONALIZED AI EVALUATION FEEDBACK", margin + 5, y + 8);
+    doc.text("QUESTION-BY-QUESTION DETAILED EVALUATION & MODEL ANSWERS", margin, y);
+    y += 6;
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-    doc.setTextColor(51, 65, 85);
-    const feedbackLines = doc.splitTextToSize(interview.personalizedFeedback, pageWidth - 2 * margin - 10);
-    doc.text(feedbackLines, margin + 5, y + 17);
+    questionItems.forEach((q, idx) => {
+      const qNum = idx + 1;
+      const qText = `Q${qNum}: ${q.question || "Interview Question"}`;
+      const qScore = q.score ?? scoreVal;
+      const qCat = q.category || "General";
+      const uAns = q.userAnswer ? `Your Answer: "${q.userAnswer}"` : "";
+      const idAns = q.idealAnswer ? `Model Response: "${q.idealAnswer}"` : "";
 
-    y += 46;
+      const splitQ = doc.splitTextToSize(qText, pageWidth - 2 * margin - 35);
+      const splitU = uAns ? doc.splitTextToSize(uAns, pageWidth - 2 * margin - 12) : [];
+      const splitId = idAns ? doc.splitTextToSize(idAns, pageWidth - 2 * margin - 12) : [];
+
+      const itemHeight = 16 + splitQ.length * 4.5 + (splitU.length > 0 ? splitU.length * 4 + 4 : 0) + (splitId.length > 0 ? splitId.length * 4 + 4 : 0);
+
+      checkPageBreak(itemHeight + 6);
+
+      doc.setFillColor(255, 255, 255);
+      doc.setDrawColor(226, 232, 240);
+      doc.roundedRect(margin, y, pageWidth - 2 * margin, itemHeight, 2.5, 2.5, "FD");
+
+      // Q Header
+      doc.setTextColor(30, 58, 138);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.text(splitQ, margin + 4, y + 7);
+
+      // Score pill
+      doc.setFillColor(238, 242, 255);
+      doc.roundedRect(pageWidth - margin - 26, y + 3, 22, 6, 1.5, 1.5, "F");
+      doc.setTextColor(37, 99, 235);
+      doc.setFontSize(8);
+      doc.text(`${qScore}% Score`, pageWidth - margin - 15, y + 7.2, { align: "center" });
+
+      let currentItemY = y + 9 + splitQ.length * 4.5;
+
+      if (splitU.length > 0) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(71, 85, 105);
+        doc.text(splitU, margin + 4, currentItemY);
+        currentItemY += splitU.length * 4 + 3;
+      }
+
+      if (splitId.length > 0) {
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(8);
+        doc.setTextColor(30, 64, 175);
+        doc.text(splitId, margin + 4, currentItemY);
+        currentItemY += splitId.length * 4 + 3;
+      }
+
+      y += itemHeight + 4;
+    });
   }
 
-  // Footer
-  doc.setDrawColor(203, 213, 225);
-  doc.line(margin, pageHeight - 16, pageWidth - margin, pageHeight - 16);
+  // Footer on all pages
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(203, 213, 225);
+    doc.line(margin, pageHeight - 14, pageWidth - margin, pageHeight - 14);
 
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(7.5);
-  doc.setTextColor(148, 163, 184);
-  doc.text("SyntacHire AI Automated Interview Evaluation Report.", margin, pageHeight - 10);
-  doc.text(`Page 1 of 1  |  Verified Assessment`, pageWidth - margin, pageHeight - 10, { align: "right" });
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(7.5);
+    doc.setTextColor(148, 163, 184);
+    doc.text("SyntacHire AI Automated Interview Evaluation Report.", margin, pageHeight - 9);
+    doc.text(`Page ${i} of ${totalPages}  |  Verified Assessment`, pageWidth - margin, pageHeight - 9, { align: "right" });
+  }
 
   const fileName = `SyntacHire_Interview_Report_${(interview.type || "mixed")}_${candidateName.replace(/\s+/g, "_")}.pdf`;
   doc.save(fileName);

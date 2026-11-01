@@ -179,7 +179,7 @@ export default function RoleRoadmap() {
                 <Compass className="w-3.5 h-3.5 text-yellow-300" />
                 Role-Specific Placement Engine
               </div>
-              <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight">
                 Role Learning Roadmap &amp; Mastery
               </h1>
               <p className="text-sm text-blue-100/90 font-medium leading-relaxed">
@@ -406,11 +406,11 @@ export default function RoleRoadmap() {
                       <div className="space-y-6 text-sm leading-relaxed">
                         
                         {/* Module Overview */}
-                        <div className="bg-blue-50/80 border border-blue-100 p-5 rounded-2xl space-y-2">
-                          <h4 className="font-black text-blue-700 uppercase text-xs tracking-wider flex items-center gap-2">
+                        <div className="bg-blue-50 border border-blue-200 p-5 md:p-6 rounded-2xl space-y-2">
+                          <h4 className="font-black text-blue-900 uppercase text-xs tracking-wider flex items-center gap-2">
                             <Lightbulb className="w-4 h-4 text-blue-600" /> Module Overview
                           </h4>
-                          <p className="text-slate-800 font-medium">{selectedModule.theoryContent?.overview}</p>
+                          <p className="text-slate-900 font-medium leading-relaxed">{selectedModule.theoryContent?.overview}</p>
                         </div>
 
                         {/* Learning Objectives */}
@@ -419,11 +419,11 @@ export default function RoleRoadmap() {
                             <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider flex items-center gap-2">
                               <Target className="w-4 h-4 text-emerald-600" /> Learning Objectives
                             </h4>
-                            <ul className="grid grid-cols-1 gap-2">
+                            <ul className="grid grid-cols-1 gap-2.5">
                               {selectedModule.theoryContent.learningObjectives.map((obj, i) => (
-                                <li key={i} className="flex items-start gap-2.5 text-xs text-slate-700 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/80 font-medium">
+                                <li key={i} className="flex items-start gap-3 text-xs text-slate-900 bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-200 font-semibold">
                                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                                  <span>{obj}</span>
+                                  <span className="leading-snug">{obj}</span>
                                 </li>
                               ))}
                             </ul>
@@ -436,11 +436,11 @@ export default function RoleRoadmap() {
                             <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider flex items-center gap-2">
                               <Brain className="w-4 h-4 text-purple-600" /> Important Concepts
                             </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                               {selectedModule.theoryContent.importantConcepts.map((item, i) => (
-                                <div key={i} className="bg-purple-50/70 border border-purple-100 p-4 rounded-2xl space-y-1">
-                                  <span className="font-extrabold text-purple-900 text-xs">{item.concept}</span>
-                                  <p className="text-xs text-slate-700 font-normal leading-relaxed">{item.explanation}</p>
+                                <div key={i} className="bg-purple-50/80 border border-purple-200 p-4 rounded-2xl space-y-1.5">
+                                  <span className="font-black text-purple-950 text-xs block">{item.concept}</span>
+                                  <p className="text-xs text-slate-800 font-medium leading-relaxed">{item.explanation}</p>
                                 </div>
                               ))}
                             </div>
@@ -449,17 +449,21 @@ export default function RoleRoadmap() {
 
                         {/* Detailed Explanations with Snippets */}
                         {selectedModule.theoryContent?.detailedExplanations?.map((exp, i) => (
-                          <div key={i} className="space-y-3 border-t border-slate-100 pt-5">
-                            <h4 className="font-black text-slate-900 text-sm">{exp.title}</h4>
-                            <p className="text-slate-700 whitespace-pre-line text-xs font-normal leading-relaxed">{exp.content}</p>
+                          <div key={i} className="space-y-3 border-t border-slate-200 pt-5">
+                            <h4 className="font-black text-slate-900 text-base">{exp.title}</h4>
+                            <p className="text-slate-800 whitespace-pre-line text-sm font-medium leading-relaxed">{exp.content}</p>
                             
                             {exp.snippet && (
-                              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-800 space-y-2 shadow-inner">
-                                <div className="flex items-center justify-between text-[10px] font-mono text-slate-500">
-                                  <span>Code / Design Snippet</span>
-                                  <span className="uppercase">{exp.language || "code"}</span>
+                              <div className="bg-slate-950 rounded-2xl p-5 border border-slate-800 space-y-3 shadow-inner">
+                                <div className="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-2.5">
+                                  <span className="flex items-center gap-2 font-bold text-slate-300">
+                                    <Code2 className="w-4 h-4 text-blue-400" /> Code / Syntax Reference
+                                  </span>
+                                  <span className="uppercase px-2.5 py-0.5 rounded bg-slate-800 text-cyan-300 font-bold tracking-wider">
+                                    {exp.language || "code"}
+                                  </span>
                                 </div>
-                                <pre className="text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed">
+                                <pre className="text-xs font-mono text-emerald-400 overflow-x-auto leading-relaxed pt-1">
                                   <code>{exp.snippet}</code>
                                 </pre>
                               </div>
@@ -469,13 +473,13 @@ export default function RoleRoadmap() {
 
                         {/* Commonly Used Tools */}
                         {selectedModule.toolsAndTech?.length > 0 && (
-                          <div className="space-y-2 border-t border-slate-100 pt-5">
+                          <div className="space-y-2 border-t border-slate-200 pt-5">
                             <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider flex items-center gap-2">
                               <Wrench className="w-4 h-4 text-cyan-600" /> Commonly Used Tools &amp; Technologies
                             </h4>
                             <div className="flex flex-wrap gap-2">
                               {selectedModule.toolsAndTech.map((tool, i) => (
-                                <span key={i} className="px-3.5 py-1 rounded-xl bg-cyan-50 text-cyan-800 border border-cyan-200 text-xs font-bold">
+                                <span key={i} className="px-3.5 py-1.5 rounded-xl bg-cyan-50 text-cyan-900 border border-cyan-200 text-xs font-bold shadow-xs">
                                   {tool}
                                 </span>
                               ))}
@@ -484,11 +488,13 @@ export default function RoleRoadmap() {
                         )}
 
                         {/* Best Practices & Common Mistakes Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 pt-5">
                           {/* Best Practices */}
-                          <div className="bg-emerald-50/70 border border-emerald-200/80 p-4 rounded-2xl space-y-2">
-                            <h5 className="font-black text-emerald-800 text-xs uppercase tracking-wider">✓ Best Practices</h5>
-                            <ul className="space-y-1.5 text-xs text-slate-700 list-disc list-inside">
+                          <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl space-y-3">
+                            <h5 className="font-black text-emerald-950 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Best Practices
+                            </h5>
+                            <ul className="space-y-2 text-xs text-slate-800 font-medium list-disc list-inside leading-relaxed">
                               {selectedModule.theoryContent?.bestPractices?.map((bp, i) => (
                                 <li key={i}>{bp}</li>
                               ))}
@@ -496,13 +502,15 @@ export default function RoleRoadmap() {
                           </div>
 
                           {/* Common Mistakes */}
-                          <div className="bg-rose-50/70 border border-rose-200/80 p-4 rounded-2xl space-y-2">
-                            <h5 className="font-black text-rose-800 text-xs uppercase tracking-wider">⚠️ Common Mistakes &amp; Fixes</h5>
-                            <ul className="space-y-2 text-xs text-slate-700">
+                          <div className="bg-rose-50 border border-rose-200 p-5 rounded-2xl space-y-3">
+                            <h5 className="font-black text-rose-950 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                              <AlertTriangle className="w-4 h-4 text-rose-600" /> Common Mistakes &amp; Fixes
+                            </h5>
+                            <ul className="space-y-2.5 text-xs">
                               {selectedModule.theoryContent?.commonMistakes?.map((cm, i) => (
-                                <li key={i} className="space-y-0.5">
-                                  <span className="font-bold text-rose-900 block">Mistake: {cm.mistake}</span>
-                                  <span className="text-slate-600 block">Fix: {cm.solution}</span>
+                                <li key={i} className="space-y-1 bg-white/70 p-3 rounded-xl border border-rose-200/80">
+                                  <span className="font-black text-rose-950 block">⚠️ Mistake: {cm.mistake}</span>
+                                  <span className="text-slate-800 font-medium block">✓ Solution: {cm.solution}</span>
                                 </li>
                               ))}
                             </ul>
@@ -515,11 +523,11 @@ export default function RoleRoadmap() {
                     {/* ── TAB 2: Practical Relevance ── */}
                     {activeTab === "practical" && (
                       <div className="space-y-6">
-                        <div className="bg-blue-50/80 border border-blue-100 p-6 rounded-2xl space-y-3">
-                          <h4 className="font-black text-blue-700 text-sm flex items-center gap-2">
+                        <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl space-y-3">
+                          <h4 className="font-black text-blue-900 text-sm flex items-center gap-2">
                             <Briefcase className="w-5 h-5 text-blue-600" /> Real-World Job Relevance
                           </h4>
-                          <p className="text-sm text-slate-800 leading-relaxed font-medium">
+                          <p className="text-sm text-slate-900 leading-relaxed font-medium">
                             {selectedModule.practicalRelevance}
                           </p>
                         </div>
@@ -529,11 +537,11 @@ export default function RoleRoadmap() {
                             <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider">
                               Industry Use Cases:
                             </h4>
-                            <div className="space-y-2">
+                            <div className="space-y-2.5">
                               {selectedModule.theoryContent.realWorldExamples.map((ex, i) => (
-                                <div key={i} className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl text-xs text-slate-700 flex items-start gap-3">
+                                <div key={i} className="bg-slate-50 border border-slate-200 p-4 rounded-2xl text-xs text-slate-900 flex items-start gap-3">
                                   <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                  <span className="leading-relaxed font-medium">{ex}</span>
+                                  <span className="leading-relaxed font-semibold">{ex}</span>
                                 </div>
                               ))}
                             </div>
@@ -545,11 +553,11 @@ export default function RoleRoadmap() {
                     {/* ── TAB 3: Interview Relevance ── */}
                     {activeTab === "interview" && (
                       <div className="space-y-6">
-                        <div className="bg-purple-50/80 border border-purple-100 p-6 rounded-2xl space-y-3">
-                          <h4 className="font-black text-purple-900 text-sm flex items-center gap-2">
+                        <div className="bg-purple-50 border border-purple-200 p-6 rounded-2xl space-y-3">
+                          <h4 className="font-black text-purple-950 text-sm flex items-center gap-2">
                             <Award className="w-5 h-5 text-purple-600" /> Interview Relevance Overview
                           </h4>
-                          <p className="text-sm text-slate-800 leading-relaxed font-medium">
+                          <p className="text-sm text-slate-900 leading-relaxed font-medium">
                             {selectedModule.interviewRelevance?.summary}
                           </p>
                         </div>
@@ -562,14 +570,14 @@ export default function RoleRoadmap() {
 
                             <div className="space-y-4">
                               {selectedModule.interviewRelevance.commonQuestions.map((qObj, i) => (
-                                <div key={i} className="bg-slate-50 border border-slate-200/80 p-5 rounded-2xl space-y-3">
-                                  <p className="font-bold text-slate-900 text-xs flex items-center gap-2">
+                                <div key={i} className="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3">
+                                  <p className="font-black text-slate-900 text-sm flex items-center gap-2">
                                     <HelpCircle className="w-4 h-4 text-blue-600 shrink-0" />
                                     <span>"{qObj.question}"</span>
                                   </p>
-                                  <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1">
-                                    <span className="text-[10px] font-black uppercase text-emerald-600">Ideal Answer Strategy:</span>
-                                    <p className="text-xs text-slate-700 leading-relaxed font-medium">{qObj.idealAnswer}</p>
+                                  <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5 shadow-2xs">
+                                    <span className="text-[11px] font-black uppercase text-emerald-700 tracking-wider">Ideal Answer Strategy:</span>
+                                    <p className="text-xs text-slate-900 leading-relaxed font-medium">{qObj.idealAnswer}</p>
                                   </div>
                                 </div>
                               ))}
@@ -586,18 +594,18 @@ export default function RoleRoadmap() {
                           <div className="space-y-6">
                             
                             {/* Quiz Header */}
-                            <div className="flex items-center justify-between bg-amber-50 border border-amber-200/80 p-5 rounded-2xl">
+                            <div className="flex items-center justify-between bg-amber-50 border border-amber-200 p-5 rounded-2xl">
                               <div>
-                                <h4 className="font-black text-amber-900 text-sm flex items-center gap-2">
+                                <h4 className="font-black text-amber-950 text-sm flex items-center gap-2">
                                   <Sparkles className="w-4 h-4 text-amber-600" /> Module Mastery Assessment
                                 </h4>
-                                <p className="text-xs text-slate-600 font-medium mt-0.5">Test your understanding of {selectedModule.name}.</p>
+                                <p className="text-xs text-slate-700 font-medium mt-0.5">Test your understanding of {selectedModule.name}.</p>
                               </div>
 
                               {submittedQuiz && (
                                 <div className="text-right">
-                                  <span className="text-xs font-black uppercase text-slate-500">Your Score:</span>
-                                  <p className="text-xl font-black text-amber-600">
+                                  <span className="text-xs font-black uppercase text-slate-600">Your Score:</span>
+                                  <p className="text-2xl font-black text-amber-700">
                                     {calculateQuizScore().correct} / {calculateQuizScore().total}
                                   </p>
                                 </div>
@@ -611,29 +619,29 @@ export default function RoleRoadmap() {
                                 const isCorrect = selectedIdx !== undefined && q.options[selectedIdx] === q.correctAnswer;
 
                                 return (
-                                  <div key={q.id} className="bg-slate-50/80 border border-slate-200/80 p-6 rounded-2xl space-y-4">
-                                    <h5 className="font-bold text-slate-900 text-xs flex items-start gap-2">
-                                      <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-[10px] shrink-0 mt-0.5">
+                                  <div key={q.id} className="bg-slate-50 border border-slate-200 p-6 rounded-2xl space-y-4">
+                                    <h5 className="font-black text-slate-900 text-sm flex items-start gap-2.5">
+                                      <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
                                         {qIdx + 1}
                                       </span>
-                                      <span>{q.question}</span>
+                                      <span className="leading-snug">{q.question}</span>
                                     </h5>
 
                                     {/* Options */}
-                                    <div className="space-y-2">
+                                    <div className="space-y-2.5">
                                       {q.options.map((opt, optIdx) => {
                                         const isThisSelected = selectedIdx === optIdx;
                                         const isThisCorrectOption = opt === q.correctAnswer;
 
-                                        let btnStyle = "bg-white border-slate-200 text-slate-800 hover:border-blue-400 hover:bg-blue-50/40";
+                                        let btnStyle = "bg-white border-slate-300 text-slate-900 font-semibold hover:border-blue-500 hover:bg-blue-50/50";
                                         if (submittedQuiz) {
                                           if (isThisCorrectOption) {
-                                            btnStyle = "bg-emerald-50 border-2 border-emerald-500 text-emerald-900 font-bold";
+                                            btnStyle = "bg-emerald-50 border-2 border-emerald-600 text-emerald-950 font-black shadow-xs";
                                           } else if (isThisSelected && !isCorrect) {
-                                            btnStyle = "bg-rose-50 border-2 border-rose-500 text-rose-900 font-bold";
+                                            btnStyle = "bg-rose-50 border-2 border-rose-600 text-rose-950 font-black shadow-xs";
                                           }
                                         } else if (isThisSelected) {
-                                          btnStyle = "bg-blue-50 border-2 border-blue-600 text-blue-900 font-bold";
+                                          btnStyle = "bg-blue-50 border-2 border-blue-600 text-blue-950 font-black shadow-xs";
                                         }
 
                                         return (
@@ -657,9 +665,9 @@ export default function RoleRoadmap() {
 
                                     {/* Explanation after submission */}
                                     {submittedQuiz && (
-                                      <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1 text-xs">
-                                        <span className="font-extrabold text-blue-600 uppercase text-[10px]">Explanation:</span>
-                                        <p className="text-slate-700 leading-relaxed font-medium">{q.explanation}</p>
+                                      <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5 text-xs shadow-2xs">
+                                        <span className="font-black text-blue-700 uppercase text-[11px] tracking-wider">Explanation:</span>
+                                        <p className="text-slate-900 leading-relaxed font-medium">{q.explanation}</p>
                                       </div>
                                     )}
                                   </div>
@@ -668,7 +676,7 @@ export default function RoleRoadmap() {
                             </div>
 
                             {/* Quiz Footer Actions */}
-                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                               {!submittedQuiz ? (
                                 <button
                                   onClick={() => setSubmittedQuiz(true)}
@@ -687,7 +695,7 @@ export default function RoleRoadmap() {
                                     setSubmittedQuiz(false);
                                     setUserAnswers({});
                                   }}
-                                  className="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-black transition-all flex items-center gap-2 cursor-pointer border border-slate-200"
+                                  className="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-black transition-all flex items-center gap-2 cursor-pointer border border-slate-300"
                                 >
                                   <RotateCcw className="w-3.5 h-3.5" /> Retry Quiz
                                 </button>
@@ -696,7 +704,7 @@ export default function RoleRoadmap() {
 
                           </div>
                         ) : (
-                          <div className="text-center py-10 text-slate-500 text-xs font-medium">
+                          <div className="text-center py-10 text-slate-600 text-xs font-medium">
                             No quiz questions available for this module yet.
                           </div>
                         )}
@@ -710,20 +718,20 @@ export default function RoleRoadmap() {
                           <div className="space-y-6">
                             
                             {/* Controls Bar & Mastery Progress */}
-                            <div className="flex items-center justify-between flex-wrap gap-4 bg-purple-50 border border-purple-100 p-4 rounded-2xl">
+                            <div className="flex items-center justify-between flex-wrap gap-4 bg-purple-50 border border-purple-200 p-4 rounded-2xl">
                               <div className="flex items-center gap-3">
-                                <span className="text-xs font-black text-purple-900 uppercase tracking-wider">
+                                <span className="text-xs font-black text-purple-950 uppercase tracking-wider">
                                   Card {flashcardIndex + 1} of {cardDeck.length}
                                 </span>
-                                <span className="text-xs font-bold text-slate-600">
-                                  Mastered: <strong className="text-emerald-600">{Object.keys(masteredCards).filter(k => masteredCards[k]).length}</strong> / {cardDeck.length}
+                                <span className="text-xs font-bold text-slate-700">
+                                  Mastered: <strong className="text-emerald-700">{Object.keys(masteredCards).filter(k => masteredCards[k]).length}</strong> / {cardDeck.length}
                                 </span>
                               </div>
 
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={handleShuffleDeck}
-                                  className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-purple-200 text-xs font-bold text-purple-800 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                                  className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-purple-200 text-xs font-bold text-purple-900 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
                                 >
                                   <Shuffle className="w-3.5 h-3.5 text-purple-600" /> Shuffle Deck
                                 </button>
@@ -731,7 +739,7 @@ export default function RoleRoadmap() {
                             </div>
 
                             {/* Flashcard Progress Bar */}
-                            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
+                            <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden border border-slate-300">
                               <div
                                 className="bg-gradient-to-r from-purple-500 to-indigo-600 h-full transition-all duration-300"
                                 style={{ width: `${Math.round(((flashcardIndex + 1) / cardDeck.length) * 100)}%` }}
@@ -743,15 +751,15 @@ export default function RoleRoadmap() {
                               <div className="space-y-4">
                                 <div
                                   onClick={() => setIsFlipped((prev) => !prev)}
-                                  className="relative min-h-[300px] w-full rounded-3xl p-8 cursor-pointer transition-all duration-500 flex flex-col justify-between border-2 border-slate-200/80 shadow-xl bg-white hover:border-purple-300 hover:shadow-2xl"
+                                  className="relative min-h-[300px] w-full rounded-3xl p-8 cursor-pointer transition-all duration-500 flex flex-col justify-between border-2 border-slate-200 shadow-xl bg-white hover:border-purple-300 hover:shadow-2xl"
                                 >
                                   {/* Card Header Tag */}
-                                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                    <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${currentCard.tagColor || "bg-purple-100 text-purple-800 border-purple-200"}`}>
+                                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                                    <span className={`text-[11px] font-black uppercase px-3 py-1 rounded-full border ${currentCard.tagColor || "bg-purple-50 text-purple-900 border-purple-200"}`}>
                                       {currentCard.category || "Revision Card"}
                                     </span>
-                                    <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
-                                      <RotateCcw className="w-3 h-3 text-purple-600" />
+                                    <span className="text-[11px] font-bold text-slate-600 flex items-center gap-1">
+                                      <RotateCcw className="w-3.5 h-3.5 text-purple-600" />
                                       {isFlipped ? "Answer View" : "Prompt View (Click to flip)"}
                                     </span>
                                   </div>
@@ -760,18 +768,18 @@ export default function RoleRoadmap() {
                                   <div className="my-6 space-y-3 text-center">
                                     {!isFlipped ? (
                                       <div className="space-y-3">
-                                        <p className="text-xs font-black uppercase text-slate-500 tracking-widest">Question / Concept:</p>
+                                        <p className="text-xs font-black uppercase text-slate-600 tracking-widest">Question / Concept:</p>
                                         <h3 className="text-xl md:text-2xl font-black text-slate-900 leading-snug">
                                           "{currentCard.front}"
                                         </h3>
-                                        <p className="text-xs text-purple-600 font-bold pt-2 animate-pulse">
+                                        <p className="text-xs text-purple-700 font-extrabold pt-2">
                                           💡 Click card to reveal explanation
                                         </p>
                                       </div>
                                     ) : (
                                       <div className="space-y-3 text-left">
-                                        <p className="text-xs font-black uppercase text-emerald-600 tracking-widest">Answer &amp; Key Insight:</p>
-                                        <p className="text-sm md:text-base font-medium text-slate-800 leading-relaxed whitespace-pre-line">
+                                        <p className="text-xs font-black uppercase text-emerald-700 tracking-widest">Answer &amp; Key Insight:</p>
+                                        <p className="text-sm md:text-base font-semibold text-slate-900 leading-relaxed whitespace-pre-line">
                                           {currentCard.back}
                                         </p>
                                       </div>
@@ -779,13 +787,13 @@ export default function RoleRoadmap() {
                                   </div>
 
                                   {/* Card Footer Actions */}
-                                  <div className="flex items-center justify-between border-t border-slate-100 pt-4" onClick={(e) => e.stopPropagation()}>
+                                  <div className="flex items-center justify-between border-t border-slate-200 pt-4" onClick={(e) => e.stopPropagation()}>
                                     <button
                                       onClick={() => handleToggleMastered(currentCard.id)}
                                       className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 ${
                                         masteredCards[currentCard.id]
-                                          ? "bg-emerald-50 text-emerald-800 border border-emerald-300"
-                                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                          ? "bg-emerald-50 text-emerald-900 border border-emerald-300"
+                                          : "bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200"
                                       }`}
                                     >
                                       <Check className={`w-3.5 h-3.5 ${masteredCards[currentCard.id] ? "text-emerald-600" : ""}`} />
@@ -794,7 +802,7 @@ export default function RoleRoadmap() {
 
                                     <button
                                       onClick={() => setIsFlipped((prev) => !prev)}
-                                      className="px-4 py-2 rounded-xl bg-purple-50 text-purple-800 border border-purple-200 text-xs font-bold hover:bg-purple-100 transition-all flex items-center gap-1.5 cursor-pointer"
+                                      className="px-4 py-2 rounded-xl bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold hover:bg-purple-100 transition-all flex items-center gap-1.5 cursor-pointer"
                                     >
                                       <RotateCcw className="w-3.5 h-3.5" /> Flip Card
                                     </button>
@@ -805,7 +813,7 @@ export default function RoleRoadmap() {
                                 <div className="flex items-center justify-between">
                                   <button
                                     onClick={handlePrevCard}
-                                    className="px-5 py-2.5 rounded-2xl bg-white border border-slate-200 text-xs font-bold text-slate-800 hover:bg-slate-50 shadow-xs flex items-center gap-2 transition-all cursor-pointer"
+                                    className="px-5 py-2.5 rounded-2xl bg-white border border-slate-200 text-xs font-bold text-slate-900 hover:bg-slate-50 shadow-xs flex items-center gap-2 transition-all cursor-pointer"
                                   >
                                     <ChevronLeft className="w-4 h-4" /> Previous Card
                                   </button>
@@ -822,7 +830,7 @@ export default function RoleRoadmap() {
 
                           </div>
                         ) : (
-                          <div className="text-center py-10 text-slate-500 text-xs font-medium">
+                          <div className="text-center py-10 text-slate-600 text-xs font-medium">
                             No flashcards available for this module yet.
                           </div>
                         )}

@@ -108,6 +108,8 @@ exports.evaluateAnswerWithGemini = async ({
   targetRole = 'Full Stack Software Developer',
   difficulty = 'Medium',
   type = 'mixed',
+  seniorityLevel = 'Mid-Level',
+  industryFocus = 'Technology & SaaS',
 }) => {
   const apiKey = process.env.GEMINI_API_KEY;
 
@@ -121,7 +123,7 @@ exports.evaluateAnswerWithGemini = async ({
   }
 
   const prompt = `
-  You are an expert technical and HR interviewer evaluating a candidate's response for a "${targetRole}" position at "${difficulty}" difficulty level during a "${type.toUpperCase()}" interview round.
+  You are an expert technical and HR interviewer evaluating a candidate's response for a "${seniorityLevel} ${targetRole}" position in the "${industryFocus}" sector at "${difficulty}" difficulty level during a "${type.toUpperCase()}" interview round.
 
   Interview Question:
   "${question}"
@@ -129,14 +131,17 @@ exports.evaluateAnswerWithGemini = async ({
   Candidate Response:
   "${answer}"
 
-  EVALUATION CRITERIA (score each from 0-100):
-  1. Technical Knowledge: Accuracy, correctness, and domain-specific knowledge demonstrated
-  2. Correctness: Is the core information accurate and free of factual errors?
-  3. Problem Solving: Logical thinking, decomposition, trade-offs, and edge case awareness
-  4. Communication: Clarity, structure, STAR format (for behavioral), vocabulary, and coherence
-  5. Relevance: Does the response directly and completely address the exact question asked?
-  6. Confidence & Clarity: Decisiveness, conviction, and clarity of delivery
-  7. Time Management: Was the response concise and well-paced (not too brief or too verbose)?
+  EVALUATION CRITERIA (score each from 0-100 based on ${seniorityLevel} industry hiring standards):
+  1. Technical Knowledge: Accuracy, correctness, depth, and domain-specific knowledge demonstrated
+  2. Correctness: Is the core information accurate, factually sound, and free of hallucinations?
+  3. Problem Solving: Logical thinking, decomposition, trade-offs, architecture scale, and edge cases
+  4. Communication & Structure: Clarity, STAR method (Situation, Task, Action, Result) for behavioral scenarios, vocabulary, and conciseness
+  5. Relevance: Does the response directly and completely address the specific question asked?
+  6. Confidence & Clarity: Decisiveness, conviction, professional vocabulary, and minimal filler words
+  7. Time Management & Pacing: Was the response well-structured and well-paced (not overly brief or rambling)?
+
+  SAMPLE IDEAL ANSWER:
+  Provide a concrete, high-impact "idealAnswer" illustrating how a top 1% ${seniorityLevel} candidate in ${industryFocus} would answer with crisp structure, metrics, and technical precision.
 
   OUTPUT REQUIREMENT:
   Return a strictly valid JSON object matching this schema:
@@ -380,45 +385,52 @@ async function fallbackGeminiRestCall(apiKey, prompt) {
 }
 
 /**
- * Heuristic fallback if API key or network fails
+ * Heuristic fallback if API key or network fails, or if answer is empty/gibberish
  */
 function getFallbackEvaluation(question, answer) {
   const normalizedAnswer = (answer || '').trim();
   const wordCount = normalizedAnswer ? normalizedAnswer.split(/\s+/).length : 0;
-  const isGibberish = /^(\d+|[a-zA-Z]\d+|123+|\W+)$/i.test(normalizedAnswer) || wordCount < 4;
-  let score;
-
+  const isGibberish = !normalizedAnswer || /^(\d+|[a-zA-Z]\d+|123+|[-_./,;:!@#$%^&*()+=~`'"<>?{}\[\]\\]+)$/i.test(normalizedAnswer) || wordCount < 3;
+  
   if (isGibberish) {
-    score = 45;
-  } else {
-    score = Math.min(88, Math.max(55, 60 + Math.floor(wordCount / 6)));
+    return {
+      score: 0,
+      technicalKnowledgeScore: 0,
+      correctnessScore: 0,
+      problemSolvingScore: 0,
+      communicationScore: 0,
+      relevanceScore: 0,
+      confidenceScore: 0,
+      timeManagementScore: 0,
+      technicalScore: 0,
+      strengths: ['No meaningful response provided.'],
+      weaknesses: ['Answer was empty, a placeholder character, or contained no relevant technical or behavioral content.'],
+      missingPoints: ['A complete answer addressing the question with relevant concepts and examples.'],
+      improvementFeedback: 'You entered a placeholder or empty answer ("-"). Please answer out loud using the microphone or type a full structured response to receive evaluation and feedback.',
+      aiFeedback: 'You entered a placeholder or empty answer ("-"). Please answer out loud using the microphone or type a full structured response to receive evaluation and feedback.',
+      idealAnswer: 'An ideal response clearly explains the core concept, implementation steps, trade-offs, and edge cases.',
+      followUpQuestion: 'Would you like to try answering this question again with a complete response?',
+    };
   }
+
+  const score = Math.min(88, Math.max(50, 55 + Math.floor(wordCount / 6)));
 
   return {
     score,
-    technicalScore: isGibberish ? 35 : Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 6))),
-    problemSolvingScore: isGibberish ? 35 : Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 7))),
-    communicationScore: isGibberish ? 30 : Math.min(90, Math.max(40, 58 + Math.floor(wordCount / 8))),
-    relevanceScore: isGibberish ? 30 : Math.min(90, Math.max(40, 60 + Math.floor(wordCount / 9))),
-    confidenceScore: isGibberish ? 35 : Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 10))),
-    timeManagementScore: isGibberish ? 40 : Math.min(90, Math.max(45, 60 + Math.floor(wordCount / 12))),
-    strengths: isGibberish
-      ? ['Attempted an answer, but the response was too short or not directly relevant.']
-      : ['Delivered a response with some structure and useful keywords.'],
-    weaknesses: isGibberish
-      ? ['Response did not meaningfully address the question. Please answer with full sentences and examples.']
-      : ['Could add more concrete examples and explicit trade-offs.'],
-    missingPoints: isGibberish
-      ? ['Meaningful answer structure with complete sentences.', 'Directly answer the question asked.']
-      : ['Specific technical metrics or examples.', 'Clear mention of edge cases, risks, or alternatives.'],
-    aiFeedback: isGibberish
-      ? 'This response is too brief or not focused enough. Try answering the question directly with clear examples and structure.'
-      : 'Strong response structure, but add more detail on edge cases and trade-offs for a higher score.',
-    idealAnswer: isGibberish
-      ? 'A strong answer explains the steps you would take, why you made those choices, and what outcomes you expect.'
-      : 'An ideal answer explains the problem context, chosen approach, key trade-offs, and supporting examples clearly.',
-    followUpQuestion: isGibberish
-      ? 'Can you provide a more complete answer that directly addresses the question asked?'
-      : 'What additional edge case or failure mode would you consider for this solution?',
+    technicalKnowledgeScore: Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 6))),
+    correctnessScore: Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 6))),
+    problemSolvingScore: Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 7))),
+    communicationScore: Math.min(90, Math.max(40, 58 + Math.floor(wordCount / 8))),
+    relevanceScore: Math.min(90, Math.max(40, 60 + Math.floor(wordCount / 9))),
+    confidenceScore: Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 10))),
+    timeManagementScore: Math.min(90, Math.max(45, 60 + Math.floor(wordCount / 12))),
+    technicalScore: Math.min(90, Math.max(40, 55 + Math.floor(wordCount / 6))),
+    strengths: ['Delivered a response with some structure and relevant keywords.'],
+    weaknesses: ['Could add more concrete examples, production metrics, and explicit trade-offs.'],
+    missingPoints: ['Specific technical metrics or examples.', 'Clear mention of edge cases, risks, or alternatives.'],
+    improvementFeedback: 'Good start. Deepen your explanation with concrete metrics, trade-offs, and edge-case mitigations for a top score.',
+    aiFeedback: 'Good start. Deepen your explanation with concrete metrics, trade-offs, and edge-case mitigations for a top score.',
+    idealAnswer: 'An ideal answer explains the problem context, chosen approach, key trade-offs, and supporting examples clearly.',
+    followUpQuestion: 'What additional edge case or failure mode would you consider for this solution?',
   };
 }

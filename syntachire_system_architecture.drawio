@@ -1,92 +1,74 @@
-<mxfile host="app.diagrams.net" modified="2026-08-27T10:00:00.000Z" agent="SyntacHire AI" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" agent="SyntacHire AI" pages="4">
   <diagram id="SyntacHire_System_Architecture" name="SyntacHire System Architecture">
     <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" background="#fcfcf9" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-
         <!-- Document Title -->
         <mxCell id="title" value="SYSTEM ARCHITECTURE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=24;fontFamily=Times New Roman;fontColor=#1e293b;" vertex="1" parent="1">
           <mxGeometry x="400" y="40" width="400" height="40" as="geometry" />
         </mxCell>
-
         <!-- Client Section Swimlane Box -->
         <mxCell id="client_box" value="Client (React 19 UI)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fontStyle=1;fontSize=14;fillColor=#f8fafc;strokeColor=#475569;rounded=1;arcSize=4;fontColor=#0f172a;" vertex="1" parent="1">
           <mxGeometry x="60" y="140" width="320" height="420" as="geometry" />
         </mxCell>
-
         <!-- Client UI Container -->
         <mxCell id="ui_container" value="UI" style="swimlane;whiteSpace=wrap;html=1;startSize=25;horizontal=1;fontStyle=1;fontSize=12;fillColor=#ffffff;strokeColor=#cbd5e1;rounded=1;arcSize=4;fontColor=#334155;" vertex="1" parent="client_box">
           <mxGeometry x="20" y="50" width="280" height="340" as="geometry" />
         </mxCell>
-
         <!-- Candidate Actor -->
         <mxCell id="user_actor" value="User / Candidate" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontSize=11;fontColor=#1e293b;" vertex="1" parent="ui_container">
           <mxGeometry x="30" y="120" width="40" height="70" as="geometry" />
         </mxCell>
-
         <!-- User Inputs Box -->
-        <mxCell id="user_inputs" value="User Inputs&#10;(Voice / Code / PDF)" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=12;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="ui_container">
+        <mxCell id="user_inputs" value="User Inputs&#xa;(Voice / Code / PDF)" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=12;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="ui_container">
           <mxGeometry x="120" y="120" width="140" height="70" as="geometry" />
         </mxCell>
-
         <!-- User to User Inputs Arrow -->
         <mxCell id="arrow_user_to_input" value="Input Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=10;fontColor=#475569;strokeColor=#475569;" edge="1" parent="ui_container" source="user_actor" target="user_inputs">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
         <!-- Server Section Swimlane Box -->
         <mxCell id="server_box" value="Server (Node.js &amp; Express API)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fontStyle=1;fontSize=14;fillColor=#f8fafc;strokeColor=#475569;rounded=1;arcSize=4;fontColor=#0f172a;" vertex="1" parent="1">
           <mxGeometry x="460" y="140" width="530" height="420" as="geometry" />
         </mxCell>
-
         <!-- Process 1: Input Preprocessing -->
-        <mxCell id="proc1" value="Input Preprocessing&#10;&amp; Audio STT" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+        <mxCell id="proc1" value="Input Preprocessing&#xa;&amp; Audio STT" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
           <mxGeometry x="20" y="90" width="130" height="65" as="geometry" />
         </mxCell>
-
         <!-- Process 2: Evaluation Engine -->
-        <mxCell id="proc2" value="Evaluation &amp; Execution&#10;Engine" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+        <mxCell id="proc2" value="Evaluation &amp; Execution&#xa;Engine" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
           <mxGeometry x="180" y="90" width="130" height="65" as="geometry" />
         </mxCell>
-
         <!-- Process 3: Score Engine -->
-        <mxCell id="proc3" value="Placement Readiness&#10;Score Engine" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+        <mxCell id="proc3" value="Placement Readiness&#xa;Score Engine" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
           <mxGeometry x="340" y="90" width="130" height="65" as="geometry" />
         </mxCell>
-
         <!-- Process 4: Generate Response -->
-        <mxCell id="proc4" value="Generate Scorecard&#10;&amp; Feedback Response" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
+        <mxCell id="proc4" value="Generate Scorecard&#xa;&amp; Feedback Response" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#ffffff;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="server_box">
           <mxGeometry x="340" y="240" width="130" height="65" as="geometry" />
         </mxCell>
-
         <!-- External Services Box -->
-        <mxCell id="external_box" value="External Services&#10;(Google Gemini AI API &amp;&#10;Judge0 CE Sandbox)" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#eff6ff;strokeColor=#2563eb;dashed=1;dashPattern=5 5;fontColor=#1e40af;" vertex="1" parent="server_box">
+        <mxCell id="external_box" value="External Services&#xa;(Google Gemini AI API &amp;&#xa;Judge0 CE Sandbox)" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fontSize=11;fillColor=#eff6ff;strokeColor=#2563eb;dashed=1;dashPattern=5 5;fontColor=#1e40af;" vertex="1" parent="server_box">
           <mxGeometry x="150" y="230" width="160" height="85" as="geometry" />
         </mxCell>
-
         <!-- Connecting Edges inside Server -->
         <mxCell id="edge_p1_p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=1.5;" edge="1" parent="server_box" source="proc1" target="proc2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
         <mxCell id="edge_p2_p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=1.5;" edge="1" parent="server_box" source="proc2" target="proc3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
         <mxCell id="edge_p3_p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#334155;strokeWidth=1.5;" edge="1" parent="server_box" source="proc3" target="proc4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
         <mxCell id="edge_p2_ext" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563eb;strokeWidth=1.5;startArrow=classic;startFill=1;" edge="1" parent="server_box" source="proc2" target="external_box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
         <!-- Request Arrow (Client to Server) -->
         <mxCell id="req_arrow" value="Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=12;fontColor=#2563eb;strokeColor=#2563eb;strokeWidth=2;" edge="1" parent="1" source="user_inputs" target="proc1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
         <!-- Response Arrow (Server to Client) -->
         <mxCell id="resp_arrow" value="Response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=12;fontColor=#16a34a;strokeColor=#16a34a;strokeWidth=2;" edge="1" parent="1" source="proc4" target="user_inputs">
           <mxGeometry relative="1" as="geometry">
@@ -96,17 +78,143 @@
             </Array>
           </mxGeometry>
         </mxCell>
-
         <!-- MongoDB Database Cylinder -->
-        <mxCell id="db_box" value="MongoDB Atlas&#10;Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontStyle=1;fontSize=12;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;" vertex="1" parent="1">
+        <mxCell id="db_box" value="MongoDB Atlas&#xa;Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontStyle=1;fontSize=12;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;" vertex="1" parent="1">
           <mxGeometry x="1030" y="290" width="110" height="110" as="geometry" />
         </mxCell>
-
         <!-- Edge Server Proc4 to DB -->
         <mxCell id="edge_proc4_db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16a34a;strokeWidth=2;startArrow=classic;startFill=1;" edge="1" parent="1" source="proc4" target="db_box">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="SyntacHire_Use_Cases" name="Use Case Diagram">
+    <mxGraphModel dx="1600" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1600" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="uc_title" value="SYNTACHIRE AI | UML USE CASE DIAGRAM" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=24;fontFamily=Arial;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="450" y="28" width="700" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_system_boundary" value="SyntacHire Career Guidance Platform" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=18;spacingTop=12;fontStyle=1;fontSize=16;fillColor=#ffffff;strokeColor=#26364a;strokeWidth=2;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="310" y="100" width="1020" height="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_candidate" value="Candidate" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontSize=14;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="105" y="755" width="60" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_email_actor" value="Email Service" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontSize=12;fontColor=#344054;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="215" width="55" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_judge_actor" value="Judge0 Code Runner" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontSize=12;fontColor=#344054;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="815" width="55" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_gemini_actor" value="Google Gemini AI" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;fontSize=12;fontColor=#344054;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="1120" width="55" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_register" value="Create account and verify email" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="160" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_signin" value="Sign in or recover password" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="270" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_profile" value="Manage profile, preferences, and account" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="380" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_dashboard" value="View dashboard and learning progress" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="490" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_roadmap" value="Explore career roadmaps" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="600" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_modules" value="Study learning modules and theory" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="710" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_solve" value="Solve coding problems and track progress" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="820" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_execute" value="Run code and inspect results" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="930" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_resume" value="Analyze resume and receive recommendations" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="1040" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_resume_history" value="View and manage resume analysis history" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="1150" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_interview" value="Conduct mock interview and receive feedback" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="1260" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_interview_history" value="Review interview history and performance" style="ellipse;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#eaf2ff;strokeColor=#5276a7;strokeWidth=1.5;fontColor=#172b4d;" vertex="1" parent="1">
+          <mxGeometry x="485" y="1370" width="670" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_01" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_02" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_signin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_03" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_04" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_05" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_roadmap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_06" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_modules">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_07" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_solve">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_08" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_09" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_resume">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_10" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_resume_history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_11" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_interview">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_candidate_12" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_candidate" target="uc_interview_history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_email_01" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_email_actor" target="uc_register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_email_02" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_email_actor" target="uc_signin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_judge0" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_judge_actor" target="uc_execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_gemini_resume" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_gemini_actor" target="uc_resume">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assoc_gemini_interview" style="edgeStyle=straight;html=1;strokeColor=#526274;strokeWidth=1.2;" edge="1" parent="1" source="uc_gemini_actor" target="uc_interview">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="A8polnZx3qJh_tqnxMPC" name="Page-3">
+    <mxGraphModel dx="526" dy="615" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="_b8l_55pWVMUlDpS477t" name="Page-4">
+    <mxGraphModel dx="526" dy="615" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
       </root>
     </mxGraphModel>
   </diagram>
